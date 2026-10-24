@@ -1,10 +1,11 @@
+#!/usr/bin/python3
 import gi
 
 gi.require_version("Gio", "2.0")
 gi.require_version("GLib", "2.0")
 from gi.repository import Gio, GLib
 
-from satellite.common import DBUS_NAME
+from common import DBUS_NAME
 
 
 class SatelliteDaemon:

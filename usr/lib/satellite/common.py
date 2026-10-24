@@ -1,3 +1,5 @@
+VERSION = "0.1.0"
+
 APP_ID = "org.x.Satellite"
 
 DBUS_NAME = "org.x.Satellite"
