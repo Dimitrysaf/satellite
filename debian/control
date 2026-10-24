@@ -2,17 +2,33 @@ Source: satellite
 Section: net
 Priority: optional
 Maintainer: Dimitrysaf <demetresmeliates+github@gmail.com>
-Build-Depends: debhelper (>= 9)
-Standards-Version: 3.9.5
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ gettext,
+ meson (>= 0.59.0),
+ gtk-update-icon-cache,
+ libglib2.0-bin,
+ python3,
+ python3-gi,
+ python3-openssl,
+ python3-xapp (>= 3.0.0),
+ gir1.2-xapp-1.0
+Standards-Version: 4.6.2
+Homepage: https://github.com/dimitrysaf/satellite
+Rules-Requires-Root: no
 
 Package: satellite
 Architecture: all
-Depends: gir1.2-xapp-1.0 (>= 1.4),
-         python3,
-         python3-gi,
-         python3-openssl,
-         xdotool,
-         xapps-common,
-         ${misc:Depends},
-Description: KDE Connect protocol client
- Pair and sync with KDE Connect compatible devices.
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+ gir1.2-xapp-1.0,
+ python3-gi,
+ python3-openssl,
+ xdotool,
+ xapps-common
+Description: KDE Connect compatible device integration for Linux desktops
+ Satellite connects Linux desktops with KDE Connect compatible devices over
+ the local network. It supports pairing, device status, file sharing, and
+ device plugins through a GTK desktop application and background daemon.

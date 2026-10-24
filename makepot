@@ -1,2 +1,7 @@
 #!/bin/bash
-xgettext --language=Python --keyword=_ --keyword=N_ --output=satellite.pot usr/lib/satellite/*.py
+set -eu
+
+xgettext --language=Desktop --from-code=UTF-8 --output=satellite.pot data/*.desktop.in
+xgettext --language=Python --join-existing --from-code=UTF-8 \
+  --keyword=_ --keyword=N_ --output=satellite.pot \
+  satellite/*.py satellite/plugins/*/*.py daemon/*.py gui/*.py

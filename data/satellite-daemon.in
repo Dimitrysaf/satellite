@@ -1,0 +1,3 @@
+#!/bin/sh
+export PYTHONPATH="@satellite_dir@${PYTHONPATH:+:$PYTHONPATH}"
+exec /usr/bin/python3 @daemon_dir@/daemon.py "$@"

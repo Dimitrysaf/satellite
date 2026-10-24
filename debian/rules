@@ -1,4 +1,10 @@
 #!/usr/bin/make -f
 
 %:
-	dh ${@}
+	dh $@ --buildsystem=meson
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
+
+override_dh_python3:
+	dh_python3 /usr/share/satellite
