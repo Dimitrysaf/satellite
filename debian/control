@@ -1,0 +1,16 @@
+Source: satellite
+Section: net
+Priority: optional
+Maintainer: Dimitrysaf <demetresmeliates+github@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+
+Package: satellite
+Architecture: all
+Depends: gir1.2-xapp-1.0 (>= 1.4),
+         python3,
+         python3-gi,
+         xapps-common,
+         ${misc:Depends},
+Description: KDE Connect protocol client
+ Pair and sync with KDE Connect compatible devices.

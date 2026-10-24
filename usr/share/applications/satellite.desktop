@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Satellite
+Comment=Pair and sync with KDE Connect compatible devices
+Exec=satellite
+Icon=satellite
+Terminal=false
+Categories=Network;
+StartupNotify=true

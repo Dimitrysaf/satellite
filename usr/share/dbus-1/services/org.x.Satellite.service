@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.x.Satellite
+Exec=/usr/bin/satellited
