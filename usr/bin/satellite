@@ -1,2 +1,3 @@
 #!/bin/sh
-exec /usr/lib/satellite/app.py "$@"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec "$SCRIPT_DIR/../lib/satellite/app.py" "$@"
