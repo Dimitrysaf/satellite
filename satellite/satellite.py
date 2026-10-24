@@ -7,11 +7,15 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 gi.require_version("XApp", "1.0")
-from gi.repository import Gdk, Gio, GLib, Gtk, XApp
+from gi.repository import Gdk, GdkPixbuf, Gio, GLib, Gtk, XApp
 
 from satellite import APP_ID
 from satellite.mpris_bridge import MprisBridge
+from satellite.plugins.runcommand import Plugin as RunCommandPlugin
+from satellite.plugins.runcommand import RECOMMENDED_COMMANDS
 from daemon.daemon import SatelliteDaemon
+
+PROJECT_VERSION = "__PROJECT_VERSION__"
 
 ICONS = {
     "phone": "phone-symbolic",
@@ -23,6 +27,24 @@ ICONS = {
 
 def icon_for(device_type):
     return ICONS.get(device_type, "network-wireless-symbolic")
+
+
+def load_satellite_logo(size=64):
+    candidates = (
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "satellite.svg"),
+        "/usr/share/icons/hicolor/scalable/apps/satellite.svg",
+    )
+    for path in candidates:
+        if not os.path.isfile(path):
+            continue
+        try:
+            return GdkPixbuf.Pixbuf.new_from_file_at_scale(path, size, size, True)
+        except GLib.Error:
+            continue
+    try:
+        return Gtk.IconTheme.get_default().load_icon("satellite", size, 0)
+    except GLib.Error:
+        return None
 
 
 def section_label(text):
@@ -970,6 +992,10 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         if not plugin:
             return
 
+        if plugin_id == "runcommand":
+            self._configure_runcommand(device_id, plugin)
+            return
+
         dialog = Gtk.Dialog(
             title="Configure {}".format(plugin["name"]),
             transient_for=self,
@@ -994,6 +1020,21 @@ class SatelliteWindow(Gtk.ApplicationWindow):
                     field.get("minimum", 0), field.get("maximum", 100), 1
                 )
                 control.set_value(settings.get(field["key"], field.get("default", 0)))
+            elif field_type == "multiline":
+                control = Gtk.TextView()
+                control.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+                control.get_buffer().set_text(
+                    str(settings.get(field["key"], field.get("default", "")))
+                )
+                scroller = Gtk.ScrolledWindow()
+                scroller.set_policy(
+                    Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+                )
+                scroller.set_size_request(380, 140)
+                scroller.add(control)
+                grid.attach(scroller, 1, row_number, 1, 1)
+                widgets[field["key"]] = (field_type, control)
+                continue
             else:
                 control = Gtk.Entry()
                 control.set_text(str(settings.get(field["key"], field.get("default", ""))))
@@ -1009,9 +1050,178 @@ class SatelliteWindow(Gtk.ApplicationWindow):
                     values[key] = control.get_active()
                 elif field_type == "int":
                     values[key] = control.get_value_as_int()
+                elif field_type == "multiline":
+                    buffer = control.get_buffer()
+                    values[key] = buffer.get_text(
+                        buffer.get_start_iter(), buffer.get_end_iter(), True
+                    )
                 else:
                     values[key] = control.get_text()
             self.discovery.set_plugin_settings(device_id, plugin_id, values)
+        dialog.destroy()
+
+    def _configure_runcommand(self, device_id, plugin):
+        dialog = Gtk.Dialog(
+            title="Configure {}".format(plugin["name"]),
+            transient_for=self,
+            modal=True,
+        )
+        dialog.set_default_size(500, 560)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.add_button("Save", Gtk.ResponseType.ACCEPT)
+
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        content.set_border_width(12)
+        dialog.get_content_area().add(content)
+
+        commands_label = Gtk.Label(label="Commands:", xalign=0)
+        commands_label.get_style_context().add_class("heading")
+        content.pack_start(commands_label, False, False, 0)
+
+        commands_scroller = Gtk.ScrolledWindow()
+        commands_scroller.set_policy(
+            Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC
+        )
+        commands_scroller.set_size_request(-1, 390)
+        command_list = Gtk.ListBox()
+        commands_scroller.add(command_list)
+        content.pack_start(commands_scroller, True, True, 0)
+
+        settings = self.discovery.plugin_settings(device_id, "runcommand")
+        commands = RunCommandPlugin.configured_commands(
+            settings.get("commands", "")
+        )
+
+        custom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        custom_entry = Gtk.Entry()
+        custom_entry.set_placeholder_text("Add a command, e.g. xed")
+        custom_row.pack_start(custom_entry, True, True, 0)
+        add_custom_button = Gtk.Button.new_from_icon_name(
+            "list-add-symbolic", Gtk.IconSize.BUTTON
+        )
+        add_custom_button.set_tooltip_text("Add custom command")
+        custom_row.pack_end(add_custom_button, False, False, 0)
+        content.pack_start(custom_row, False, False, 0)
+
+        hint = Gtk.Label(xalign=0)
+        hint.get_style_context().add_class("dim-label")
+        content.pack_start(hint, False, False, 0)
+
+        def remove_command(selected):
+            if selected in commands:
+                commands.remove(selected)
+                refresh_command_list()
+
+        def add_recommended(name, command):
+            selected = (name, command, False)
+            if selected in commands:
+                remove_command(selected)
+            elif len(commands) < 50:
+                commands.append(selected)
+                hint.set_text("")
+                refresh_command_list()
+            else:
+                hint.set_text("You can configure up to 50 commands per device.")
+
+        def refresh_command_list():
+            for child in command_list.get_children():
+                command_list.remove(child)
+
+            for name, command in RECOMMENDED_COMMANDS:
+                selected = next(
+                    (
+                        item for item in commands
+                        if not item[2] and item[0] == name and item[1] == command
+                    ),
+                    None,
+                )
+                row_box = Gtk.Box(
+                    orientation=Gtk.Orientation.HORIZONTAL, spacing=8
+                )
+                labels = Gtk.Box(
+                    orientation=Gtk.Orientation.VERTICAL, spacing=1
+                )
+                labels.pack_start(
+                    Gtk.Label(label=name, xalign=0), False, False, 0
+                )
+                command_label = Gtk.Label(label=command, xalign=0)
+                command_label.get_style_context().add_class("dim-label")
+                labels.pack_start(command_label, False, False, 0)
+                row_box.pack_start(labels, True, True, 0)
+
+                icon_name = "list-remove-symbolic" if selected else "list-add-symbolic"
+                action = "Remove" if selected else "Add"
+                action_button = Gtk.Button.new_from_icon_name(
+                    icon_name, Gtk.IconSize.BUTTON
+                )
+                action_button.set_relief(Gtk.ReliefStyle.NONE)
+                action_button.set_tooltip_text("{} {}".format(action, name))
+                action_button.connect(
+                    "clicked",
+                    lambda _button, selected_name=name, selected_command=command:
+                        add_recommended(selected_name, selected_command),
+                )
+                row_box.pack_end(action_button, False, False, 0)
+                row = Gtk.ListBoxRow()
+                row.add(row_box)
+                command_list.add(row)
+
+            for custom_name, custom_command, is_custom in commands:
+                if not is_custom:
+                    continue
+                row_box = Gtk.Box(
+                    orientation=Gtk.Orientation.HORIZONTAL, spacing=8
+                )
+                row_box.pack_start(
+                    Gtk.Label(label=custom_command, xalign=0), True, True, 0
+                )
+                remove_button = Gtk.Button.new_from_icon_name(
+                    "list-remove-symbolic", Gtk.IconSize.BUTTON
+                )
+                remove_button.set_relief(Gtk.ReliefStyle.NONE)
+                remove_button.set_tooltip_text("Remove {}".format(custom_command))
+                selected = (custom_name, custom_command, is_custom)
+                remove_button.connect(
+                    "clicked",
+                    lambda _button, item=selected: remove_command(item),
+                )
+                row_box.pack_end(remove_button, False, False, 0)
+                row = Gtk.ListBoxRow()
+                row.add(row_box)
+                command_list.add(row)
+
+            command_list.show_all()
+
+        refresh_command_list()
+
+        def add_custom_command(_widget=None):
+            command = custom_entry.get_text().strip()
+            if not command or "\n" in command or len(command) > 1024:
+                hint.set_text("Enter one non-empty command.")
+                return
+            item = (command, command, True)
+            if item in commands:
+                hint.set_text("That command is already in the list.")
+                return
+            if len(commands) >= 50:
+                hint.set_text("You can configure up to 50 commands per device.")
+                return
+            commands.append(item)
+            hint.set_text("")
+            custom_entry.set_text("")
+            refresh_command_list()
+
+        add_custom_button.connect("clicked", add_custom_command)
+        custom_entry.connect("activate", add_custom_command)
+
+        dialog.show_all()
+        response = dialog.run()
+        if response == Gtk.ResponseType.ACCEPT:
+            self.discovery.set_plugin_settings(
+                device_id,
+                "runcommand",
+                {"commands": RunCommandPlugin.serialize_commands(commands)},
+            )
         dialog.destroy()
 
     def _set_device_actions(self, device):
@@ -1195,8 +1405,13 @@ class SatelliteApplication(Gtk.Application):
     def on_about(self, action, param):
         about = Gtk.AboutDialog(transient_for=self.window, modal=True)
         about.set_program_name("Satellite")
-        about.set_version("__PROJECT_VERSION__")
+        about.set_version(PROJECT_VERSION)
         about.set_comments("KDE Connect protocol client")
+        logo = load_satellite_logo()
+        if logo is not None:
+            about.set_logo(logo)
+        else:
+            about.set_logo_icon_name("satellite")
         about.set_license_type(Gtk.License.GPL_3_0)
         about.connect("response", lambda dialog, _response: dialog.destroy())
         about.present()

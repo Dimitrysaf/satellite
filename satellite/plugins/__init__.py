@@ -186,6 +186,20 @@ class PluginManager:
                 return True
         return False
 
+    def device_connected(self, daemon, device_id):
+        for plugin_id, plugin in self.plugins.items():
+            if not self.is_enabled_for(device_id, plugin_id):
+                continue
+            callback = getattr(plugin, "on_connected", None)
+            if callback:
+                callback(daemon, device_id)
+
+    def plugin_enabled(self, daemon, device_id, plugin_id):
+        plugin = self.plugins.get(plugin_id)
+        callback = getattr(plugin, "on_connected", None) if plugin else None
+        if callback:
+            callback(daemon, device_id)
+
     def send(self, plugin_id, daemon, device_id, **kwargs):
         plugin = self.plugins.get(plugin_id)
         if plugin is None or not self.is_enabled_for(device_id, plugin_id):

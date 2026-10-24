@@ -774,6 +774,8 @@ class SatelliteDaemon:
                 "kdeconnect.mpris.request",
                 {"requestPlayerList": True},
             )
+        if link["paired"]:
+            self.plugins.device_connected(self, device_id)
         return True
 
     def _handle_packet(self, link, packet):
@@ -970,6 +972,12 @@ class SatelliteDaemon:
                 if plugin.get("enabled")
             ]
         self._notify_devices_changed()
+        if enabled:
+            with self._lock:
+                device = self._devices.get(device_id)
+                connected = bool(device and device.get("connected"))
+            if connected:
+                self.plugins.plugin_enabled(self, device_id, plugin_id)
         return True
 
     def plugin_settings(self, device_id, plugin_id):
@@ -979,6 +987,14 @@ class SatelliteDaemon:
         if not self.plugins.set_settings(device_id, plugin_id, settings):
             return False
         self._notify_devices_changed()
+        plugin = self.plugins.plugins.get(plugin_id)
+        callback = getattr(plugin, "settings_changed", None) if plugin else None
+        if callback:
+            with self._lock:
+                device = self._devices.get(device_id)
+                connected = bool(device and device.get("connected"))
+            if connected and self.plugins.is_enabled_for(device_id, plugin_id):
+                callback(self, device_id)
         return True
 
     def unpair(self, device_id):
@@ -1199,6 +1215,7 @@ class SatelliteDaemon:
                 device.pop("verification_code", None)
         self._cancel_pair_timeout(device_id)
         self._notify_devices_changed()
+        self.plugins.device_connected(self, device_id)
 
     def _schedule_pair_timeout(self, device_id, incoming):
         timer = threading.Timer(
