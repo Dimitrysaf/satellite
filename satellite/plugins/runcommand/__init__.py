@@ -248,6 +248,11 @@ class Plugin(PacketStatePlugin):
         process.wait()
         for reader in readers:
             reader.join()
+        for stream in (process.stdout, process.stderr):
+            try:
+                stream.close()
+            except OSError:
+                pass
         stdout = output.get("stdout", b"")
         stderr = output.get("stderr", b"")
         self._send_output_lines(daemon, device_id, process_id, stdout, stderr)
@@ -298,3 +303,126 @@ class Plugin(PacketStatePlugin):
         if packet_type == "kdeconnect.runcommand.request":
             return daemon._send_plugin_packet(device_id, packet_type, body or {})
         return False
+
+    # -- configuration dialog (GTK is imported lazily; the daemon is headless)
+
+    def configure(self, ctx, settings):
+        """Edit this device's command list. Returns new settings or None."""
+        import gi
+        gi.require_version("Gtk", "3.0")
+        from gi.repository import Gtk
+
+        commands = self.configured_commands(settings.get("commands", ""))
+        dialog = Gtk.Dialog(title="Run commands", transient_for=ctx.parent, modal=True)
+        dialog.set_default_size(500, 560)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.add_button("Save", Gtk.ResponseType.ACCEPT)
+
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        content.set_border_width(12)
+        dialog.get_content_area().add(content)
+
+        intro = Gtk.Label(
+            label="Choose the commands this device is allowed to run on this computer.",
+            xalign=0, wrap=True,
+        )
+        intro.get_style_context().add_class("dim-label")
+        content.pack_start(intro, False, False, 0)
+
+        scroller = Gtk.ScrolledWindow()
+        scroller.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroller.set_size_request(-1, 360)
+        command_list = Gtk.ListBox()
+        command_list.set_selection_mode(Gtk.SelectionMode.NONE)
+        scroller.add(command_list)
+        content.pack_start(scroller, True, True, 0)
+
+        custom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        custom_entry = Gtk.Entry()
+        custom_entry.set_placeholder_text("Add a command, e.g. xed")
+        custom_row.pack_start(custom_entry, True, True, 0)
+        add_button = Gtk.Button.new_from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON)
+        add_button.set_tooltip_text("Add custom command")
+        custom_row.pack_end(add_button, False, False, 0)
+        content.pack_start(custom_row, False, False, 0)
+
+        hint = Gtk.Label(xalign=0)
+        hint.get_style_context().add_class("dim-label")
+        content.pack_start(hint, False, False, 0)
+
+        def remove(item):
+            if item in commands:
+                commands.remove(item)
+                refresh()
+
+        def toggle_recommended(name, command):
+            item = (name, command, False)
+            if item in commands:
+                remove(item)
+            elif len(commands) < MAX_COMMANDS:
+                commands.append(item)
+                hint.set_text("")
+                refresh()
+            else:
+                hint.set_text("You can configure up to {} commands per device.".format(MAX_COMMANDS))
+
+        def row(title, subtitle, icon, tooltip, callback):
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            box.set_border_width(4)
+            labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+            labels.pack_start(Gtk.Label(label=title, xalign=0), False, False, 0)
+            if subtitle:
+                detail = Gtk.Label(label=subtitle, xalign=0)
+                detail.get_style_context().add_class("dim-label")
+                labels.pack_start(detail, False, False, 0)
+            box.pack_start(labels, True, True, 0)
+            button = Gtk.Button.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            button.set_relief(Gtk.ReliefStyle.NONE)
+            button.set_tooltip_text(tooltip)
+            button.connect("clicked", lambda _b: callback())
+            box.pack_end(button, False, False, 0)
+            list_row = Gtk.ListBoxRow()
+            list_row.add(box)
+            command_list.add(list_row)
+
+        def refresh():
+            for child in command_list.get_children():
+                command_list.remove(child)
+            for name, command in RECOMMENDED_COMMANDS:
+                active = (name, command, False) in commands
+                row(
+                    name, command,
+                    "list-remove-symbolic" if active else "list-add-symbolic",
+                    "{} {}".format("Remove" if active else "Add", name),
+                    lambda n=name, c=command: toggle_recommended(n, c),
+                )
+            for item in [c for c in commands if c[2]]:
+                row(item[1], None, "list-remove-symbolic", "Remove {}".format(item[1]),
+                    lambda item=item: remove(item))
+            command_list.show_all()
+
+        def add_custom(_widget=None):
+            command = custom_entry.get_text().strip()
+            if not command or "\n" in command or len(command) > MAX_COMMAND_LENGTH:
+                hint.set_text("Enter one non-empty command.")
+                return
+            item = (command, command, True)
+            if item in commands:
+                hint.set_text("That command is already in the list.")
+            elif len(commands) >= MAX_COMMANDS:
+                hint.set_text("You can configure up to {} commands per device.".format(MAX_COMMANDS))
+            else:
+                commands.append(item)
+                hint.set_text("")
+                custom_entry.set_text("")
+                refresh()
+
+        add_button.connect("clicked", add_custom)
+        custom_entry.connect("activate", add_custom)
+        refresh()
+        dialog.show_all()
+        response = dialog.run()
+        dialog.destroy()
+        if response == Gtk.ResponseType.ACCEPT:
+            return {"commands": self.serialize_commands(commands)}
+        return None

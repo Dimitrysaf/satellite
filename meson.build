@@ -20,7 +20,15 @@ endif
 install_data(
   'satellite/__init__.py',
   'satellite/mpris_bridge.py',
+  'satellite/notifier.py',
+  'satellite/settings.py',
+  'satellite/tls.py',
   install_dir: python_module_dir / 'satellite',
+)
+install_subdir(
+  'satellite/ui',
+  install_dir: python_module_dir / 'satellite',
+  exclude_directories: ['__pycache__'],
 )
 install_data(
   'satellite/plugins/__init__.py',
@@ -30,8 +38,8 @@ install_data(
 
 plugin_ids = [
   'battery', 'clipboard', 'connectivity_report', 'contacts', 'lock',
-  'mousepad', 'mpris', 'notifications', 'ping', 'presenter', 'ring',
-  'runcommand', 'sftp', 'share', 'sms', 'systemvolume', 'telephony',
+  'mousepad', 'mpris', 'notifications', 'pausemusic', 'ping', 'presenter',
+  'ring', 'runcommand', 'sftp', 'share', 'sms', 'systemvolume', 'telephony',
 ]
 foreach plugin_id : plugin_ids
   install_data(

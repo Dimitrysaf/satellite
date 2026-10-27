@@ -143,7 +143,8 @@ class PluginManager:
                 "description": getattr(plugin, "description", ""),
                 "icon": getattr(plugin, "icon", None),
                 "settings_schema": list(getattr(plugin, "settings_schema", ())),
-                "configurable": bool(getattr(plugin, "settings_schema", ())),
+                "configurable": bool(getattr(plugin, "settings_schema", ()))
+                or hasattr(plugin, "configure"),
                 "enabled": self.is_enabled_for(device_id, plugin_id),
             })
         return available
@@ -179,12 +180,57 @@ class PluginManager:
         )
 
     def handle_packet(self, daemon, link, packet):
+        """Offer a packet to every enabled plugin that wants it.
+
+        More than one plugin may care about the same packet (for example
+        telephony notifications and pause-music both read call events).
+        """
+        handled = False
         for plugin_id, plugin in self.plugins.items():
             if not self.is_enabled_for(link["id"], plugin_id):
                 continue
-            if plugin.handle_packet(daemon, link, packet):
-                return True
-        return False
+            try:
+                if plugin.handle_packet(daemon, link, packet):
+                    handled = True
+            except Exception as error:  # one broken plugin must not drop the link
+                print("Plugin {} failed on {}: {!r}".format(
+                    plugin_id, packet.get("type"), error), flush=True)
+        return handled
+
+    def actions_for(self, device):
+        """Buttons from every enabled plugin on a connected device."""
+        found = []
+        for entry in device.get("available_plugins", []):
+            if not entry.get("enabled"):
+                continue
+            plugin = self.plugins.get(entry["id"])
+            provider = getattr(plugin, "actions", None)
+            if provider is None:
+                continue
+            for action in provider(device) or ():
+                found.append((entry["id"], action))
+        return found
+
+    def statuses_for(self, device):
+        """(plugin_id, icon, text) rows from enabled plugins."""
+        rows = []
+        for entry in device.get("available_plugins", []):
+            if not entry.get("enabled"):
+                continue
+            plugin = self.plugins.get(entry["id"])
+            provider = getattr(plugin, "status", None)
+            result = provider(device) if provider else None
+            if result:
+                rows.append((entry["id"], result[0], result[1]))
+        return rows
+
+    def configure(self, plugin_id, ctx, settings):
+        """Run a plugin's own dialog. Returns (handled, new_settings)."""
+        plugin = self.plugins.get(plugin_id)
+        configure = getattr(plugin, "configure", None)
+        if configure is None:
+            return False, None
+        return True, configure(ctx, settings)
 
     def device_connected(self, daemon, device_id):
         for plugin_id, plugin in self.plugins.items():

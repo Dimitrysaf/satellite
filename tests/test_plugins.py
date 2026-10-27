@@ -19,8 +19,8 @@ class PluginLoadingTests(unittest.TestCase):
     def test_all_plugin_modules_are_discovered(self):
         expected = {
             "battery", "clipboard", "connectivity_report", "contacts", "lock",
-            "mousepad", "mpris", "notifications", "ping", "presenter", "ring",
-            "runcommand", "sftp", "share", "sms", "systemvolume", "telephony",
+            "mousepad", "mpris", "notifications", "pausemusic", "ping", "presenter",
+            "ring", "runcommand", "sftp", "share", "sms", "systemvolume", "telephony",
         }
         with tempfile.TemporaryDirectory() as config_dir:
             manager = PluginManager(config_dir)

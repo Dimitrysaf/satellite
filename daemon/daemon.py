@@ -19,6 +19,10 @@ import uuid
 
 from OpenSSL import SSL, crypto
 from satellite.plugins import PluginManager
+from satellite.tls import (
+    MAX_PACKET_SIZE, json_packet, read_line, read_tls_line, recv_tls, send_all,
+    tls_handshake,
+)
 
 PROJECT_VERSION = "__PROJECT_VERSION__"
 
@@ -26,7 +30,6 @@ UDP_PORT = 1716
 TCP_PORTS = range(1716, 1765)
 DISCOVERY_INTERVAL = 15
 DEVICE_TIMEOUT = 90
-MAX_PACKET_SIZE = 8192
 MAX_CONCURRENT_LINKS = 42
 MAX_TRACKED_DEVICES = 1024
 PAIR_TIMEOUT = 90
@@ -34,98 +37,15 @@ PAIR_TIMESTAMP_WINDOW = 30 * 60
 DEVICE_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{32,38}$")
 
 
-def _json_packet(packet_type, body):
-    return (json.dumps({
-        "id": int(time.time() * 1000),
-        "type": packet_type,
-        "body": body,
-    }, separators=(",", ":")) + "\n").encode("utf-8")
-
-
-def _read_line(stream, limit=MAX_PACKET_SIZE):
-    data = bytearray()
-    while len(data) < limit:
-        chunk = stream.recv(1)
-        if not chunk:
-            raise ConnectionError("Peer closed the connection")
-        if chunk == b"\n":
-            return json.loads(data.decode("utf-8"))
-        data.extend(chunk)
-    raise ValueError("KDE Connect packet exceeded the size limit")
-
-
-def _send_all(stream, data):
-    sent = 0
-    while sent < len(data):
-        count = stream.send(data[sent:])
-        if count <= 0:
-            raise ConnectionError("Peer closed the connection while sending")
-        sent += count
-
-
-def _read_tls_line(stream, raw_socket, limit=MAX_PACKET_SIZE, timeout=8):
-    data = bytearray()
-    deadline = time.monotonic() + timeout
-    while len(data) < limit:
-        if stream.pending() <= 0:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise TimeoutError("Timed out waiting for a TLS packet")
-            readable, _, _ = select.select([raw_socket], [], [], remaining)
-            if not readable:
-                raise TimeoutError("Timed out waiting for a TLS packet")
-        try:
-            chunk = stream.recv(1)
-        except SSL.WantReadError:
-            continue
-        if not chunk:
-            raise ConnectionError("Peer closed the TLS connection")
-        if chunk == b"\n":
-            return json.loads(data.decode("utf-8"))
-        data.extend(chunk)
-    raise ValueError("KDE Connect packet exceeded the size limit")
-
-
-def _tls_handshake(stream, raw_socket, timeout=12):
-    deadline = time.monotonic() + timeout
-    while True:
-        try:
-            stream.do_handshake()
-            return
-        except SSL.WantReadError:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0 or not select.select([raw_socket], [], [], remaining)[0]:
-                raise TimeoutError("Timed out waiting for the payload TLS handshake")
-        except SSL.WantWriteError:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0 or not select.select([], [raw_socket], [], remaining)[1]:
-                raise TimeoutError("Timed out sending the payload TLS handshake")
-
-
-def _recv_tls(stream, raw_socket, size, timeout=30):
-    deadline = time.monotonic() + timeout
-    while True:
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            raise TimeoutError("Timed out receiving a payload TLS record")
-        try:
-            if stream.pending() <= 0 and not select.select(
-                [raw_socket], [], [], remaining
-            )[0]:
-                raise TimeoutError("Timed out receiving a payload TLS record")
-            return stream.recv(size)
-        except SSL.WantReadError:
-            continue
-        except SSL.WantWriteError:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0 or not select.select([], [raw_socket], [], remaining)[1]:
-                raise TimeoutError("Timed out sending a payload TLS response")
-
-
 class SatelliteDaemon:
     def __init__(self, on_devices_changed=None, on_transfer_progress=None):
         self.on_devices_changed = on_devices_changed or (lambda _devices: None)
         self.on_transfer_progress = on_transfer_progress or (lambda _progress: None)
+        # Desktop integration hooks. The GUI replaces these; plugins call the
+        # matching methods below so they never need to know about GTK.
+        self.on_notify = None
+        self.on_clipboard = None
+        self.on_open_url = None
         self.config_dir = os.path.join(os.path.expanduser("~"), ".config", "satellite")
         os.makedirs(self.config_dir, mode=0o700, exist_ok=True)
         os.chmod(self.config_dir, 0o700)
@@ -154,7 +74,6 @@ class SatelliteDaemon:
         self._udp = None
         self._tcp = None
         self.tcp_port = None
-        self._xdotool = shutil.which("xdotool")
 
     @staticmethod
     def _clean_device_name(value):
@@ -460,7 +379,7 @@ class SatelliteDaemon:
             self._connection_slots.release()
 
     def _connection_packet(self, device_id):
-        return _json_packet("kdeconnect.identity", {
+        return json_packet("kdeconnect.identity", {
             "deviceId": self.device_id,
             "protocolVersion": 8,
             "targetDeviceId": device_id,
@@ -515,7 +434,7 @@ class SatelliteDaemon:
     def _handle_incoming(self, raw_socket, address):
         try:
             raw_socket.settimeout(8)
-            packet = _read_line(raw_socket)
+            packet = read_line(raw_socket)
             if packet.get("type") != "kdeconnect.identity":
                 raise ValueError("Expected a KDE Connect connection identity")
             body = packet.get("body", {})
@@ -638,8 +557,8 @@ class SatelliteDaemon:
             raise ValueError("Trusted device certificate changed; refusing connection")
 
         identity = self._identity_packet(include_port=False)
-        _send_all(connection, _json_packet(identity["type"], identity["body"]))
-        remote_packet = _read_tls_line(connection, raw_socket)
+        send_all(connection, json_packet(identity["type"], identity["body"]))
+        remote_packet = read_tls_line(connection, raw_socket)
         if remote_packet.get("type") != "kdeconnect.identity":
             raise ValueError("TLS peer did not send an identity packet")
         body = remote_packet.get("body", {})
@@ -690,7 +609,7 @@ class SatelliteDaemon:
                     readable, _, _ = select.select([raw_socket], [], [], 0.5)
                     if not readable:
                         continue
-                packet = _read_tls_line(connection, raw_socket, timeout=3600)
+                packet = read_tls_line(connection, raw_socket, timeout=3600)
                 self._handle_packet(link, packet)
         except (OSError, SSL.Error, ConnectionError, ValueError, json.JSONDecodeError) as error:
             with self._lock:
@@ -850,7 +769,7 @@ class SatelliteDaemon:
                 link["certificate"], timestamp
             )
         self._schedule_pair_timeout(device_id, incoming=False)
-        packet = _json_packet("kdeconnect.pair", {"pair": True, "timestamp": timestamp})
+        packet = json_packet("kdeconnect.pair", {"pair": True, "timestamp": timestamp})
         try:
             self._send_packet(link, packet)
         except (OSError, SSL.Error):
@@ -884,62 +803,57 @@ class SatelliteDaemon:
             body=body or {},
         )
 
-    def inject_desktop_input(self, body):
-        """Apply KDE Connect pointer and keyboard events in an X11 session."""
-        if not self._xdotool:
-            return False
+    # -- helpers for plugins ---------------------------------------------
 
-        def run(*arguments):
-            subprocess.run(
-                [self._xdotool, *arguments],
-                check=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=2,
-            )
-
+    def notify(self, summary, body="", icon="satellite", actions=None,
+               replaces=0, timeout=-1, progress=None):
+        """Show a desktop notification; returns its id, or 0 if unavailable."""
+        if self.on_notify is None:
+            return 0
         try:
-            dx, dy = body.get("dx", 0), body.get("dy", 0)
-            if (
-                isinstance(dx, (int, float)) and not isinstance(dx, bool)
-                and isinstance(dy, (int, float)) and not isinstance(dy, bool)
-                and (dx or dy) and not body.get("scroll")
-            ):
-                run("mousemove_relative", "--sync", str(round(dx)), str(round(dy)))
+            return self.on_notify(
+                summary, body, icon=icon, actions=actions, replaces=replaces,
+                timeout=timeout, progress=progress,
+            ) or 0
+        except Exception as error:  # a broken notifier must never kill a link
+            print("Could not show a notification: {}".format(error), flush=True)
+            return 0
 
-            if body.get("scroll"):
-                amount = max(-20, min(20, round(dy)))
-                if amount:
-                    run("click", "--repeat", str(abs(amount)), "--delay", "20", "4" if amount > 0 else "5")
+    def set_clipboard(self, text):
+        if self.on_clipboard is not None:
+            self.on_clipboard(text)
 
-            for field, command, button in (
-                ("singleclick", "click", "1"),
-                ("doubleclick", "click", "--repeat 2 --delay 100 1"),
-                ("middleclick", "click", "2"),
-                ("rightclick", "click", "3"),
-                ("singlehold", "mousedown", "1"),
-                ("singlerelease", "mouseup", "1"),
-            ):
-                if body.get(field):
-                    run(command, *button.split())
+    def open_url(self, url):
+        if self.on_open_url is not None:
+            self.on_open_url(url)
 
-            key = body.get("key")
-            if isinstance(key, str) and key and len(key) <= 256:
-                run("type", "--clearmodifiers", "--delay", "0", key)
-            special = body.get("specialKey")
-            key_names = {
-                0: "BackSpace", 1: "Tab", 2: "Return", 3: "Left", 4: "Up",
-                5: "Right", 6: "Down", 7: "Page_Up", 8: "Page_Down", 9: "Home",
-                10: "End", 11: "KP_Enter", 12: "Delete", 13: "Escape",
-                **{number: "F{}".format(number - 15) for number in range(16, 28)},
-                28: "Caps_Lock", 29: "Num_Lock", 30: "Print", 31: "Pause", 32: "Menu",
-            }
-            if isinstance(special, int) and not isinstance(special, bool) and special in key_names:
-                modifiers = [name for field, name in (("ctrl", "ctrl"), ("alt", "alt"), ("shift", "shift"), ("super", "super")) if body.get(field)]
-                run("key", "+".join(modifiers + [key_names[special]]))
-            return True
-        except (OSError, subprocess.SubprocessError):
+    def link(self, device_id):
+        """The active secure link for a device, or None."""
+        with self._lock:
+            return self._active.get(device_id)
+
+    def send_packet(self, device_id, data):
+        """Send an already serialized packet over a device's active link."""
+        link = self.link(device_id)
+        if link is None or not link.get("paired"):
             return False
+        try:
+            self._send_packet(link, data)
+        except (OSError, SSL.Error):
+            return False
+        return True
+
+    def payload_context(self, server):
+        """TLS context for payload transfers; the peer is pinned afterwards."""
+        method = SSL.TLS_SERVER_METHOD if server else SSL.TLS_CLIENT_METHOD
+        context = SSL.Context(method)
+        context.set_verify(SSL.VERIFY_PEER, lambda *_args: True)
+        context.use_certificate(self._certificate)
+        context.use_privatekey(self._private_key)
+        return context
+
+    def verify_peer(self, device_id, certificate):
+        return self._verify_pinned_certificate(device_id, certificate)
 
     def _send_plugin_packet(self, device_id, packet_type, body):
         with self._lock:
@@ -954,7 +868,7 @@ class SatelliteDaemon:
             ):
                 return False
         try:
-            self._send_packet(link, _json_packet(packet_type, body))
+            self._send_packet(link, json_packet(packet_type, body))
         except (OSError, SSL.Error):
             return False
         return True
@@ -1004,7 +918,7 @@ class SatelliteDaemon:
             if not link or not device or not device.get("paired"):
                 return False
         try:
-            self._send_packet(link, _json_packet("kdeconnect.pair", {"pair": False}))
+            self._send_packet(link, json_packet("kdeconnect.pair", {"pair": False}))
             os.unlink(self._trusted_certificate_path(device_id))
         except (OSError, SSL.Error):
             return False
@@ -1030,7 +944,7 @@ class SatelliteDaemon:
             if not link or not device or not device.get("pair_requested"):
                 return False
         try:
-            self._send_packet(link, _json_packet("kdeconnect.pair", {"pair": bool(accept)}))
+            self._send_packet(link, json_packet("kdeconnect.pair", {"pair": bool(accept)}))
         except (OSError, SSL.Error):
             return False
         if accept:
@@ -1049,152 +963,7 @@ class SatelliteDaemon:
 
     def _send_packet(self, link, packet):
         with link["send_lock"]:
-            _send_all(link["stream"], packet)
-
-    def receive_share_payload(self, link, packet):
-        """Fetch a file payload from the paired device's TLS payload port."""
-        size = packet.get("payloadSize")
-        transfer = packet.get("payloadTransferInfo", {})
-        port = transfer.get("port") if isinstance(transfer, dict) else None
-        if (
-            isinstance(size, bool) or not isinstance(size, int)
-            or size < 0 or size > 2 * 1024 * 1024 * 1024
-            or isinstance(port, bool) or not isinstance(port, int)
-            or not 1 <= port <= 65535
-        ):
-            return None
-
-        filename = os.path.basename(str(packet.get("body", {}).get("filename", "")))
-        filename = "".join(c for c in filename if c.isprintable() and c not in "/\\")
-        if filename in ("", ".", ".."):
-            filename = "received-file"
-        transfer_id = "{}:{}".format(link["id"], packet.get("id", time.monotonic_ns()))
-        destination_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        stage = "creating the Downloads directory"
-        last_progress_time = 0.0
-        last_percent = -1
-
-        def report_progress(received, finished=False, error=None):
-            nonlocal last_progress_time, last_percent
-            percent = min(100, int(received * 100 / size)) if size else 100
-            now = time.monotonic()
-            if (
-                not finished
-                and percent == last_percent
-                and now - last_progress_time < 0.5
-            ):
-                return
-            last_percent = percent
-            last_progress_time = now
-            self.on_transfer_progress({
-                "id": transfer_id,
-                "device_id": link["id"],
-                "device_name": link["name"],
-                "filename": filename,
-                "received": received,
-                "total": size,
-                "percent": percent,
-                "path": None,
-                "finished": finished,
-                "error": error,
-            })
-
-        try:
-            os.makedirs(destination_dir, mode=0o700, exist_ok=True)
-            destination = os.path.join(destination_dir, filename)
-            stem, extension = os.path.splitext(filename)
-            suffix = 1
-            while os.path.exists(destination):
-                destination = os.path.join(
-                    destination_dir, "{} ({}){}".format(stem, suffix, extension)
-                )
-                suffix += 1
-
-            report_progress(0)
-            stage = "connecting to payload port {}".format(port)
-            raw_socket = socket.create_connection((link["address"], port), timeout=12)
-            raw_socket.settimeout(12)
-            context = SSL.Context(SSL.TLS_CLIENT_METHOD)
-            context.set_verify(SSL.VERIFY_NONE, lambda *_args: True)
-            context.use_certificate(self._certificate)
-            context.use_privatekey(self._private_key)
-            connection = SSL.Connection(context, raw_socket)
-            connection.set_connect_state()
-            stage = "starting the payload TLS handshake"
-            _tls_handshake(connection, raw_socket)
-            peer_certificate = connection.get_peer_certificate()
-            stage = "checking the payload device certificate"
-            if not peer_certificate or not self._verify_pinned_certificate(
-                link["id"], peer_certificate
-            ):
-                raise SSL.Error("Payload TLS certificate does not match paired device")
-
-            temporary = destination + ".part"
-            remaining = size
-            stage = "receiving {} bytes".format(size)
-            with open(temporary, "xb") as output:
-                received = 0
-                while remaining:
-                    chunk = _recv_tls(connection, raw_socket, min(65536, remaining))
-                    if not chunk:
-                        raise ConnectionError("File payload ended early")
-                    output.write(chunk)
-                    remaining -= len(chunk)
-                    received += len(chunk)
-                    report_progress(received)
-            stage = "saving the received file"
-            os.replace(temporary, destination)
-            try:
-                connection.shutdown()
-            except SSL.Error:
-                pass
-            connection.close()
-            raw_socket.close()
-            self.on_transfer_progress({
-                "id": transfer_id,
-                "device_id": link["id"],
-                "device_name": link["name"],
-                "filename": filename,
-                "received": size,
-                "total": size,
-                "percent": 100,
-                "path": destination,
-                "finished": True,
-                "error": None,
-            })
-            return destination
-        except (OSError, SSL.Error, ConnectionError, ValueError) as error:
-            self.on_transfer_progress({
-                "id": transfer_id,
-                "device_id": link["id"],
-                "device_name": link["name"],
-                "filename": filename,
-                "received": size - locals().get("remaining", size),
-                "total": size,
-                "percent": last_percent,
-                "path": None,
-                "finished": True,
-                "error": "{}: {!r} args={!r}".format(type(error).__name__, error, error.args),
-            })
-            print(
-                "KDE Connect file receive from {} failed during {}: {} {!r} args={!r}".format(
-                    link["name"], stage, type(error).__name__, error, error.args
-                ),
-                flush=True,
-            )
-            try:
-                if "temporary" in locals() and os.path.exists(temporary):
-                    os.unlink(temporary)
-            except OSError:
-                pass
-            try:
-                if "connection" in locals():
-                    connection.close()
-                if "raw_socket" in locals():
-                    raw_socket.close()
-            except OSError:
-                pass
-            return None
+            send_all(link["stream"], packet)
 
     def _complete_pairing(self, link):
         device_id = link["id"]
