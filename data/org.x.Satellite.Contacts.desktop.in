@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Satellite Contacts
+GenericName=Address Book
+Comment=Your phone's contacts on this computer
+Exec=satellite-contacts
+Icon=satellite-contacts
+Terminal=false
+Categories=Office;ContactManagement;
+Keywords=contacts;address book;phone;KDE Connect;
+StartupNotify=true

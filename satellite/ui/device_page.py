@@ -1,15 +1,15 @@
-"""The right-hand page for one device: header, buttons, status and plugins."""
+"""The right-hand page for one device: header, status and plugins."""
 
 import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk
 
-from satellite.ui.action_bar import ActionBar
-from satellite.ui.media_controls import MediaControls
+from satellite.ui.device_menu import device_entries
 from satellite.ui.pairing_prompt import PairingPrompt
 from satellite.ui.plugin_list import PluginList
 from satellite.ui.widgets import battery_percent, icon_for, long_status, section_label
+from satellite.i18n import _
 
 
 class DevicePage(Gtk.Box):
@@ -17,13 +17,14 @@ class DevicePage(Gtk.Box):
 
     The controller provides: ``daemon``, ``pair``, ``accept_pair``,
     ``deny_pair``, ``unpair``, ``rename``, ``show_encryption``,
-    ``toggle_plugin``, ``configure_plugin``, ``media_action`` and
-    ``run_action`` (all taking the device id first where relevant).
+    ``toggle_plugin``, ``configure_plugin`` and ``run_action`` (all
+    taking the device id first where relevant).
     """
 
     def __init__(self, controller):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
+        self.menu_button = None
 
     def show_device(self, device):
         for child in self.get_children():
@@ -44,24 +45,12 @@ class DevicePage(Gtk.Box):
             self.show_all()
             return
 
-        actions = controller.daemon.plugins.actions_for(device)
-        if actions:
-            self.pack_start(ActionBar(
-                actions, lambda action: controller.run_action(device_id, action)
-            ), False, True, 0)
-
-        self._add_status_rows(device)
-
-        media = device.get("plugin_data", {}).get("mpris", {}).get("body", {})
-        if media:
-            self.pack_start(MediaControls(
-                media, lambda player, act: controller.media_action(device_id, player, act)
-            ), False, False, 0)
+        self._add_status(device)
 
         plugins = device.get("available_plugins", [])
         if plugins:
             self.pack_start(Gtk.Separator(margin_top=18), False, False, 0)
-            self.pack_start(section_label("PLUGINS"), False, False, 0)
+            self.pack_start(section_label(_("PLUGINS")), False, False, 0)
             self.pack_start(PluginList(
                 plugins,
                 lambda plugin_id, state: controller.toggle_plugin(device_id, plugin_id, state),
@@ -91,55 +80,66 @@ class DevicePage(Gtk.Box):
         return box
 
     def _menu_button(self, device):
-        controller, device_id = self._controller, device["id"]
         menu = Gtk.Menu()
-
-        def add(label, callback):
-            item = Gtk.MenuItem(label=label)
-            item.connect("activate", lambda _i: callback())
-            menu.append(item)
-
-        add("Rename…", lambda: controller.rename(device_id))
-        if device.get("secure"):
-            add("Encryption info", lambda: controller.show_encryption(device_id))
-        if device.get("paired"):
-            menu.append(Gtk.SeparatorMenuItem())
-            add("Unpair", lambda: controller.unpair(device_id))
+        for entry in device_entries(self._controller, device, include_pairing=False):
+            menu.append(menu_item(entry))
         menu.show_all()
 
         button = Gtk.MenuButton()
         button.set_direction(Gtk.ArrowType.NONE)
         button.set_image(Gtk.Image.new_from_icon_name("view-more-symbolic", Gtk.IconSize.BUTTON))
-        button.set_tooltip_text("Device actions")
+        button.set_tooltip_text(_("Device actions"))
         button.set_valign(Gtk.Align.CENTER)
         button.set_popup(menu)
+        self.menu_button = button
         return button
 
-    def _status_row(self, icon, text, fraction=None):
-        row = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        line = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        line.pack_start(Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU), False, False, 0)
-        line.pack_start(Gtk.Label(label=text, xalign=0), True, True, 0)
-        row.pack_start(line, False, False, 0)
-        if fraction is not None:
-            bar = Gtk.ProgressBar()
-            bar.set_fraction(fraction)
-            row.pack_start(bar, False, False, 0)
-        row.set_margin_start(24)
-        row.set_margin_end(24)
-        row.set_margin_top(12)
-        self.pack_start(row, False, False, 0)
-
-    def _add_status_rows(self, device):
+    def _add_status(self, device):
+        """Battery with its bar, then plugin statuses as one row of icons."""
         battery = battery_percent(device)
         if battery is not None:
             charging = bool(device.get("isCharging"))
             icon = "battery-good-charging-symbolic" if charging else "battery-good-symbolic"
-            self._status_row(
-                icon, "Battery · {}%{}".format(battery, " · Charging" if charging else ""),
-                min(100, battery) / 100.0,
-            )
-        for _plugin_id, icon, text in self._controller.daemon.plugins.statuses_for(device):
-            self._status_row(icon, text)
-        if device.get("last_ping"):
-            self._status_row("mail-send-symbolic", "Last ping: {}".format(device["last_ping"]))
+            row = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            row.pack_start(status_item(
+                icon, (_("Battery · {}% · Charging") if charging else _("Battery · {}%")).format(battery)
+            ), False, False, 0)
+            bar = Gtk.ProgressBar()
+            bar.set_fraction(min(100, battery) / 100.0)
+            row.pack_start(bar, False, False, 0)
+            self._pack_status(row)
+
+        statuses = self._controller.daemon.plugins.statuses_for(device)
+        if statuses:
+            line = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=24)
+            for _plugin_id, icon, text in statuses:
+                line.pack_start(status_item(icon, text), False, False, 0)
+            self._pack_status(line)
+
+    def _pack_status(self, widget):
+        widget.set_margin_start(24)
+        widget.set_margin_end(24)
+        widget.set_margin_top(14)
+        self.pack_start(widget, False, False, 0)
+
+
+def menu_item(entry, wrap=None):
+    """A Gtk.MenuItem for a MenuEntry (or a separator for None).
+
+    ``wrap(entry)`` may return a different callback, as the tray does.
+    """
+    if entry is None:
+        return Gtk.SeparatorMenuItem()
+    item = Gtk.MenuItem(label=entry.label)
+    item.set_sensitive(entry.sensitive)
+    if entry.callback is not None:
+        callback = wrap(entry) if wrap else entry.callback
+        item.connect("activate", lambda _i: callback())
+    return item
+
+
+def status_item(icon, text):
+    box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+    box.pack_start(Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU), False, False, 0)
+    box.pack_start(Gtk.Label(label=text, xalign=0), False, False, 0)
+    return box

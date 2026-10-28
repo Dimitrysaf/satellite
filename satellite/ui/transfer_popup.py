@@ -9,12 +9,13 @@ gi.require_version("Gdk", "3.0")
 from gi.repository import Gdk, GLib, Gtk
 
 from satellite.ui.widgets import format_bytes
+from satellite.i18n import _
 
 
 class TransferPopup(Gtk.Window):
     def __init__(self):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
-        self.set_title("File transfer")
+        self.set_title(_("File transfer"))
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
         self.set_decorated(False)
         self.set_resizable(False)
@@ -35,7 +36,7 @@ class TransferPopup(Gtk.Window):
         self._title.set_max_width_chars(36)
         close = Gtk.Button.new_from_icon_name("window-close-symbolic", Gtk.IconSize.BUTTON)
         close.set_relief(Gtk.ReliefStyle.NONE)
-        close.set_tooltip_text("Hide transfer progress")
+        close.set_tooltip_text(_("Hide transfer progress"))
         close.connect("clicked", lambda _b: self.hide())
         heading.pack_start(self._title, True, True, 0)
         heading.pack_end(close, False, False, 0)
@@ -53,14 +54,14 @@ class TransferPopup(Gtk.Window):
         percent = max(0, min(100, progress.get("percent", 0)))
         self._title.set_markup("<b>{}</b>".format(GLib.markup_escape_text(progress["filename"])))
         if progress.get("error"):
-            details = "Transfer failed · {}".format(progress["error"])
+            details = _("Transfer failed · {}").format(progress["error"])
         elif progress.get("finished"):
-            details = "Sent to {}".format(progress["device_name"]) if sending else \
-                "Saved to {}".format(os.path.dirname(progress["path"] or ""))
+            details = _("Sent to {}").format(progress["device_name"]) if sending else \
+                _("Saved to {}").format(os.path.dirname(progress["path"] or ""))
         else:
-            details = "{} {} · {} of {} · {}%".format(
-                "To" if sending else "From", progress["device_name"],
-                format_bytes(progress["received"]), format_bytes(progress["total"]), percent)
+            amount = (format_bytes(progress["received"]), format_bytes(progress["total"]), percent)
+            details = (_("To {} · {} of {} · {}%") if sending else _("From {} · {} of {} · {}%")).format(
+                progress["device_name"], *amount)
         self._details.set_text(details)
         self._bar.set_fraction(percent / 100.0)
         self._bar.set_text("{}%".format(percent))

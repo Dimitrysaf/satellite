@@ -1,9 +1,17 @@
 usr/bin/satellite
 usr/bin/satellite-daemon
+usr/bin/satellite-sms
+usr/bin/satellite-contacts
+usr/bin/satellite-cli
 usr/share/satellite
 usr/lib/python3/dist-packages/satellite
+usr/lib/python3/dist-packages/satellite_sms
+usr/lib/python3/dist-packages/satellite_contacts
 usr/share/dbus-1/services
 usr/share/glib-2.0/schemas
 usr/share/applications
 usr/share/icons
+usr/share/locale
+usr/share/nemo/actions
 etc/xdg/autostart
+usr/lib/udev/rules.d

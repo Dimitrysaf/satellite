@@ -5,8 +5,7 @@ import os
 import threading
 
 DEFAULTS = {
-    "background": False,          # keep running in the tray when the window closes
-    "start_hidden": False,        # do not show the window on launch
+    "background": True,           # keep running in the tray when the window closes
     "nicknames": {},              # device id -> local display name
 }
 

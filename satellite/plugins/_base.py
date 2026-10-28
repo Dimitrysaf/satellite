@@ -2,29 +2,34 @@
 
 A plugin lives in one folder, ``satellite/plugins/<id>/__init__.py``, and owns
 everything about its feature: packet handling, desktop integration, the
-buttons it adds to the device page and its own configuration dialog.
+entries it adds to the device menu and its own configuration dialog.
 
 Optional hooks the window and manager understand (all duck-typed):
 
-* ``actions(device)``      -> list of :class:`PluginAction` shown as buttons
+* ``actions(device)``      -> list of :class:`PluginAction` shown in the device menu
 * ``status(device)``       -> ``(icon_name, text)`` or ``None`` for a status row
 * ``configure(ctx, settings)`` -> new settings dict, or ``None`` if cancelled
   (a plugin that defines this draws its own dialog; GTK must be imported
   lazily inside it so the daemon stays headless)
 * ``on_connected(daemon, device_id)``
+* ``on_disconnected(daemon, device_id)`` (link lost, unpaired or plugin switched off)
 * ``settings_changed(daemon, device_id)``
 """
 
 
 class PluginAction:
-    """A button a plugin adds to the device page."""
+    """An entry a plugin adds to the device menu."""
 
-    def __init__(self, action_id, label, icon, callback, tooltip=None):
+    def __init__(self, action_id, label, icon, callback, tooltip=None, opens_window=False):
         self.id = action_id
         self.label = label
         self.icon = icon
         self.callback = callback  # callback(ctx) -> None
         self.tooltip = tooltip or label
+        # True when the action shows a dialog: the tray opens Satellite first.
+        # Otherwise the tray runs it in the background and reports errors as
+        # notifications.
+        self.opens_window = opens_window
 
 
 class PacketStatePlugin:

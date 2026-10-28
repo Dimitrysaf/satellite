@@ -8,6 +8,7 @@ import threading
 import uuid
 
 from satellite.plugins._base import PacketStatePlugin
+from satellite.i18n import _, ngettext
 
 
 ENABLED_BY_DEFAULT = True
@@ -17,31 +18,31 @@ MAX_COMMAND_LENGTH = 1024
 MAX_OUTPUT_BYTES = 64 * 1024
 RECOMMENDED_COMMANDS = (
     (
-        "Restart now",
+        _("Restart now"),
         "systemctl reboot",
     ),
     (
-        "Shut down",
+        _("Shut down"),
         "systemctl poweroff",
     ),
     (
-        "Log out (Cinnamon)",
+        _("Log out (Cinnamon)"),
         "cinnamon-session-quit --logout --no-prompt",
     ),
     (
-        "Sleep",
+        _("Sleep"),
         "systemctl suspend",
     ),
     (
-        "Wake another device (Wake-on-LAN)",
+        _("Wake another device (Wake-on-LAN)"),
         "wakeonlan AA:BB:CC:DD:EE:FF",
     ),
     (
-        "Restart to BIOS/UEFI",
+        _("Restart to BIOS/UEFI"),
         "systemctl reboot --firmware-setup",
     ),
     (
-        "Lock screen",
+        _("Lock screen"),
         "loginctl lock-session",
     ),
 )
@@ -49,8 +50,8 @@ RECOMMENDED_COMMANDS = (
 
 class Plugin(PacketStatePlugin):
     plugin_id = "runcommand"
-    display_name = "Run commands"
-    description = "Configure desktop commands that this paired device may run."
+    display_name = _("Run commands")
+    description = _("Configure desktop commands that this paired device may run.")
     icon = "utilities-terminal-symbolic"
     incoming_capabilities = (
         "kdeconnect.runcommand",
@@ -65,7 +66,7 @@ class Plugin(PacketStatePlugin):
     packet_types = ("kdeconnect.runcommand", "kdeconnect.runcommand.output")
     settings_schema = ({
         "key": "commands",
-        "label": "Commands (one per line: Name | shell command)",
+        "label": _("Commands (one per line: Name | shell command)"),
         "type": "multiline",
         "default": "",
     },)
@@ -313,17 +314,17 @@ class Plugin(PacketStatePlugin):
         from gi.repository import Gtk
 
         commands = self.configured_commands(settings.get("commands", ""))
-        dialog = Gtk.Dialog(title="Run commands", transient_for=ctx.parent, modal=True)
+        dialog = Gtk.Dialog(title=_("Run commands"), transient_for=ctx.parent, modal=True)
         dialog.set_default_size(500, 560)
-        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
-        dialog.add_button("Save", Gtk.ResponseType.ACCEPT)
+        dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("Save"), Gtk.ResponseType.ACCEPT)
 
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         content.set_border_width(12)
         dialog.get_content_area().add(content)
 
         intro = Gtk.Label(
-            label="Choose the commands this device is allowed to run on this computer.",
+            label=_("Choose the commands this device is allowed to run on this computer."),
             xalign=0, wrap=True,
         )
         intro.get_style_context().add_class("dim-label")
@@ -339,10 +340,10 @@ class Plugin(PacketStatePlugin):
 
         custom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         custom_entry = Gtk.Entry()
-        custom_entry.set_placeholder_text("Add a command, e.g. xed")
+        custom_entry.set_placeholder_text(_("Add a command, e.g. xed"))
         custom_row.pack_start(custom_entry, True, True, 0)
         add_button = Gtk.Button.new_from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON)
-        add_button.set_tooltip_text("Add custom command")
+        add_button.set_tooltip_text(_("Add custom command"))
         custom_row.pack_end(add_button, False, False, 0)
         content.pack_start(custom_row, False, False, 0)
 
@@ -364,7 +365,8 @@ class Plugin(PacketStatePlugin):
                 hint.set_text("")
                 refresh()
             else:
-                hint.set_text("You can configure up to {} commands per device.".format(MAX_COMMANDS))
+                hint.set_text(ngettext("You can configure up to {} command per device.",
+                                       "You can configure up to {} commands per device.", MAX_COMMANDS).format(MAX_COMMANDS))
 
         def row(title, subtitle, icon, tooltip, callback):
             box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
@@ -393,24 +395,25 @@ class Plugin(PacketStatePlugin):
                 row(
                     name, command,
                     "list-remove-symbolic" if active else "list-add-symbolic",
-                    "{} {}".format("Remove" if active else "Add", name),
+                    "{} {}".format(_("Remove") if active else _("Add"), name),
                     lambda n=name, c=command: toggle_recommended(n, c),
                 )
             for item in [c for c in commands if c[2]]:
-                row(item[1], None, "list-remove-symbolic", "Remove {}".format(item[1]),
+                row(item[1], None, "list-remove-symbolic", _("Remove {}").format(item[1]),
                     lambda item=item: remove(item))
             command_list.show_all()
 
         def add_custom(_widget=None):
             command = custom_entry.get_text().strip()
             if not command or "\n" in command or len(command) > MAX_COMMAND_LENGTH:
-                hint.set_text("Enter one non-empty command.")
+                hint.set_text(_("Enter one non-empty command."))
                 return
             item = (command, command, True)
             if item in commands:
-                hint.set_text("That command is already in the list.")
+                hint.set_text(_("That command is already in the list."))
             elif len(commands) >= MAX_COMMANDS:
-                hint.set_text("You can configure up to {} commands per device.".format(MAX_COMMANDS))
+                hint.set_text(ngettext("You can configure up to {} command per device.",
+                                       "You can configure up to {} commands per device.", MAX_COMMANDS).format(MAX_COMMANDS))
             else:
                 commands.append(item)
                 hint.set_text("")

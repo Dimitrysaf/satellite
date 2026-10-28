@@ -1,26 +1,2028 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the satellite package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 23:19+0300\n"
+"POT-Creation-Date: 2026-10-28 15:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: data/org.x.Satellite.desktop.in:4 data/satellite-daemon.desktop.in:4
+#: data/org.x.Satellite-autostart.desktop.in:4
+#: data/org.x.Satellite.desktop.in:4 satellite/satellite.py:99
+#: satellite/ui/main_window.py:39 satellite/ui/main_window.py:90
+#: satellite/ui/tray.py:57
 msgid "Satellite"
+msgstr ""
+
+#: data/org.x.Satellite-autostart.desktop.in:5
+msgid "Start Satellite minimized to the system tray"
+msgstr ""
+
+#: data/org.x.Satellite.Contacts.desktop.in:4
+msgid "Satellite Contacts"
+msgstr ""
+
+#: data/org.x.Satellite.Contacts.desktop.in:5
+msgid "Address Book"
+msgstr ""
+
+#: data/org.x.Satellite.Contacts.desktop.in:6
+msgid "Your phone's contacts on this computer"
+msgstr ""
+
+#: data/org.x.Satellite.Contacts.desktop.in:11
+msgid "contacts;address book;phone;KDE Connect;"
+msgstr ""
+
+#: data/org.x.Satellite.SMS.desktop.in:4
+msgid "Satellite Messages"
+msgstr ""
+
+#: data/org.x.Satellite.SMS.desktop.in:5
+msgid "Text Messages"
+msgstr ""
+
+#: data/org.x.Satellite.SMS.desktop.in:6
+msgid "Read and send your phone's text messages"
+msgstr ""
+
+#: data/org.x.Satellite.SMS.desktop.in:11
+msgid "SMS;MMS;text;phone;KDE Connect;"
 msgstr ""
 
 #: data/org.x.Satellite.desktop.in:5
 msgid "Pair and sync with KDE Connect compatible devices"
+msgstr ""
+
+#: data/satellite-send.nemo_action.in:3
+msgid "Send to Phone"
+msgstr ""
+
+#: data/satellite-send.nemo_action.in:4
+msgid "Send the selected files to a device connected with Satellite"
+msgstr ""
+
+#: satellite/cli.py:43
+msgid "No device called '{}'."
+msgstr ""
+
+#: satellite/cli.py:45
+msgid "{} is not connected."
+msgstr ""
+
+#: satellite/cli.py:50 satellite/cli.py:79
+msgid "No device is connected."
+msgstr ""
+
+#: satellite/cli.py:51
+msgid "Several devices are connected; choose one with -d: {}."
+msgstr ""
+
+#: satellite/cli.py:65
+msgid "Satellite is not running and could not be started."
+msgstr ""
+
+#: satellite/cli.py:69 satellite/cli.py:80
+msgid "Send to which device?"
+msgstr ""
+
+#: satellite/cli.py:78
+msgid "No device is connected"
+msgstr ""
+
+#: satellite/cli.py:78
+msgid "Connect a device with Satellite, then try again."
+msgstr ""
+
+#: satellite/cli.py:82 satellite/plugins/ring/__init__.py:139
+#: satellite/plugins/runcommand/__init__.py:319 satellite/ui/context.py:44
+#: satellite/ui/dialogs.py:26 satellite/ui/dialogs.py:38
+#: satellite/ui/plugin_config_dialog.py:62
+#: satellite/ui/presenter_settings.py:134 satellite_sms/window.py:465
+msgid "Cancel"
+msgstr ""
+
+#: satellite/cli.py:83 satellite/plugins/share/__init__.py:379
+#: satellite/ui/context.py:45 satellite/ui/main_window.py:354
+msgid "Send"
+msgstr ""
+
+#: satellite/cli.py:99
+msgid "Cancelled."
+msgstr ""
+
+#: satellite/cli.py:115
+msgid "Use Satellite from the command line."
+msgstr ""
+
+#: satellite/cli.py:116
+msgid "choose the device and show errors in a window"
+msgstr ""
+
+#: satellite/cli.py:118
+msgid "list devices"
+msgstr ""
+
+#: satellite/cli.py:119
+msgid "machine-readable output"
+msgstr ""
+
+#: satellite/cli.py:123
+msgid "device name or id"
+msgstr ""
+
+#: satellite/cli.py:126
+msgid "send a ping"
+msgstr ""
+
+#: satellite/cli.py:127
+msgid "make the device ring"
+msgstr ""
+
+#: satellite/cli.py:128
+msgid "send files"
+msgstr ""
+
+#: satellite/cli.py:129
+msgid "send text, or a link to open on the device"
+msgstr ""
+
+#: satellite/cli.py:130
+msgid "send a text message (SMS)"
+msgstr ""
+
+#: satellite/cli.py:133
+msgid "copy the device's contacts again"
+msgstr ""
+
+#: satellite/cli.py:145
+msgid "not paired"
+msgstr ""
+
+#: satellite/cli.py:150
+msgid "Send {} file to:"
+msgid_plural "Send {} files to:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite/cli.py:150
+msgid "Which device?"
+msgstr ""
+
+#: satellite/cli.py:163
+msgid "Not a file: {}"
+msgstr ""
+
+#: satellite/cli.py:166
+msgid "Could not send: {}"
+msgstr ""
+
+#: satellite/cli.py:175
+msgid "{} could not do that (is the plugin switched on?)."
+msgstr ""
+
+#: satellite/desktop_input.py:185
+msgid ""
+"To type letters outside the US keyboard (such as Greek), install wl-"
+"clipboard: sudo apt install wl-clipboard"
+msgstr ""
+
+#: satellite/desktop_input.py:412
+msgid ""
+"Remote control of this computer wasn't allowed. Satellite will ask again in "
+"a minute; allow it there to use the phone as a touchpad."
+msgstr ""
+
+#: satellite/desktop_input.py:414
+msgid ""
+"ydotool isn't working. Start its service (ydotoold) and make sure you may "
+"use /dev/uinput."
+msgstr ""
+
+#: satellite/desktop_input.py:421
+msgid ""
+"This Wayland desktop offers no remote control permission. Install ydotool "
+"and start its ydotoold service: sudo apt install ydotool"
+msgstr ""
+
+#: satellite/desktop_input.py:423
+msgid "Install xdotool: sudo apt install xdotool"
+msgstr ""
+
+#: satellite/desktop_input.py:434
+msgid "{} failed: {}"
+msgstr ""
+
+#: satellite/desktop_input.py:440
+msgid "Nothing can control this computer yet. "
+msgstr ""
+
+#: satellite/desktop_input.py:442
+msgid "Using xdotool (X11)."
+msgstr ""
+
+#: satellite/desktop_input.py:444
+msgid "Using the desktop's remote control permission (Wayland)."
+msgstr ""
+
+#: satellite/desktop_input.py:445
+msgid "Using ydotool (Wayland)."
+msgstr ""
+
+#: satellite/desktop_input.py:447
+msgid "Its ydotoold service doesn't seem to be running."
+msgstr ""
+
+#: satellite/desktop_input.py:449
+msgid "Install wl-clipboard to type letters outside the US keyboard."
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:29
+msgid "Battery"
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:30
+msgid ""
+"Show the paired device's battery, and share this computer's battery with it."
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:35
+msgid "Warn when the device battery is low"
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:36
+msgid "Share this computer's battery"
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:115
+msgid "{} battery is low"
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:117
+#, no-python-format
+msgid "{}% remaining. Plug it in soon."
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:12
+msgid "Clipboard"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:13
+msgid "Copy on one device, paste on the other."
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:19
+msgid "Receive clipboard updates"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:20
+msgid "Send this computer's clipboard automatically"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:21
+msgid "Including passwords (as marked by password managers)"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:29
+msgid "Clipboard is empty"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:29
+msgid "Copy some text first, then send it."
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:33
+msgid "Could not send the clipboard"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:33
+#: satellite/plugins/sftp/__init__.py:65
+#: satellite/plugins/share/__init__.py:381
+msgid "The connection is unavailable."
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:36
+msgid "Send clipboard"
+msgstr ""
+
+#: satellite/plugins/clipboard/__init__.py:37
+msgid "Send the current clipboard text to this device"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:17
+msgid "No signal"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:17
+msgid "Weak"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:17
+msgid "Fair"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:17
+msgid "Good"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:17
+msgid "Excellent"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:22
+msgid "Connectivity report"
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:23
+msgid "Show mobile network signal reports from the device."
+msgstr ""
+
+#: satellite/plugins/connectivity_report/__init__.py:45 satellite/vcard.py:18
+msgid "Mobile"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:50
+#: satellite/plugins/contacts/__init__.py:186 satellite_contacts/app.py:26
+#: satellite_contacts/window.py:137 satellite_contacts/window.py:154
+msgid "Contacts"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:51
+msgid "Keep a copy of the paired phone's contacts on this computer."
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:62
+msgid "Copy the phone's contacts to this computer"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:64
+msgid ""
+"Share them with other address book apps (GNOME Contacts, Evolution, ...)"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:66
+msgid "Also share them with KDE apps"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:184
+msgid "Could not open Contacts"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:184
+msgid "Satellite Contacts is not installed."
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:187
+msgid "See the phone's contacts"
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:26
+msgid ""
+"Drawing works as a mouse, without pen pressure: Satellite may not create a "
+"virtual drawing tablet yet. Log out and back in after installing Satellite "
+"(its udev rule gives you access to /dev/uinput)."
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:111
+msgid "Drawing tablet"
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:112
+msgid "Draw on this computer on the device's screen, with a pen or a finger."
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:118
+msgid "Draw as"
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:119
+msgid "A drawing tablet with pen pressure, if possible"
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:120
+msgid "The mouse (no pressure, works in every app)"
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:135
+msgid "Drawing apps get pen pressure and the eraser."
+msgstr ""
+
+#: satellite/plugins/digitizer/__init__.py:182
+msgid "Drawing without pen pressure"
+msgstr ""
+
+#: satellite/plugins/lock/__init__.py:31
+msgid "Lock"
+msgstr ""
+
+#: satellite/plugins/lock/__init__.py:32
+msgid ""
+"Lock this computer from the paired device, and show whether the device is "
+"locked."
+msgstr ""
+
+#: satellite/plugins/lock/__init__.py:38
+msgid "Allow this device to unlock the computer"
+msgstr ""
+
+#: satellite/plugins/lock/__init__.py:73
+msgid "Locked"
+msgstr ""
+
+#: satellite/plugins/lock/__init__.py:74
+msgid "Unlocked"
+msgstr ""
+
+#: satellite/plugins/mousepad/__init__.py:181
+msgid "The phone can't control this computer"
+msgstr ""
+
+#: satellite/plugins/mousepad/__init__.py:188
+msgid "Mouse and keyboard"
+msgstr ""
+
+#: satellite/plugins/mousepad/__init__.py:189
+msgid "Use the paired device as a touchpad and keyboard."
+msgstr ""
+
+#: satellite/plugins/mousepad/__init__.py:198
+msgid "Swap left and right buttons"
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:30
+msgid "Media player control"
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:31
+msgid "Show and control the device's music and videos from this desktop."
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:37
+msgid "Show album art from the device"
+msgstr ""
+
+#: satellite/plugins/mpriscontrol/__init__.py:132
+msgid "Control media on this computer"
+msgstr ""
+
+#: satellite/plugins/mpriscontrol/__init__.py:133
+msgid ""
+"Play, pause and skip this computer's music and videos from the paired device."
+msgstr ""
+
+#: satellite/plugins/mpriscontrol/__init__.py:138
+msgid "Send album art to the device"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:34
+msgid "Notification"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:60
+msgid "Notifications"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:61
+msgid "Show the paired device's notifications on this computer."
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:71
+msgid "Show notifications from this device"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:72
+msgid "Also show the ones already on the device when it connects (quietly)"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:74
+msgid "Show notification text (turn off for privacy)"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:75
+msgid "Show app icons and pictures"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:76
+msgid "Offer Reply on notifications that allow it"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:77
+msgid "Dismissing a notification here dismisses it on the device"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:79
+msgid "Offer to copy verification codes"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:136
+#: satellite/plugins/notifications/__init__.py:161
+msgid "Reply in {}"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:136
+msgid "Reply to {}"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:138
+msgid "Your reply goes out from {} on {}."
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:149
+msgid "New notification on {}"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:161
+msgid "Reply"
+msgstr ""
+
+#: satellite/plugins/notifications/__init__.py:165
+msgid "Copy {}"
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:79
+msgid "Pause music during calls"
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:80
+msgid ""
+"Pause media or mute the sound when the paired phone rings, and restore it "
+"afterwards."
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:85
+msgid "Wait until the call is answered"
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:86
+msgid "Pause media players"
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:87
+msgid "Mute system sound"
+msgstr ""
+
+#: satellite/plugins/pausemusic/__init__.py:88
+msgid "Resume automatically when the call ends"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:11 satellite/plugins/ping/__init__.py:51
+msgid "Ping"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:12
+msgid "Send and receive short ping messages."
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:17
+msgid "Default ping message"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:17 satellite/plugins/ping/__init__.py:40
+msgid "Ping from Satellite"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:18
+msgid "Show a notification when pinged"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:34
+msgid "Ping from {}"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:34
+msgid "Ping!"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:47
+msgid "Could not send ping"
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:48
+msgid ""
+"The secure connection is no longer active or the device does not support "
+"Ping."
+msgstr ""
+
+#: satellite/plugins/ping/__init__.py:51
+msgid "Send a ping to this device"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:22
+msgid ""
+"Slides won't change: “Mouse and keyboard” is off for this device, and the "
+"phone sends next and previous slide through it."
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:48
+#: satellite/ui/presenter_settings.py:133
+msgid "Presenter"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:49
+msgid "Point at your slides from the paired device."
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:56
+#: satellite/ui/presenter_settings.py:164
+msgid "Pointer"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:57
+msgid "Dot"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:57
+#: satellite/plugins/presenter/__init__.py:66
+#: satellite_sms/conversation_list.py:14
+msgid "Picture"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:57
+#: satellite/ui/presenter_settings.py:173
+msgid "Spotlight"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:58
+msgid "Move the mouse pointer"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:59
+msgid "Colour"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:60
+msgid "Size"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:61
+#: satellite/plugins/presenter/__init__.py:71
+msgid "Small"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:61
+#: satellite/plugins/presenter/__init__.py:71
+msgid "Medium"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:61
+#: satellite/plugins/presenter/__init__.py:71
+msgid "Large"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:62
+msgid "Opacity (%)"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:63
+msgid "Outline"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:64
+msgid "None"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:64
+msgid "Thin"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:64
+msgid "Thick"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:65
+msgid "Outline colour"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:67
+msgid "Laser trail"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:68
+msgid "Darkness (%)"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:70
+msgid "Spotlight size"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:72
+msgid "Ring around the spotlight"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:73
+msgid "Hide after"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:74
+msgid "Half a second"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:74
+msgid "2 seconds"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:74
+msgid "5 seconds"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:75
+msgid "When the presentation ends"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:76
+msgid "Speed"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/remoteinput/__init__.py:51
+msgid "Slow"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/remoteinput/__init__.py:51
+msgid "Normal"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/remoteinput/__init__.py:51
+msgid "Fast"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:109
+msgid "Slides won't change"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:111
+msgid "Turn on Mouse and keyboard"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:139
+msgid "The presenter pointer may not show"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:141
+#: satellite/plugins/presenter/__init__.py:194
+msgid "Move the mouse pointer instead"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:197
+msgid "Turn it on"
+msgstr ""
+
+#: satellite/plugins/presenter/__init__.py:200
+msgid "The mouse pointer can't be moved here. "
+msgstr ""
+
+#: satellite/plugins/remoteinput/__init__.py:43
+msgid "Remote input"
+msgstr ""
+
+#: satellite/plugins/remoteinput/__init__.py:44
+msgid "Use this computer's mouse and keyboard on the paired device."
+msgstr ""
+
+#: satellite/plugins/remoteinput/__init__.py:50
+msgid "Pointer speed"
+msgstr ""
+
+#: satellite/plugins/remoteinput/__init__.py:81
+msgid "Control device…"
+msgstr ""
+
+#: satellite/plugins/remoteinput/__init__.py:82
+msgid "Use this computer's mouse and keyboard on the device"
+msgstr ""
+
+#: satellite/plugins/remotesystemvolume/__init__.py:12
+msgid "Device volume"
+msgstr ""
+
+#: satellite/plugins/remotesystemvolume/__init__.py:13
+msgid "Receive the paired device's volume levels."
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:35 satellite/plugins/ring/__init__.py:138
+msgid "Find my device"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:36
+msgid "Ring the paired device, or ring this computer when the device asks."
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:41
+msgid "Sound to play"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:88
+msgid "{} is looking for this computer"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:89
+msgid "Satellite is playing a sound so you can find it."
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:91
+msgid "Stop"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:124
+msgid "Could not ring device"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:125
+msgid ""
+"The secure connection is unavailable or the device does not support Find my "
+"device."
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:128
+msgid "Find device"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:128
+msgid "Make the device ring"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:140
+#: satellite/plugins/runcommand/__init__.py:320 satellite/ui/dialogs.py:34
+#: satellite/ui/plugin_config_dialog.py:63
+#: satellite/ui/presenter_settings.py:135
+msgid "Save"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:146
+msgid "Sound to play when this device looks for this computer."
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:150
+msgid "Choose a sound"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:166
+msgid "Play"
+msgstr ""
+
+#: satellite/plugins/ring/__init__.py:171
+msgid "Use the default sound"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:21
+msgid "Restart now"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:25
+msgid "Shut down"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:29
+msgid "Log out (Cinnamon)"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:33
+msgid "Sleep"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:37
+msgid "Wake another device (Wake-on-LAN)"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:41
+msgid "Restart to BIOS/UEFI"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:45
+msgid "Lock screen"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:53
+#: satellite/plugins/runcommand/__init__.py:317
+msgid "Run commands"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:54
+msgid "Configure desktop commands that this paired device may run."
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:69
+msgid "Commands (one per line: Name | shell command)"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:327
+msgid "Choose the commands this device is allowed to run on this computer."
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:343
+msgid "Add a command, e.g. xed"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:346
+msgid "Add custom command"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:368
+#: satellite/plugins/runcommand/__init__.py:415
+msgid "You can configure up to {} command per device."
+msgid_plural "You can configure up to {} commands per device."
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite/plugins/runcommand/__init__.py:398
+#: satellite/ui/preferences_dialog.py:79
+msgid "Remove"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:398
+#: satellite/ui/preferences_dialog.py:65
+msgid "Add"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:402
+msgid "Remove {}"
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:409
+msgid "Enter one non-empty command."
+msgstr ""
+
+#: satellite/plugins/runcommand/__init__.py:413
+msgid "That command is already in the list."
+msgstr ""
+
+#: satellite/plugins/screensaver_inhibit/__init__.py:14
+msgid "A device is connected with Satellite"
+msgstr ""
+
+#: satellite/plugins/screensaver_inhibit/__init__.py:51
+msgid "Prevent screensaver"
+msgstr ""
+
+#: satellite/plugins/screensaver_inhibit/__init__.py:52
+msgid "Keep the screen awake while the paired device is connected."
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:198
+msgid "Send notifications"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:199
+msgid "Show this computer's notifications on the paired device."
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:204
+msgid "Persistent notifications only"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:205
+msgid "Include body"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:206
+msgid "Include icon"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:207
+msgid "Minimum urgency level"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:208
+msgctxt "urgency"
+msgid "Low"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:208
+msgctxt "urgency"
+msgid "Normal"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:209
+msgctxt "urgency"
+msgid "Critical"
+msgstr ""
+
+#: satellite/plugins/sendnotifications/__init__.py:211
+msgid "Send notifications from"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:42 satellite/plugins/sftp/__init__.py:67
+msgid "Browse files"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:43
+msgid "Open the paired device's files in the file manager."
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:62
+msgid "Browsing needs sshfs"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:62
+msgid "Install the sshfs package, then try again."
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:65
+msgid "Could not browse the device"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:68
+msgid "Open the device's files in the file manager"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:75 satellite/plugins/sftp/__init__.py:96
+msgid "Could not browse {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:312
+msgid "Share"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:313
+msgid "Send and receive files, text and links."
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:322
+msgid "Save received files in"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:323
+msgid "Copy shared text to the clipboard"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:324
+msgid "Open shared links automatically"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:348
+msgid "Text from {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:349
+msgid ""
+"\n"
+"(copied to the clipboard)"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:360
+msgid "Link from {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:361 satellite_sms/thread_view.py:101
+msgid "Open"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:366
+msgid "Send files to {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:370
+msgid "Could not send {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:371
+msgid "The connection is unavailable, or the file could not be read."
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:377
+msgid "Send text or a link to {}"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:378
+msgid "Text is put on the device's clipboard; a link opens there."
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:381
+msgid "Could not send"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:384
+msgid "Send files…"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:385
+msgid "Send files to this device"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:386
+msgid "Send text or link…"
+msgstr ""
+
+#: satellite/plugins/share/__init__.py:387
+msgid "Send text, or a link to open on this device"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:136
+msgid "Share mouse and keyboard"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:137
+msgid ""
+"Use one mouse and keyboard on this computer and another one, across the "
+"screen edge."
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:143
+msgid "Where the other computer is"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:144
+msgid "Don't send this computer's mouse and keyboard"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:145
+msgid "Left of this screen"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:145
+msgid "Right of this screen"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:146
+msgid "Above this screen"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:146
+msgid "Below this screen"
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:165
+msgid ""
+"Bring the pointer back over the same edge to return. Ctrl+Alt+Escape always "
+"takes the mouse and keyboard back."
+msgstr ""
+
+#: satellite/plugins/shareinputdevices/__init__.py:168
+msgid ""
+"On Wayland this computer can only receive the other one's mouse and "
+"keyboard: sending them needs an X11 session."
+msgstr ""
+
+#: satellite/plugins/sms/__init__.py:83 satellite/plugins/sms/__init__.py:197
+#: satellite_sms/app.py:28 satellite_sms/window.py:33
+#: satellite_sms/window.py:65
+msgid "Messages"
+msgstr ""
+
+#: satellite/plugins/sms/__init__.py:84
+msgid "Read and send the paired phone's text messages (SMS and MMS)."
+msgstr ""
+
+#: satellite/plugins/sms/__init__.py:195
+msgid "Could not open Messages"
+msgstr ""
+
+#: satellite/plugins/sms/__init__.py:195
+msgid "Satellite Messages is not installed."
+msgstr ""
+
+#: satellite/plugins/sms/__init__.py:198
+msgid "Read and send text messages"
+msgstr ""
+
+#: satellite/plugins/systemvolume/__init__.py:50
+msgid "Control volume on this computer"
+msgstr ""
+
+#: satellite/plugins/systemvolume/__init__.py:51
+msgid "Change this computer's volume and audio output from the paired device."
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:45
+msgid "Telephony"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:46
+msgid "Show incoming and missed calls, with a button to silence the ringer."
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:52
+msgid "Show call notifications"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:53
+msgid "Show the caller's photo"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:71
+msgid "unknown number"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:76
+msgid "Call ended"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:81
+msgid "Silence"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:84
+msgid "Incoming call on {}"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:90
+msgid "Missed call on {}"
+msgstr ""
+
+#: satellite/plugins/telephony/__init__.py:95
+msgid "On a call · {}"
+msgstr ""
+
+#: satellite/satellite.py:34
+msgid "Start minimized to the system tray"
+msgstr ""
+
+#: satellite/satellite.py:101
+msgid "Connect your phone and computer with the KDE Connect protocol."
+msgstr ""
+
+#: satellite/ui/context.py:25
+msgid "this device"
+msgstr ""
+
+#: satellite/ui/device_list.py:55
+msgid "CONNECTED"
+msgstr ""
+
+#: satellite/ui/device_list.py:56
+msgid "OFFLINE"
+msgstr ""
+
+#: satellite/ui/device_list.py:57
+msgid "DETECTED"
+msgstr ""
+
+#: satellite/ui/device_list.py:69
+msgid "No devices found"
+msgstr ""
+
+#: satellite/ui/device_list.py:70
+msgid ""
+"Open KDE Connect on your phone and connect it to the same network as this "
+"computer."
+msgstr ""
+
+#: satellite/ui/device_list.py:71
+msgid "Search again"
+msgstr ""
+
+#: satellite/ui/device_menu.py:42
+msgid "Verification code: {}"
+msgstr ""
+
+#: satellite/ui/device_menu.py:43
+msgid "Accept pairing"
+msgstr ""
+
+#: satellite/ui/device_menu.py:44
+msgid "Reject"
+msgstr ""
+
+#: satellite/ui/device_menu.py:46
+msgid "Request pairing"
+msgstr ""
+
+#: satellite/ui/device_menu.py:51
+msgid "Rename…"
+msgstr ""
+
+#: satellite/ui/device_menu.py:54
+msgid "Encryption info"
+msgstr ""
+
+#: satellite/ui/device_menu.py:57
+msgid "Unpair…"
+msgstr ""
+
+#: satellite/ui/device_page.py:53
+msgid "PLUGINS"
+msgstr ""
+
+#: satellite/ui/device_page.py:91
+msgid "Device actions"
+msgstr ""
+
+#: satellite/ui/device_page.py:105
+msgid "Battery · {}% · Charging"
+msgstr ""
+
+#: satellite/ui/device_page.py:105
+msgid "Battery · {}%"
+msgstr ""
+
+#: satellite/ui/dialogs.py:60
+msgid "Encrypted connection"
+msgstr ""
+
+#: satellite/ui/dialogs.py:61
+msgid ""
+"Device: {}\n"
+"Protocol: {}\n"
+"Cipher: {}\n"
+"Certificate SHA-256: {}"
+msgstr ""
+
+#: satellite/ui/dialogs.py:63
+msgid "Unknown TLS version"
+msgstr ""
+
+#: satellite/ui/dialogs.py:64
+msgid "Unknown cipher suite"
+msgstr ""
+
+#: satellite/ui/dialogs.py:65
+msgid "Unavailable"
+msgstr ""
+
+#: satellite/ui/main_window.py:94
+msgid "Search for devices (F5)"
+msgstr ""
+
+#: satellite/ui/main_window.py:99
+msgid "Back to devices (Esc)"
+msgstr ""
+
+#: satellite/ui/main_window.py:104 satellite/ui/preferences_dialog.py:14
+msgid "Preferences"
+msgstr ""
+
+#: satellite/ui/main_window.py:105
+msgid "About Satellite"
+msgstr ""
+
+#: satellite/ui/main_window.py:107 satellite/ui/tray.py:107
+msgid "Quit"
+msgstr ""
+
+#: satellite/ui/main_window.py:132
+msgid "Select a device"
+msgstr ""
+
+#: satellite/ui/main_window.py:133
+msgid "Pick a device on the left to see its status and change its plugins."
+msgstr ""
+
+#: satellite/ui/main_window.py:294
+msgid "Unpair from {}?"
+msgstr ""
+
+#: satellite/ui/main_window.py:295
+msgid "This removes the trusted connection to this device."
+msgstr ""
+
+#: satellite/ui/main_window.py:295
+msgid "Unpair"
+msgstr ""
+
+#: satellite/ui/main_window.py:305
+msgid "Rename device"
+msgstr ""
+
+#: satellite/ui/main_window.py:306
+msgid "Name shown only on this computer (leave empty to use “{}”):"
+msgstr ""
+
+#: satellite/ui/main_window.py:343
+msgid "{} failed"
+msgstr ""
+
+#: satellite/ui/main_window.py:360
+msgid "Could not exchange the pairing request"
+msgstr ""
+
+#: satellite/ui/main_window.py:361
+msgid ""
+"The secure device connection is not available. Check that both devices are "
+"on the same network and that the KDE Connect ports are allowed through the "
+"firewall."
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:23
+msgid "{} is asking to pair with this computer."
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:25
+msgid "Pairing request sent to {}. Waiting for a response."
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:27
+msgid ""
+"This device is paired but it is offline.\n"
+"Open KDE Connect on it to reconnect."
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:29
+msgid "Do you want to pair with {}?"
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:31
+msgid "Establishing a secure connection with {}…"
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:39
+msgid "Security code"
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:43
+msgid "Check that both devices show the same code."
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:50
+msgid "Accept"
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:53
+msgid "Deny"
+msgstr ""
+
+#: satellite/ui/pairing_prompt.py:58
+msgid "Pair"
+msgstr ""
+
+#: satellite/ui/plugin_config_dialog.py:35
+msgid ""
+"Apps show up here once they show a notification while a device is connected."
+msgstr ""
+
+#: satellite/ui/plugin_config_dialog.py:61 satellite/ui/plugin_row.py:40
+msgid "Configure {}"
+msgstr ""
+
+#: satellite/ui/plugin_list.py:16
+msgid "Search plugins"
+msgstr ""
+
+#: satellite/ui/plugin_list.py:30
+msgid "No matching plugins"
+msgstr ""
+
+#: satellite/ui/plugin_row.py:47
+msgid "Enable or disable {}"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:16
+msgid "Close"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:23
+msgid "Start when you log in"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:24
+msgid "Satellite starts minimized to the system tray."
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:26
+msgid "Keep running when the window is closed"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:27
+msgid ""
+"Satellite stays in the system tray, so clipboard, notifications and file "
+"transfers keep working. Quit from the tray menu."
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:44
+msgid "Finding devices"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:46
+msgid "Announce on the local network"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:47
+msgid "The classic KDE Connect broadcast."
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:49
+msgid "Use mDNS (Avahi)"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:50
+msgid ""
+"Finds devices on networks that block broadcasts, like some routers and guest "
+"Wi-Fi."
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:54
+msgid "Devices added by address"
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:55
+msgid "For a device on another network or a VPN: its IP address or host name."
+msgstr ""
+
+#: satellite/ui/preferences_dialog.py:64
+msgid "e.g. {}"
+msgstr ""
+
+#: satellite/ui/presenter_overlay.py:43
+msgid ""
+"This desktop can't draw see-through windows (compositing is off), so the "
+"pointer can't be drawn over the slides."
+msgstr ""
+
+#: satellite/ui/presenter_overlay.py:45
+msgid ""
+"On this Wayland desktop the pointer may end up behind fullscreen slides: the "
+"compositor doesn't offer the overlay layer (layer-shell)."
+msgstr ""
+
+#: satellite/ui/presenter_settings.py:109
+msgid "Quarterly results"
+msgstr ""
+
+#: satellite/ui/presenter_settings.py:153
+msgid "Move the mouse over the slide to try the pointer."
+msgstr ""
+
+#: satellite/ui/presenter_settings.py:158
+msgid ""
+"The phone moves your normal mouse pointer. To change how it looks, open "
+"Themes → Mouse pointer in the system settings."
+msgstr ""
+
+#: satellite/ui/presenter_settings.py:177
+msgid "Behaviour"
+msgstr ""
+
+#: satellite/ui/presenter_settings.py:254
+msgid "Choose a picture"
+msgstr ""
+
+#: satellite/ui/remote_input.py:22
+msgid "Control {}"
+msgstr ""
+
+#: satellite/ui/remote_input.py:37
+msgid ""
+"Drag in the area below to move the pointer, click to click and scroll to "
+"scroll. Keys you type are sent to {}."
+msgstr ""
+
+#: satellite/ui/remote_input.py:40
+msgid " To type, switch on the KDE Connect Remote Keyboard on the device."
+msgstr ""
+
+#: satellite/ui/remote_input.py:65
+msgid "Touchpad"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:18
+msgid "File transfer"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:39
+msgid "Hide transfer progress"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:57
+msgid "Transfer failed · {}"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:59
+msgid "Sent to {}"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:60
+msgid "Saved to {}"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:63
+msgid "To {} · {} of {} · {}%"
+msgstr ""
+
+#: satellite/ui/transfer_popup.py:63
+msgid "From {} · {} of {} · {}%"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:59
+msgid "File transfer failed"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:61
+msgid "File sent"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:61
+msgid "File received"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:63
+msgid "{} · sent to {}"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:66
+msgid "{} · saved to {}"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:68
+msgid "Open folder"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:72
+msgid "Sending file to {}"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:72
+msgid "Receiving file from {}"
+msgstr ""
+
+#: satellite/ui/tray.py:24
+msgid "{} · wants to pair"
+msgstr ""
+
+#: satellite/ui/tray.py:26
+msgid "{} · pairing…"
+msgstr ""
+
+#: satellite/ui/tray.py:28
+msgid "{} · offline"
+msgstr ""
+
+#: satellite/ui/tray.py:29
+msgid "{} · not paired"
+msgstr ""
+
+#: satellite/ui/tray.py:104
+msgid "Open Satellite"
+msgstr ""
+
+#: satellite/ui/widgets.py:71 satellite/ui/widgets.py:87
+msgid "Connected"
+msgstr ""
+
+#: satellite/ui/widgets.py:73
+msgid "Pairing request"
+msgstr ""
+
+#: satellite/ui/widgets.py:75
+msgid "Pair request sent"
+msgstr ""
+
+#: satellite/ui/widgets.py:77 satellite/ui/widgets.py:95
+msgid "Offline"
+msgstr ""
+
+#: satellite/ui/widgets.py:79
+msgid "Secure link established"
+msgstr ""
+
+#: satellite/ui/widgets.py:80
+msgid "Available"
+msgstr ""
+
+#: satellite/ui/widgets.py:89
+msgid "Pairing request received"
+msgstr ""
+
+#: satellite/ui/widgets.py:91
+msgid "Pairing request sent"
+msgstr ""
+
+#: satellite/ui/widgets.py:94
+msgid "Offline · Battery {}% (last reported)"
+msgstr ""
+
+#: satellite/ui/widgets.py:97
+msgid "Secure link established · Not paired"
+msgstr ""
+
+#: satellite/ui/widgets.py:98
+msgid "Detected, not paired"
+msgstr ""
+
+#: satellite/vcard.py:18
+msgid "Home"
+msgstr ""
+
+#: satellite/vcard.py:18
+msgid "Work"
+msgstr ""
+
+#: satellite/vcard.py:18
+msgid "Main"
+msgstr ""
+
+#: satellite/vcard.py:18
+msgid "Fax"
+msgstr ""
+
+#: satellite/vcard.py:19
+msgid "Pager"
+msgstr ""
+
+#: satellite/vcard.py:19 satellite/vcard.py:101
+#: satellite_contacts/window.py:231 satellite_contacts/window.py:336
+#: satellite_sms/window.py:118
+msgid "Phone"
+msgstr ""
+
+#: satellite/vcard.py:19
+msgid "Other"
+msgstr ""
+
+#: satellite/vcard.py:40
+msgid "Unnamed"
+msgstr ""
+
+#: satellite/vcard.py:126
+msgid "Email"
+msgstr ""
+
+#: satellite_contacts/app.py:21
+msgid "Show this phone's contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:81
+msgid "Send a text message"
+msgstr ""
+
+#: satellite_contacts/window.py:83 satellite_contacts/window.py:89
+#: satellite_contacts/window.py:93
+msgid "Copy"
+msgstr ""
+
+#: satellite_contacts/window.py:87
+msgid "Write an email"
+msgstr ""
+
+#: satellite_contacts/window.py:92
+msgid "Address"
+msgstr ""
+
+#: satellite_contacts/window.py:95
+msgid "Birthday"
+msgstr ""
+
+#: satellite_contacts/window.py:97
+msgid "Note"
+msgstr ""
+
+#: satellite_contacts/window.py:107
+msgid "Copied from {}. Change this contact on the phone."
+msgstr ""
+
+#: satellite_contacts/window.py:107
+msgid "the phone"
+msgstr ""
+
+#: satellite_contacts/window.py:158
+msgid "Back to contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:162
+msgid "Copy contacts from the phone again"
+msgstr ""
+
+#: satellite_contacts/window.py:166
+msgid "Export as a vCard file (for Thunderbird and other apps)"
+msgstr ""
+
+#: satellite_contacts/window.py:176
+msgid "Search contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:200
+msgid "Copy contacts from the phone"
+msgstr ""
+
+#: satellite_contacts/window.py:280
+msgid "No contacts yet. Connect {} and copy its contacts."
+msgstr ""
+
+#: satellite_contacts/window.py:281
+msgid "Pair a phone in Satellite to see its contacts here."
+msgstr ""
+
+#: satellite_contacts/window.py:285
+msgid "{} contact"
+msgid_plural "{} contacts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite_contacts/window.py:291
+msgid "The phone is not connected."
+msgstr ""
+
+#: satellite_contacts/window.py:334
+msgid "Export contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:334
+msgid "Export"
+msgstr ""
+
+#: satellite_contacts/window.py:336
+msgid "{} contacts.vcf"
+msgstr ""
+
+#: satellite_contacts/window.py:342
+msgid "Could not export"
+msgstr ""
+
+#: satellite_sms/app.py:21
+msgid "Show this phone's messages"
+msgstr ""
+
+#: satellite_sms/app.py:23
+msgid "Start a message to this number"
+msgstr ""
+
+#: satellite_sms/conversation_list.py:15
+msgid "You: {}"
+msgstr ""
+
+#: satellite_sms/conversation_list.py:57
+msgid "Search conversations"
+msgstr ""
+
+#: satellite_sms/google_messages.py:115
+msgid "Try again"
+msgstr ""
+
+#: satellite_sms/google_messages.py:175
+msgid ""
+"The connection to Google Messages isn't secure, so Satellite stopped loading "
+"it."
+msgstr ""
+
+#: satellite_sms/google_messages.py:221
+msgid ""
+"Google Messages couldn't be opened (error {}). Check this computer's "
+"internet connection, or try again later."
+msgstr ""
+
+#: satellite_sms/google_messages.py:223
+msgid ""
+"Couldn't reach Google Messages. Check this computer's internet connection."
+msgstr ""
+
+#: satellite_sms/model.py:21 satellite_sms/model.py:37
+msgid "Yesterday"
+msgstr ""
+
+#: satellite_sms/model.py:35
+msgid "Today"
+msgstr ""
+
+#: satellite_sms/model.py:69
+msgid "Unknown"
+msgstr ""
+
+#: satellite_sms/model.py:71
+msgid "{}, {} and {} other"
+msgid_plural "{}, {} and {} others"
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite_sms/thread_view.py:111
+msgid "Attachment"
+msgstr ""
+
+#: satellite_sms/thread_view.py:145
+msgid "Attach a picture or file"
+msgstr ""
+
+#: satellite_sms/thread_view.py:165
+msgid "Send (Enter)"
+msgstr ""
+
+#: satellite_sms/thread_view.py:197
+msgid "Attach"
+msgstr ""
+
+#: satellite_sms/thread_view.py:312
+msgid "To:"
+msgstr ""
+
+#: satellite_sms/thread_view.py:316
+msgid "Name or phone number"
+msgstr ""
+
+#: satellite_sms/window.py:21
+msgid ""
+"Messages will be shown by Google's website instead of by Satellite.\n"
+"\n"
+"• Satellite can't see, check or control what Google shows or does in this "
+"view.\n"
+"• Messages go through Google's servers and the internet, not only your local "
+"network. Your phone needs internet access, and Google Messages must be its "
+"messaging app.\n"
+"• Google's terms and privacy policy apply. Google can change or stop this "
+"service, or stop it from working here.\n"
+"• The pairing stays on this computer until you sign out, so anyone using "
+"this computer account can read your messages.\n"
+"• Only messages.google.com opens here; links in messages open in your web "
+"browser. Camera, microphone, location and website notifications are "
+"blocked.\n"
+"• To unpair later, sign out from this menu, or on the phone open Google "
+"Messages → Device pairing."
+msgstr ""
+
+#: satellite_sms/window.py:69
+msgid "Back to conversations"
+msgstr ""
+
+#: satellite_sms/window.py:73
+msgid "New message (Ctrl+N)"
+msgstr ""
+
+#: satellite_sms/window.py:78
+msgid "Use Google Messages for web"
+msgstr ""
+
+#: satellite_sms/window.py:79
+msgid "Sign out of Google Messages…"
+msgstr ""
+
+#: satellite_sms/window.py:84 satellite_sms/window.py:405
+msgid "Load messages from the phone (F5)"
+msgstr ""
+
+#: satellite_sms/window.py:108
+msgid "Start Satellite"
+msgstr ""
+
+#: satellite_sms/window.py:134
+msgid "Pick a conversation, or start a new one."
+msgstr ""
+
+#: satellite_sms/window.py:150
+msgid "Add one person for a text message, or several for a group message."
+msgstr ""
+
+#: satellite_sms/window.py:186
+msgid "Satellite is not running, so messages can't be loaded."
+msgstr ""
+
+#: satellite_sms/window.py:239
+msgid ""
+"No paired phone with Messages switched on. Pair a phone in Satellite first."
+msgstr ""
+
+#: satellite_sms/window.py:241
+msgid "{} is not connected. New messages appear when it reconnects."
+msgstr ""
+
+#: satellite_sms/window.py:399
+msgid "Google Messages for web"
+msgstr ""
+
+#: satellite_sms/window.py:400
+msgid "Reload Google Messages (F5)"
+msgstr ""
+
+#: satellite_sms/window.py:414
+msgid "Google Messages for web needs WebKitGTK"
+msgstr ""
+
+#: satellite_sms/window.py:415
+msgid "Install the gir1.2-webkit2-4.1 package, then try again."
+msgstr ""
+
+#: satellite_sms/window.py:417
+msgid "Use Google Messages for web?"
+msgstr ""
+
+#: satellite_sms/window.py:417
+msgid "Use Google Messages"
+msgstr ""
+
+#: satellite_sms/window.py:422
+msgid "Stop using Google Messages for web?"
+msgstr ""
+
+#: satellite_sms/window.py:423
+msgid "Satellite will show your phone's SMS and MMS again."
+msgstr ""
+
+#: satellite_sms/window.py:424
+msgid "Stop Using"
+msgstr ""
+
+#: satellite_sms/window.py:424
+msgid "Also sign out and delete Google Messages data from this computer"
+msgstr ""
+
+#: satellite_sms/window.py:455
+msgid "Sign out of Google Messages?"
+msgstr ""
+
+#: satellite_sms/window.py:456
+msgid ""
+"This computer forgets the pairing. To use it again, scan a new QR code with "
+"the phone."
+msgstr ""
+
+#: satellite_sms/window.py:457
+msgid "Sign Out"
 msgstr ""

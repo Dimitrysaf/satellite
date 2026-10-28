@@ -4,6 +4,7 @@ import os
 import subprocess
 
 from satellite.plugins._base import PacketStatePlugin
+from satellite.i18n import _
 
 ENABLED_BY_DEFAULT = True
 ENABLED_FOR_DEVICE_BY_DEFAULT = True
@@ -27,14 +28,14 @@ def run_loginctl(*arguments):
 
 class Plugin(PacketStatePlugin):
     plugin_id = "lock"
-    display_name = "Lock"
-    description = "Lock this computer from the paired device, and show whether the device is locked."
+    display_name = _("Lock")
+    description = _("Lock this computer from the paired device, and show whether the device is locked.")
     icon = "system-lock-screen-symbolic"
     incoming_capabilities = ("kdeconnect.lock", "kdeconnect.lock.request")
     outgoing_capabilities = ("kdeconnect.lock", "kdeconnect.lock.request")
     packet_types = ("kdeconnect.lock",)
     settings_schema = (
-        {"key": "allow_unlock", "label": "Allow this device to unlock the computer", "type": "bool", "default": False},
+        {"key": "allow_unlock", "label": _("Allow this device to unlock the computer"), "type": "bool", "default": False},
     )
 
     def __init__(self, loginctl=run_loginctl):
@@ -69,5 +70,5 @@ class Plugin(PacketStatePlugin):
         if "isLocked" not in data:
             return None
         if data["isLocked"]:
-            return ("system-lock-screen-symbolic", "Device is locked")
-        return ("changes-allow-symbolic", "Device is unlocked")
+            return ("system-lock-screen-symbolic", _("Locked"))
+        return ("changes-allow-symbolic", _("Unlocked"))

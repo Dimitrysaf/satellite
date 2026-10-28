@@ -1,0 +1,4 @@
+# Let the user at the screen create virtual input devices, so Satellite can
+# turn a phone or tablet into a drawing tablet with pen pressure (the same
+# rule KDE Connect ships).
+KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"

@@ -6,6 +6,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GdkPixbuf, GLib, Gtk
+from satellite.i18n import _
 
 ICONS = {
     "phone": "phone-symbolic",
@@ -67,31 +68,31 @@ def short_status(device):
     battery = battery_percent(device)
     suffix = " · {}%".format(battery) if battery is not None else ""
     if device.get("connected"):
-        return "Connected" + suffix
+        return _("Connected") + suffix
     if device.get("pair_requested"):
-        return "Pairing request"
+        return _("Pairing request")
     if device.get("pair_pending"):
-        return "Pair request sent"
+        return _("Pair request sent")
     if device.get("paired") and not device.get("secure"):
-        return "Offline" + suffix
+        return _("Offline") + suffix
     if device.get("secure"):
-        return "Secure link established"
-    return "Available"
+        return _("Secure link established")
+    return _("Available")
 
 
 def long_status(device):
     """Descriptive status for the device page header."""
     battery = battery_percent(device)
     if device.get("connected"):
-        return "Connected"
+        return _("Connected")
     if device.get("pair_requested"):
-        return "Pairing request received"
+        return _("Pairing request received")
     if device.get("pair_pending"):
-        return "Pairing request sent"
+        return _("Pairing request sent")
     if device.get("paired"):
         if battery is not None:
-            return "Offline · Battery {}% (last reported)".format(battery)
-        return "Offline"
+            return _("Offline · Battery {}% (last reported)").format(battery)
+        return _("Offline")
     if device.get("secure"):
-        return "Secure link established · Not paired"
-    return "Detected, not paired"
+        return _("Secure link established · Not paired")
+    return _("Detected, not paired")

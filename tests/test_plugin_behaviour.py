@@ -11,6 +11,8 @@ from satellite.plugins.notifications import Plugin as Notifications
 from satellite.plugins.pausemusic import Plugin as PauseMusic
 from satellite.plugins.ping import Plugin as Ping
 from satellite.plugins.ring import Plugin as Ring
+from satellite.plugins.ring import find_sound_command
+from satellite.plugins.sendnotifications import Plugin as SendNotifications
 from satellite.plugins.telephony import Plugin as Telephony
 from tests.fakes import LINK, FakeDaemon, packet
 
@@ -20,7 +22,7 @@ class PingTests(unittest.TestCase):
         daemon = FakeDaemon(devices={"dev1": {"id": "dev1"}})
         self.assertTrue(Ping.handle_packet(daemon, LINK, packet("kdeconnect.ping", {"message": "hi"})))
         self.assertEqual(daemon.notifications[0]["summary"], "Ping from Pixel 7")
-        self.assertEqual(daemon._devices["dev1"]["last_ping"], "hi")
+        self.assertEqual(daemon.notifications[0]["body"], "hi")
 
     def test_notification_can_be_turned_off(self):
         daemon = FakeDaemon(settings={"ping": {"notify": False}}, devices={"dev1": {"id": "dev1"}})
@@ -37,8 +39,8 @@ class NotificationsTests(unittest.TestCase):
         self.assertEqual(daemon.notifications[0]["summary"], "Signal: Anna")
         self.assertEqual(daemon.notifications[1]["replaces"], 1)
 
-    def test_silent_and_cancel_do_not_show(self):
-        daemon, plugin = FakeDaemon(), Notifications()
+    def test_silent_when_switched_off_and_cancel_do_not_show(self):
+        daemon, plugin = FakeDaemon(settings={"notifications": {"show_existing": False}}), Notifications()
         plugin.handle_packet(daemon, LINK, packet("kdeconnect.notification", {"id": "a", "silent": True}))
         plugin.handle_packet(daemon, LINK, packet("kdeconnect.notification", {"id": "a", "isCancel": True}))
         self.assertEqual(daemon.notifications, [])
@@ -167,10 +169,43 @@ class PauseMusicTests(unittest.TestCase):
         self.assertEqual([m for _n, m in players.log], ["Pause"])
 
 
+class FakeSound:
+    def __init__(self, muted=False):
+        self.muted, self.log = muted, []
+
+    def is_muted(self):
+        return self.muted
+
+    def set_muted(self, muted):
+        self.muted = muted
+        self.log.append(muted)
+        return True
+
+
+class PauseMusicSettingsTests(unittest.TestCase):
+    def ring_and_hang_up(self, settings, sound):
+        players = FakePlayers()
+        plugin = PauseMusic(players, sound)
+        daemon = FakeDaemon(settings={"pausemusic": settings})
+        plugin.handle_packet(daemon, LINK, packet("kdeconnect.telephony", {"event": "ringing"}))
+        plugin.handle_packet(daemon, LINK, packet("kdeconnect.telephony", {"isCancel": True}))
+        return [m for _n, m in players.log]
+
+    def test_mute_only_mutes_and_restores_sound(self):
+        sound = FakeSound()
+        self.assertEqual(self.ring_and_hang_up({"pause": False, "mute": True}, sound), [])
+        self.assertEqual(sound.log, [True, False])
+
+    def test_already_muted_sound_stays_muted(self):
+        sound = FakeSound(muted=True)
+        self.ring_and_hang_up({"mute": True}, sound)
+        self.assertEqual(sound.log, [])
+
+
 class RingTests(unittest.TestCase):
     def test_request_starts_then_stops_ringing(self):
         stopped = threading.Event()
-        plugin = Ring(sound_command=lambda: None)
+        plugin = Ring(sound_command=lambda _sound: None)
         daemon = FakeDaemon(devices={"dev1": {"id": "dev1"}})
         plugin.handle_packet(daemon, LINK, packet("kdeconnect.findmyphone.request"))
         self.assertTrue(daemon._devices["dev1"]["ring_requested"])
@@ -186,11 +221,11 @@ class StatusTests(unittest.TestCase):
             "signalStrengths": {"1": {"networkType": "5G", "signalStrength": 4}}}}}}
         icon, text = Connectivity().status(device)
         self.assertIn("excellent", icon)
-        self.assertEqual(text, "5G · signal 4/4")
+        self.assertEqual(text, "5G Excellent")
 
     def test_lock_status(self):
         device = {"plugin_data": {"lock": {"body": {"isLocked": True}}}}
-        self.assertEqual(Lock().status(device)[1], "Device is locked")
+        self.assertEqual(Lock().status(device)[1], "Locked")
 
 
 class DesktopInputTests(unittest.TestCase):
@@ -215,6 +250,48 @@ class DesktopInputTests(unittest.TestCase):
 
     def test_unavailable_without_xdotool(self):
         self.assertFalse(DesktopInput(xdotool="", runner=None).apply({"singleclick": True}))
+
+
+class RingSoundTests(unittest.TestCase):
+    def test_missing_custom_sound_falls_back_to_default(self):
+        self.assertEqual(find_sound_command("/nonexistent.oga"), find_sound_command())
+
+
+def notification(**fields):
+    base = {"app_name": "Firefox", "replaces_id": 0, "app_icon": "", "summary": "Done",
+            "body": "report.pdf", "actions": [], "hints": {}, "timeout": -1}
+    base.update(fields)
+    return base
+
+
+class SendNotificationsTests(unittest.TestCase):
+    def forward(self, item, settings=None, icon=None):
+        daemon = FakeDaemon(
+            settings={"sendnotifications": settings or {}},
+            devices={"dev1": {"id": "dev1", "connected": True}})
+        plugin = SendNotifications(monitor_factory=None, icon_loader=lambda _n: icon)
+        plugin._daemon = daemon
+        plugin.forward(item)
+        return [body for _p, _d, _t, body in daemon.sent]
+
+    def test_forwards_title_and_body(self):
+        body = self.forward(notification())[0]
+        self.assertEqual((body["title"], body["text"], body["ticker"]),
+                         ("Done", "report.pdf", "Done: report.pdf"))
+
+    def test_body_can_be_left_out(self):
+        body = self.forward(notification(), {"include_body": False})[0]
+        self.assertNotIn("text", body)
+        self.assertEqual(body["ticker"], "Done")
+
+    def test_filters(self):
+        self.assertEqual(self.forward(notification(timeout=5000), {"persistent": True}), [])
+        low = notification(hints={"urgency": 0})
+        self.assertEqual(self.forward(low, {"min_urgency": 1}), [])
+        self.assertEqual(self.forward(notification(summary="")), [])
+
+    def test_own_notifications_are_not_echoed(self):
+        self.assertEqual(self.forward(notification(app_name="Satellite")), [])
 
 
 if __name__ == "__main__":

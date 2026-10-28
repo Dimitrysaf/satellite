@@ -4,6 +4,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+from satellite.i18n import _
 
 
 class PluginRow(Gtk.ListBoxRow):
@@ -36,14 +37,14 @@ class PluginRow(Gtk.ListBoxRow):
                 "preferences-system-symbolic", Gtk.IconSize.BUTTON)
             configure.set_relief(Gtk.ReliefStyle.NONE)
             configure.set_valign(Gtk.Align.CENTER)
-            configure.set_tooltip_text("Configure {}".format(plugin["name"]))
+            configure.set_tooltip_text(_("Configure {}").format(plugin["name"]))
             configure.connect("clicked", lambda _b: on_configure(plugin["id"]))
             layout.pack_start(configure, False, False, 0)
 
         toggle = Gtk.Switch()
         toggle.set_active(bool(plugin.get("enabled", True)))
         toggle.set_valign(Gtk.Align.CENTER)
-        toggle.set_tooltip_text("Enable or disable {}".format(plugin["name"]))
+        toggle.set_tooltip_text(_("Enable or disable {}").format(plugin["name"]))
         toggle.connect("state-set", lambda _w, state: not on_toggled(plugin["id"], state))
         layout.pack_start(toggle, False, False, 0)
         self.add(layout)

@@ -8,18 +8,19 @@ from gi.repository import Gdk, Gio, GLib, Gtk
 
 from satellite.mpris_bridge import MprisBridge
 from satellite.ui.clipboard_sync import ClipboardSync
-from satellite.ui.context import ActionContext
+from satellite.ui.context import ActionContext, BackgroundContext
 from satellite.ui.device_list import DeviceList
 from satellite.ui.device_page import DevicePage
 from satellite.ui.dialogs import ask_text, confirm, show_encryption_info, show_message
 from satellite.ui.empty_state import EmptyState
 from satellite.ui.plugin_config_dialog import run_plugin_config
 from satellite.ui.transfer_tracker import TransferTracker
+from satellite.i18n import _
 
 NARROW_WIDTH = 640
 SIGNATURE_KEYS = (
     "id", "name", "type", "connected", "secure", "paired", "pair_requested",
-    "pair_pending", "verification_code", "battery", "isCharging", "last_ping",
+    "pair_pending", "verification_code", "battery", "isCharging",
     "plugins", "available_plugins", "incomingCapabilities", "plugin_data",
 )
 
@@ -35,7 +36,7 @@ def device_signature(device):
 
 class SatelliteWindow(Gtk.ApplicationWindow):
     def __init__(self, app, daemon, settings, notifier, tray_available=False):
-        super().__init__(application=app, title="Satellite")
+        super().__init__(application=app, title=_("Satellite"))
         self.set_default_size(820, 540)
         self.daemon = daemon
         self.settings = settings
@@ -45,6 +46,7 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         self._current_signature = None
         self._narrow = None
         self._showing_detail = False
+        self.device_listeners = []  # called with the device list on every change
 
         self.transfers = TransferTracker(self, notifier)
         self.clipboard = ClipboardSync(daemon)
@@ -64,10 +66,15 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         daemon.on_devices_changed = lambda devices: GLib.idle_add(self._refresh_devices, devices)
         daemon.on_transfer_progress = lambda progress: GLib.idle_add(self.transfers.update, progress)
         daemon.on_notify = notifier.notify
+        daemon.on_close_notification = lambda nid: GLib.idle_add(notifier.close, nid)
+        daemon.on_prompt_text = lambda *args: GLib.idle_add(self._prompt_text, *args)
         daemon.on_clipboard = lambda text: GLib.idle_add(self.clipboard.set_text, text)
         daemon.on_open_url = lambda url: GLib.idle_add(self._open_url, url)
 
-        self.show_all()
+        # Show the contents but not the window: the application presents it,
+        # or keeps it hidden when starting minimized to the tray.
+        self.get_titlebar().show_all()
+        self.layout.show_all()
         # A Gtk.Stack can only show a child that is already visible.
         self.stack.set_visible_child_name("empty")
         self.back_button.hide()
@@ -80,24 +87,24 @@ class SatelliteWindow(Gtk.ApplicationWindow):
     def _build_header(self):
         header = Gtk.HeaderBar()
         header.set_show_close_button(True)
-        header.set_title("Satellite")
+        header.set_title(_("Satellite"))
         self.set_titlebar(header)
 
         self.refresh_button = Gtk.Button.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.BUTTON)
-        self.refresh_button.set_tooltip_text("Search for devices (F5)")
+        self.refresh_button.set_tooltip_text(_("Search for devices (F5)"))
         self.refresh_button.connect("clicked", lambda _b: self.refresh())
         header.pack_start(self.refresh_button)
 
         self.back_button = Gtk.Button.new_from_icon_name("go-previous-symbolic", Gtk.IconSize.BUTTON)
-        self.back_button.set_tooltip_text("Back to devices (Esc)")
+        self.back_button.set_tooltip_text(_("Back to devices (Esc)"))
         self.back_button.connect("clicked", lambda _b: self.go_back())
         header.pack_start(self.back_button)
 
         menu = Gio.Menu()
-        menu.append("Preferences", "app.preferences")
-        menu.append("About Satellite", "app.about")
+        menu.append(_("Preferences"), "app.preferences")
+        menu.append(_("About Satellite"), "app.about")
         quit_section = Gio.Menu()
-        quit_section.append("Quit", "app.quit")
+        quit_section.append(_("Quit"), "app.quit")
         menu.append_section(None, quit_section)
         menu_button = Gtk.MenuButton()
         menu_button.set_use_popover(True)
@@ -122,8 +129,8 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         self.page = DevicePage(self)
         self.stack.add_named(self.page, "device")
         self.stack.add_named(EmptyState(
-            "phone-symbolic", "Select a device",
-            "Pick a device on the left to send files, ping it or change its plugins.",
+            "phone-symbolic", _("Select a device"),
+            _("Pick a device on the left to see its status and change its plugins."),
         ), "empty")
         self.detail_scroller.add(self.stack)
         self.layout.pack_start(self.detail_scroller, True, True, 0)
@@ -217,6 +224,8 @@ class SatelliteWindow(Gtk.ApplicationWindow):
 
     def _refresh_devices(self, devices):
         devices = self._decorate(devices)
+        for listener in self.device_listeners:
+            listener(devices)
         if self.media_bridge:
             self.media_bridge.update(devices)
         self.clipboard.on_devices(devices)
@@ -258,8 +267,11 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         self.stack.set_visible_child_name("empty")
         self._update_layout()
 
+    def current_devices(self):
+        return self._decorate(self.daemon.devices())
+
     def _device(self, device_id):
-        devices = self._decorate(self.daemon.devices())
+        devices = self.current_devices()
         return next((d for d in devices if d["id"] == device_id), None)
 
     # -- controller interface used by DevicePage ------------------------------
@@ -279,8 +291,8 @@ class SatelliteWindow(Gtk.ApplicationWindow):
     def unpair(self, device_id):
         device = self._device(device_id)
         if device and confirm(
-            self, "Unpair from {}?".format(device["name"]),
-            "This removes the trusted connection to this device.", "Unpair",
+            self, _("Unpair from {}?").format(device["name"]),
+            _("This removes the trusted connection to this device."), _("Unpair"),
         ) and not self.daemon.unpair(device_id):
             self._pairing_error()
 
@@ -290,8 +302,8 @@ class SatelliteWindow(Gtk.ApplicationWindow):
             return
         original = device.get("real_name", device["name"])
         name = ask_text(
-            self, "Rename device",
-            "Name shown only on this computer (leave empty to use “{}”):".format(original),
+            self, _("Rename device"),
+            _("Name shown only on this computer (leave empty to use “{}”):").format(original),
             device["name"] if device["name"] != original else "",
         )
         if name is not None:
@@ -316,29 +328,42 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         handled, values = self.daemon.plugins.configure(
             plugin_id, ActionContext(self, self.daemon, device_id), settings)
         if not handled:
-            values = run_plugin_config(self, plugin, settings)
+            notes = self.daemon.plugins.settings_notes(plugin_id, self.daemon, device_id)
+            values = run_plugin_config(self, plugin, settings, notes)
         if values is not None:
             self.daemon.set_plugin_settings(device_id, plugin_id, values)
 
-    def media_action(self, device_id, player, action):
-        self.daemon.send_plugin_packet(
-            "mpris", device_id, "kdeconnect.mpris.request", {"player": player, "action": action})
-
-    def run_action(self, device_id, action):
+    def run_action(self, device_id, action, background=False):
+        """Run a plugin action. ``background`` reports problems as notifications."""
+        context = BackgroundContext if background else ActionContext
         try:
-            action.callback(ActionContext(self, self.daemon, device_id))
+            action.callback(context(self, self.daemon, device_id))
         except Exception as error:  # a plugin bug must not take the window down
             print("Action {} failed: {!r}".format(action.id, error), flush=True)
-            show_message(self, "{} failed".format(action.label), str(error))
+            context(self, self.daemon, device_id).error(_("{} failed").format(action.label), str(error))
+
+    def open_device(self, device_id):
+        """Show the window on this device's page (used by the tray)."""
+        self.present()
+        self.sidebar.select(device_id)
 
     # -- helpers ----------------------------------------------------------------
 
+    def _prompt_text(self, title, label, callback):
+        """A reply box that doesn't bring up the main window when it's hidden."""
+        text = ask_text(self if self.get_visible() else None, title, label, accept_label=_("Send"))
+        if text:
+            callback(text)
+        return GLib.SOURCE_REMOVE
+
     def _pairing_error(self):
-        show_message(
-            self, "Could not exchange the pairing request",
-            "The secure device connection is not available. Check that both devices are on "
-            "the same network and that the KDE Connect ports are allowed through the firewall.",
-        )
+        title = _("Could not exchange the pairing request")
+        text = (_("The secure device connection is not available. Check that both devices are on "
+                "the same network and that the KDE Connect ports are allowed through the firewall."))
+        if self.get_visible():
+            show_message(self, title, text)
+        else:  # pairing from the tray: don't pop up the window just for this
+            self.daemon.notify(title, text, icon="dialog-warning-symbolic")
 
     def _send_mpris_request(self, plugin_id, device_id, packet_type, body):
         if not device_id:

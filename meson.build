@@ -19,10 +19,21 @@ endif
 
 install_data(
   'satellite/__init__.py',
+  'satellite/autostart.py',
+  'satellite/cli.py',
+  'satellite/discovery.py',
+  'satellite/contacts_share.py',
+  'satellite/desktop_input.py',
+  'satellite/launch.py',
+  'satellite/phone_client.py',
+  'satellite/phone_service.py',
+  'satellite/presenter_look.py',
+  'satellite/vcard.py',
   'satellite/mpris_bridge.py',
   'satellite/notifier.py',
   'satellite/settings.py',
   'satellite/tls.py',
+  'satellite/uinput.py',
   install_dir: python_module_dir / 'satellite',
 )
 install_subdir(
@@ -37,9 +48,11 @@ install_data(
 )
 
 plugin_ids = [
-  'battery', 'clipboard', 'connectivity_report', 'contacts', 'lock',
-  'mousepad', 'mpris', 'notifications', 'pausemusic', 'ping', 'presenter',
-  'ring', 'runcommand', 'sftp', 'share', 'sms', 'systemvolume', 'telephony',
+  'battery', 'clipboard', 'connectivity_report', 'contacts', 'digitizer', 'lock',
+  'mousepad', 'mpris', 'mpriscontrol', 'notifications', 'pausemusic', 'ping',
+  'presenter', 'remoteinput', 'remotesystemvolume', 'ring', 'runcommand',
+  'screensaver_inhibit', 'sendnotifications', 'shareinputdevices', 'sftp', 'share', 'sms',
+  'systemvolume', 'telephony',
 ]
 foreach plugin_id : plugin_ids
   install_data(
@@ -87,6 +100,25 @@ configure_file(
   install_dir: bindir,
   install_mode: 'rwxr-xr-x',
 )
+# The companion apps live next to the satellite package, not inside it.
+foreach companion : ['satellite_sms', 'satellite_contacts']
+  install_subdir(
+    companion,
+    install_dir: python_module_dir,
+    exclude_directories: ['__pycache__'],
+  )
+endforeach
+foreach launcher : ['satellite-sms', 'satellite-contacts', 'satellite-cli']
+  configure_file(
+    input: 'data/' + launcher + '.in',
+    output: launcher,
+    configuration: launcher_conf,
+    install: true,
+    install_dir: bindir,
+    install_mode: 'rwxr-xr-x',
+  )
+endforeach
+
 configure_file(
   input: 'data/satellite-daemon.in',
   output: 'satellite-daemon',
@@ -102,10 +134,17 @@ configure_file(
   configuration: launcher_conf,
   install_dir: datadir / 'dbus-1' / 'services',
 )
-configure_file(
-  input: 'data/satellite-daemon.desktop.in',
-  output: 'satellite-daemon.desktop',
+autostart_in = configure_file(
+  input: 'data/org.x.Satellite-autostart.desktop.in',
+  output: 'org.x.Satellite-autostart.desktop.in',
   configuration: launcher_conf,
+)
+import('i18n').merge_file(
+  input: autostart_in,
+  output: 'org.x.Satellite-autostart.desktop',
+  type: 'desktop',
+  po_dir: meson.project_source_root() / 'po',
+  install: true,
   install_dir: get_option('sysconfdir') / 'xdg' / 'autostart',
 )
 

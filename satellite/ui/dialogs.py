@@ -4,6 +4,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+from satellite.i18n import _
 
 
 def show_message(parent, title, text, kind=Gtk.MessageType.WARNING):
@@ -22,7 +23,7 @@ def confirm(parent, title, text, accept_label):
         buttons=Gtk.ButtonsType.NONE, text=title,
     )
     dialog.format_secondary_text(text)
-    dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+    dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
     dialog.add_button(accept_label, Gtk.ResponseType.ACCEPT)
     dialog.set_default_response(Gtk.ResponseType.CANCEL)
     response = dialog.run()
@@ -30,10 +31,11 @@ def confirm(parent, title, text, accept_label):
     return response == Gtk.ResponseType.ACCEPT
 
 
-def ask_text(parent, title, label, initial="", accept_label="Save"):
+def ask_text(parent, title, label, initial="", accept_label=_("Save")):
     """Ask for one line of text. Returns the text, or None if cancelled."""
     dialog = Gtk.Dialog(title=title, transient_for=parent, modal=True)
-    dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+    dialog.set_keep_above(parent is None)  # e.g. a reply from a notification
+    dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
     dialog.add_button(accept_label, Gtk.ResponseType.ACCEPT)
     dialog.set_default_response(Gtk.ResponseType.ACCEPT)
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
@@ -55,12 +57,12 @@ def ask_text(parent, title, label, initial="", accept_label="Save"):
 def show_encryption_info(parent, device):
     encryption = device.get("encryption", {})
     show_message(
-        parent, "Encrypted connection",
-        "Device: {}\nProtocol: {}\nCipher: {}\nCertificate SHA-256: {}".format(
+        parent, _("Encrypted connection"),
+        _("Device: {}\nProtocol: {}\nCipher: {}\nCertificate SHA-256: {}").format(
             device["name"],
-            encryption.get("protocol") or "Unknown TLS version",
-            encryption.get("cipher") or "Unknown cipher suite",
-            encryption.get("fingerprint") or "Unavailable",
+            encryption.get("protocol") or _("Unknown TLS version"),
+            encryption.get("cipher") or _("Unknown cipher suite"),
+            encryption.get("fingerprint") or _("Unavailable"),
         ),
         Gtk.MessageType.INFO,
     )

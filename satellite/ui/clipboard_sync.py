@@ -6,6 +6,9 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 from gi.repository import Gdk, GLib, Gtk
 
+# Password managers (KeePassXC, KWallet, ...) offer this target with "secret".
+PASSWORD_HINT = "x-kde-passwordManagerHint"
+
 
 class ClipboardSync:
     def __init__(self, daemon):
@@ -42,18 +45,30 @@ class ClipboardSync:
         if content is None:
             return GLib.SOURCE_CONTINUE
         self._last_text = content
+        is_password = None  # only asked once something would actually be sent
         for device in self._daemon.devices():
             device_id = device["id"]
             plugin = next((p for p in device.get("available_plugins", [])
                            if p.get("id") == "clipboard"), None)
+            settings = self._daemon.plugin_settings(device_id, "clipboard")
             if (
                 not device.get("connected") or not plugin or not plugin.get("enabled")
                 or self._sent.get(device_id) == content
-                or not self._daemon.plugin_settings(device_id, "clipboard").get("send", True)
+                or not settings.get("send", True)
             ):
                 continue
+            if not settings.get("send_passwords", True):
+                if is_password is None:
+                    is_password = self._is_password()
+                if is_password:
+                    self._sent[device_id] = content  # handled: don't ask again
+                    continue
             if self._daemon.send_plugin_packet(
                 "clipboard", device_id, "kdeconnect.clipboard", {"content": content}
             ):
                 self._sent[device_id] = content
         return GLib.SOURCE_CONTINUE
+
+    def _is_password(self):
+        found, targets = self._clipboard.wait_for_targets()
+        return bool(found) and any(target.name() == PASSWORD_HINT for target in targets or ())

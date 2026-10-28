@@ -3,11 +3,34 @@
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import GObject, Gtk
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gdk, GObject, Gtk
 
 from satellite.ui.device_row import DeviceRow
 from satellite.ui.empty_state import EmptyState
 from satellite.ui.widgets import section_label
+from satellite.i18n import _
+
+# Rows sit on the window background; only hover and selection are tinted.
+SIDEBAR_CSS = b"""
+.satellite-sidebar list,
+.satellite-sidebar list row:not(:selected):not(:hover) {
+    background-color: transparent;
+}
+"""
+_css_installed = False
+
+
+def _install_css():
+    global _css_installed
+    screen = Gdk.Screen.get_default()
+    if _css_installed or screen is None:
+        return
+    provider = Gtk.CssProvider()
+    provider.load_from_data(SIDEBAR_CSS)
+    Gtk.StyleContext.add_provider_for_screen(
+        screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    _css_installed = True
 
 
 class DeviceList(Gtk.ScrolledWindow):
@@ -19,6 +42,8 @@ class DeviceList(Gtk.ScrolledWindow):
     def __init__(self, on_refresh=None):
         super().__init__()
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        _install_css()
+        self.get_style_context().add_class("satellite-sidebar")
         self._updating = False
         inner = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
@@ -27,9 +52,9 @@ class DeviceList(Gtk.ScrolledWindow):
         self.detected_list = self._make_list()
         self._lists = (self.connected_list, self.offline_list, self.detected_list)
 
-        self.connected_heading = section_label("CONNECTED")
-        self.offline_heading = section_label("OFFLINE")
-        self.detected_heading = section_label("DETECTED")
+        self.connected_heading = section_label(_("CONNECTED"))
+        self.offline_heading = section_label(_("OFFLINE"))
+        self.detected_heading = section_label(_("DETECTED"))
         self.connected_separator = Gtk.Separator(margin_top=8, margin_bottom=4)
         self.offline_separator = Gtk.Separator(margin_top=8, margin_bottom=4)
 
@@ -41,9 +66,9 @@ class DeviceList(Gtk.ScrolledWindow):
             inner.pack_start(widget, False, False, 0)
 
         self.empty = EmptyState(
-            "network-wireless-symbolic", "No devices found",
-            "Open KDE Connect on your phone and connect it to the same network as this computer.",
-            "Search again", on_refresh,
+            "network-wireless-symbolic", _("No devices found"),
+            _("Open KDE Connect on your phone and connect it to the same network as this computer."),
+            _("Search again"), on_refresh,
         )
         inner.pack_start(self.empty, True, True, 0)
         self.add(inner)

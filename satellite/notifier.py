@@ -16,6 +16,7 @@ class Notifier:
     def __init__(self, app_name="Satellite"):
         self.app_name = app_name
         self._callbacks = {}
+        self._closed = {}
         try:
             self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             self._bus.signal_subscribe(
@@ -34,11 +35,13 @@ class Notifier:
         return self._bus is not None
 
     def notify(self, summary, body="", icon="satellite", actions=None,
-               replaces=0, timeout=-1, progress=None):
+               replaces=0, timeout=-1, progress=None, on_closed=None, urgency=None, sound=True):
         """Show or update a notification and return its id (0 on failure).
 
         ``actions`` is a list of ``(key, label, callback)``. ``progress`` is
-        0-100 for a progress bar, or ``None``.
+        0-100 for a progress bar, or ``None``. ``on_closed(reason)`` runs when
+        it goes away (reason 2 means the user dismissed it). ``urgency`` is
+        0 (low), 1 or 2 (critical); ``sound=False`` keeps it quiet.
         """
         if self._bus is None:
             return 0
@@ -49,6 +52,10 @@ class Notifier:
         hints = {}
         if progress is not None:
             hints["value"] = GLib.Variant("i", max(0, min(100, int(progress))))
+        if urgency is not None:
+            hints["urgency"] = GLib.Variant("y", max(0, min(2, int(urgency))))
+        if not sound:
+            hints["suppress-sound"] = GLib.Variant("b", True)
         try:
             reply = self._bus.call_sync(
                 _NAME, _PATH, _NAME, "Notify",
@@ -65,6 +72,8 @@ class Notifier:
         self._callbacks[notification_id] = {
             key: callback for key, _label, callback in actions
         }
+        if on_closed is not None:
+            self._closed[notification_id] = on_closed
         return notification_id
 
     def close(self, notification_id):
@@ -79,6 +88,7 @@ class Notifier:
         except GLib.Error:
             pass
         self._callbacks.pop(notification_id, None)
+        self._closed.pop(notification_id, None)
 
     def _on_action_invoked(self, _bus, _sender, _path, _iface, _signal, params):
         notification_id, key = params.unpack()
@@ -90,4 +100,11 @@ class Notifier:
                 print("Notification action failed: {!r}".format(error), flush=True)
 
     def _on_closed(self, _bus, _sender, _path, _iface, _signal, params):
-        self._callbacks.pop(params.unpack()[0], None)
+        notification_id, reason = params.unpack()
+        self._callbacks.pop(notification_id, None)
+        callback = self._closed.pop(notification_id, None)
+        if callback:
+            try:
+                callback(reason)
+            except Exception as error:
+                print("Notification close handler failed: {!r}".format(error), flush=True)

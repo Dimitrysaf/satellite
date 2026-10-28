@@ -18,6 +18,7 @@ import time
 import uuid
 
 from OpenSSL import SSL, crypto
+from satellite.discovery import DiscoverySettings
 from satellite.plugins import PluginManager
 from satellite.tls import (
     MAX_PACKET_SIZE, json_packet, read_line, read_tls_line, recv_tls, send_all,
@@ -46,10 +47,15 @@ class SatelliteDaemon:
         self.on_notify = None
         self.on_clipboard = None
         self.on_open_url = None
+        self.event_listeners = []  # listener(name, device_id, payload)
+        self.on_close_notification = None
+        self.on_prompt_text = None  # (title, label, callback(text)) -> None
         self.config_dir = os.path.join(os.path.expanduser("~"), ".config", "satellite")
         os.makedirs(self.config_dir, mode=0o700, exist_ok=True)
         os.chmod(self.config_dir, 0o700)
         self.plugins = PluginManager(self.config_dir)
+        self.discovery = DiscoverySettings(self.config_dir)
+        self._mdns = None
         self.device_id = self._load_device_id()
         self.device_name = self._clean_device_name(platform.node() or "Satellite")
         self._certificate_path = os.path.join(self.config_dir, "device.crt")
@@ -153,6 +159,7 @@ class SatelliteDaemon:
 
     def stop(self):
         self._stop.set()
+        self._stop_mdns()
         with self._lock:
             links = list(self._active.values())
             timers = list(self._pair_timers.values())
@@ -210,6 +217,7 @@ class SatelliteDaemon:
     def _run(self):
         try:
             self._open_sockets()
+            self.apply_discovery_settings()
             next_broadcast = 0
             while not self._stop.is_set():
                 now = time.monotonic()
@@ -257,8 +265,35 @@ class SatelliteDaemon:
                 listener.close()
         raise OSError("No KDE Connect TCP port is available (1716–1764)")
 
+    # -- finding devices -------------------------------------------------------
+
+    def apply_discovery_settings(self):
+        """Start or stop mDNS to match Preferences (also call after changing them)."""
+        if self.discovery.get("mdns") and self.tcp_port:
+            if self._mdns is None:
+                from satellite.discovery import MdnsDiscovery
+                identity = {"id": self.device_id, "name": self.device_name, "type": "desktop", "protocol": 8}
+                self._mdns = MdnsDiscovery(identity, self.tcp_port, self.device_discovered)
+                self._mdns.start()
+        else:
+            self._stop_mdns()
+        self._refresh_requested.set()
+
+    def _stop_mdns(self):
+        if self._mdns is not None:
+            self._mdns.stop()
+            self._mdns = None
+
     def _broadcast(self):
         payload = json.dumps(self._identity_packet(), separators=(",", ":")).encode("utf-8")
+        # Addresses added by hand get the identity directly, broadcast or not.
+        for address in self.discovery.get("custom_devices"):
+            try:
+                self._udp.sendto(payload, (address, UDP_PORT))
+            except OSError as error:  # unknown host name, unreachable network, ...
+                print("Could not reach {}: {}".format(address, error), flush=True)
+        if not self.discovery.get("broadcast"):
+            return
         sent = False
         for _, interface_name in socket.if_nameindex():
             sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -299,19 +334,25 @@ class SatelliteDaemon:
             name = body.get("deviceName")
             version = int(body.get("protocolVersion", 0))
             port = int(body.get("tcpPort", 0))
-            if (
-                not self._valid_device_id(device_id)
-                or device_id == self.device_id
-                or version < 8
-                or port not in TCP_PORTS
-            ):
-                return
-            if not isinstance(name, str) or not name:
-                name = device_id
-            name = self._clean_device_name(name)
             device_type = body.get("deviceType", "desktop")
         except (UnicodeDecodeError, ValueError, TypeError, AttributeError):
             return
+        self.device_discovered(device_id, name, device_type, version, address[0], port)
+
+    def device_discovered(self, device_id, name, device_type, version, address, port):
+        """A device announced itself (UDP broadcast or mDNS): note it and connect."""
+        if (
+            not self._valid_device_id(device_id)
+            or device_id == self.device_id
+            or version < 8
+            or port not in TCP_PORTS
+        ):
+            return
+        if not isinstance(name, str) or not name:
+            name = device_id
+        name = self._clean_device_name(name)
+        if not isinstance(device_type, str):
+            device_type = "phone"
 
         with self._lock:
             old = self._devices.get(device_id, {})
@@ -322,7 +363,7 @@ class SatelliteDaemon:
                 "id": device_id,
                 "name": name,
                 "type": device_type,
-                "address": address[0],
+                "address": address,
                 "port": port,
                 "last_seen": time.monotonic(),
                 "connected": bool(old.get("connected")),
@@ -806,18 +847,41 @@ class SatelliteDaemon:
     # -- helpers for plugins ---------------------------------------------
 
     def notify(self, summary, body="", icon="satellite", actions=None,
-               replaces=0, timeout=-1, progress=None):
-        """Show a desktop notification; returns its id, or 0 if unavailable."""
+               replaces=0, timeout=-1, progress=None, on_closed=None, **hints):
+        """Show a desktop notification; returns its id, or 0 if unavailable.
+
+        ``hints`` are passed on as they are (``urgency``, ``sound``).
+        """
         if self.on_notify is None:
             return 0
         try:
+            extra = dict(hints, on_closed=on_closed) if on_closed is not None else dict(hints)
             return self.on_notify(
                 summary, body, icon=icon, actions=actions, replaces=replaces,
-                timeout=timeout, progress=progress,
+                timeout=timeout, progress=progress, **extra,
             ) or 0
         except Exception as error:  # a broken notifier must never kill a link
             print("Could not show a notification: {}".format(error), flush=True)
             return 0
+
+    def close_notification(self, notification_id):
+        if self.on_close_notification is not None and notification_id:
+            self.on_close_notification(notification_id)
+
+    def prompt_text(self, title, label, callback):
+        """Ask the user for a line of text (e.g. a reply); False if no GUI."""
+        if self.on_prompt_text is None:
+            return False
+        self.on_prompt_text(title, label, callback)
+        return True
+
+    def emit_event(self, name, device_id, payload=None):
+        """Tell listeners (the D-Bus service for the sub-apps) about a change."""
+        for listener in list(self.event_listeners):
+            try:
+                listener(name, device_id, payload)
+            except Exception as error:  # a listener must never break a link
+                print("Event listener failed: {!r}".format(error), flush=True)
 
     def set_clipboard(self, text):
         if self.on_clipboard is not None:
@@ -886,12 +950,13 @@ class SatelliteDaemon:
                 if plugin.get("enabled")
             ]
         self._notify_devices_changed()
-        if enabled:
-            with self._lock:
-                device = self._devices.get(device_id)
-                connected = bool(device and device.get("connected"))
-            if connected:
-                self.plugins.plugin_enabled(self, device_id, plugin_id)
+        with self._lock:
+            device = self._devices.get(device_id)
+            connected = bool(device and device.get("connected"))
+        if connected and enabled:
+            self.plugins.plugin_enabled(self, device_id, plugin_id)
+        elif connected:
+            self.plugins.plugin_disabled(self, device_id, plugin_id)
         return True
 
     def plugin_settings(self, device_id, plugin_id):
@@ -933,7 +998,7 @@ class SatelliteDaemon:
                 device["connected"] = False
                 device.pop("battery", None)
                 device.pop("isCharging", None)
-                device.pop("last_ping", None)
+        self.plugins.device_disconnected(self, device_id)
         self._notify_devices_changed()
         return True
 
@@ -1086,6 +1151,7 @@ class SatelliteDaemon:
         except OSError:
             pass
         if removed_active_link:
+            self.plugins.device_disconnected(self, device_id)
             self._cancel_pair_timeout(device_id)
             self._schedule_reconnect(device_id)
             self._notify_devices_changed()

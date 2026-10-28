@@ -11,8 +11,9 @@ Build-Depends:
  libglib2.0-bin,
  python3,
  python3-gi,
+ python3-gi-cairo,
  python3-openssl,
- python3-xapp (>= 3.0.0),
+ gir1.2-gtk-3.0,
  gir1.2-xapp-1.0
 Standards-Version: 4.6.2
 Homepage: https://github.com/dimitrysaf/satellite
@@ -23,11 +24,25 @@ Architecture: all
 Depends:
  ${misc:Depends},
  ${python3:Depends},
+ gir1.2-gtk-3.0,
  gir1.2-xapp-1.0,
  python3-gi,
+ python3-gi-cairo,
  python3-openssl,
  xdotool,
  xapps-common
+Recommends:
+ gir1.2-ebook-1.2,
+ evolution-data-server,
+ pulseaudio-utils,
+ sshfs,
+ gir1.2-gtklayershell-0.1
+Conflicts:
+ satellite-gtk
+Suggests:
+ gir1.2-webkit2-4.1,
+ ydotool,
+ wl-clipboard
 Description: KDE Connect compatible device integration for Linux desktops
  Satellite connects Linux desktops with KDE Connect compatible devices over
  the local network. It supports pairing, device status, file sharing, and

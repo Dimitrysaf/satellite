@@ -1,7 +1,17 @@
 #!/bin/bash
+# Update satellite.pot, the template the translations in po/ are made from.
 set -eu
+cd "$(dirname "$0")"
 
-xgettext --language=Desktop --from-code=UTF-8 --output=satellite.pot data/*.desktop.in
+xgettext --language=Desktop --from-code=UTF-8 --output=satellite.pot \
+  data/*.desktop.in data/satellite-send.nemo_action.in
 xgettext --language=Python --join-existing --from-code=UTF-8 \
-  --keyword=_ --keyword=N_ --output=satellite.pot \
-  satellite/*.py satellite/ui/*.py satellite/plugins/*/*.py daemon/*.py
+  --keyword=_ --keyword=N_ --keyword=ngettext:1,2 --keyword=pgettext:1c,2 --add-comments=Translators: \
+  --package-name=satellite --output=satellite.pot \
+  $(find satellite satellite_sms satellite_contacts daemon -name '*.py' -not -path '*/__pycache__/*' | sort)
+
+# The same files, for Meson's update-po target.
+{
+  ls data/*.desktop.in data/satellite-send.nemo_action.in
+  find satellite satellite_sms satellite_contacts daemon -name '*.py' -not -path '*/__pycache__/*' | sort
+} > po/POTFILES

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Satellite Messages
+GenericName=Text Messages
+Comment=Read and send your phone's text messages
+Exec=satellite-sms
+Icon=satellite-sms
+Terminal=false
+Categories=Network;InstantMessaging;
+Keywords=SMS;MMS;text;phone;KDE Connect;
+StartupNotify=true

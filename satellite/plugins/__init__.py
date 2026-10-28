@@ -232,6 +232,17 @@ class PluginManager:
             return False, None
         return True, configure(ctx, settings)
 
+    def settings_notes(self, plugin_id, daemon, device_id):
+        """Lines a plugin wants shown above its settings (its current state)."""
+        notes = getattr(self.plugins.get(plugin_id), "settings_notes", None)
+        if notes is None:
+            return []
+        try:
+            return [line for line in notes(daemon, device_id) if line]
+        except Exception as error:  # a note is never worth losing the dialog over
+            print("Plugin {} notes failed: {!r}".format(plugin_id, error), flush=True)
+            return []
+
     def device_connected(self, daemon, device_id):
         for plugin_id, plugin in self.plugins.items():
             if not self.is_enabled_for(device_id, plugin_id):
@@ -239,6 +250,22 @@ class PluginManager:
             callback = getattr(plugin, "on_connected", None)
             if callback:
                 callback(daemon, device_id)
+
+    def device_disconnected(self, daemon, device_id):
+        """Let every plugin clean up (even one switched off meanwhile)."""
+        for plugin in self.plugins.values():
+            callback = getattr(plugin, "on_disconnected", None)
+            if callback:
+                try:
+                    callback(daemon, device_id)
+                except Exception as error:  # cleanup must reach every plugin
+                    print("Plugin cleanup failed: {!r}".format(error), flush=True)
+
+    def plugin_disabled(self, daemon, device_id, plugin_id):
+        plugin = self.plugins.get(plugin_id)
+        callback = getattr(plugin, "on_disconnected", None) if plugin else None
+        if callback:
+            callback(daemon, device_id)
 
     def plugin_enabled(self, daemon, device_id, plugin_id):
         plugin = self.plugins.get(plugin_id)

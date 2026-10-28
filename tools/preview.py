@@ -73,6 +73,63 @@ def run_shots(app, out_dir):
             return False
         return run
 
+    def menu_shot(name):
+        def run():
+            window.page.menu_button.clicked()
+            GLib.timeout_add(500, finish)
+
+        def finish():
+            capture(window, os.path.join(out_dir, name))
+            popup = window.page.menu_button.get_popup()
+            capture(popup.get_toplevel(), os.path.join(out_dir, name.replace(".png", "-popup.png")))
+            popup.popdown()
+            return False
+        return run
+
+    def toplevel_shot(name, opener, kind):
+        """Open a non-dialog window (e.g. remote input), capture it, close it."""
+        def run():
+            opener()
+            GLib.timeout_add(600, finish)
+
+        def finish():
+            for toplevel in Gtk.Window.list_toplevels():
+                if isinstance(toplevel, kind) and toplevel.get_visible():
+                    capture(toplevel, os.path.join(out_dir, name))
+                    toplevel.destroy()
+            return False
+        return run
+
+    def preferences_shot(name):
+        from satellite.ui.preferences_dialog import PreferencesDialog
+
+        def run():
+            dialog = PreferencesDialog(window, window.settings, window.daemon)
+            GLib.timeout_add(600, lambda: (capture(dialog, os.path.join(out_dir, name)),
+                                           dialog.destroy(), False)[2])
+        return run
+
+    def tray_shot(name):
+        from satellite.ui.tray import Tray
+        tray = Tray(window, lambda **_k: None, lambda: None)
+
+        def run():
+            tray.menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
+            GLib.timeout_add(400, open_submenu)
+
+        def open_submenu():
+            tray.menu.select_item(tray.menu.get_children()[0])
+            GLib.timeout_add(700, finish)
+            return False
+
+        def finish():
+            capture(tray.menu.get_toplevel(), os.path.join(out_dir, name))
+            submenu = tray.menu.get_children()[0].get_submenu()
+            capture(submenu.get_toplevel(), os.path.join(out_dir, name.replace(".png", "-device.png")))
+            tray.menu.popdown()
+            return False
+        return run
+
     window.resize(900, 600)
     at(700, shot("01-no-selection.png"))
     at(300, lambda: select("Pixel 7"))
@@ -88,11 +145,22 @@ def run_shots(app, out_dir):
                         lambda: window.configure_plugin(ids["Pixel 7"], "ping")))
     at(1500, dialog_shot("07-runcommand-dialog.png",
                          lambda: window.configure_plugin(ids["Pixel 7"], "runcommand")))
-    at(1500, lambda: window.resize(430, 640))
+    at(1500, menu_shot("08-device-menu.png"))
+    for number, plugin_id in enumerate(
+            ("ring", "pausemusic", "clipboard", "sendnotifications", "presenter", "contacts", "notifications", "mpriscontrol"), start=10):
+        at(1000, dialog_shot("{}-{}-settings.png".format(number, plugin_id),
+                             lambda p=plugin_id: window.configure_plugin(ids["Pixel 7"], p)))
+    from satellite.ui.remote_input import RemoteInputWindow
+    remote = next(a for _p, a in daemon.plugins.actions_for(daemon.devices()[0]) if a.id == "remote-input")
+    at(1000, toplevel_shot("20-remote-input.png", lambda: window.run_action(ids["Pixel 7"], remote),
+                           RemoteInputWindow))
+    at(1000, preferences_shot("21-preferences.png"))
+    at(1000, tray_shot("22-tray-menu.png"))
+    at(2000, lambda: window.resize(430, 640))
     at(600, window.go_back)
-    at(600, shot("08-narrow-list.png"))
+    at(600, shot("23-narrow-list.png"))
     at(300, lambda: select("Pixel 7"))
-    at(900, shot("09-narrow-device.png"))
+    at(900, shot("24-narrow-device.png"))
     at(300, lambda: sys.exit(0) or app.quit())
 
     def next_step(index=0):

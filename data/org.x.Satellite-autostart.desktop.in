@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=Satellite
-Exec=@bindir@/satellite-daemon
+Comment=Start Satellite minimized to the system tray
+Exec=@bindir@/satellite --background
 Icon=satellite
 Terminal=false
 NoDisplay=true

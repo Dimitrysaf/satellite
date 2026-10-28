@@ -10,6 +10,7 @@ from gi.repository import Gio, GLib, XApp
 
 from satellite.ui.transfer_popup import TransferPopup
 from satellite.ui.widgets import format_bytes
+from satellite.i18n import _
 
 
 class TransferTracker:
@@ -55,21 +56,21 @@ class TransferTracker:
         percent = max(0, progress.get("percent", 0))
         actions = []
         if progress.get("error"):
-            summary, body, timeout = "File transfer failed", "{} · {}".format(name, progress["error"]), 8000
+            summary, body, timeout = _("File transfer failed"), "{} · {}".format(name, progress["error"]), 8000
         elif progress.get("finished"):
-            summary = "File sent" if sending else "File received"
+            summary = _("File sent") if sending else _("File received")
             if sending:
-                body = "{} · sent to {}".format(name, progress["device_name"])
+                body = _("{} · sent to {}").format(name, progress["device_name"])
             else:
                 folder = os.path.dirname(progress["path"] or "")
-                body = "{} · saved to {}".format(name, folder)
+                body = _("{} · saved to {}").format(name, folder)
                 if folder:
-                    actions = [("open", "Open folder", lambda f=folder: Gio.AppInfo.launch_default_for_uri(
+                    actions = [("open", _("Open folder"), lambda f=folder: Gio.AppInfo.launch_default_for_uri(
                         GLib.filename_to_uri(f, None), None))]
             timeout = 6000
         else:
-            summary = "{} {}".format(
-                "Sending file to" if sending else "Receiving file from", progress["device_name"])
+            summary = (_("Sending file to {}") if sending else _("Receiving file from {}")).format(
+                progress["device_name"])
             body, timeout = "{} · {} / {} · {}%".format(name, received, total, percent), 0
         notification_id = self._notifier.notify(
             summary, body, icon="folder-download-symbolic",

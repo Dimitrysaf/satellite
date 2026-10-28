@@ -8,11 +8,12 @@ PHONE_ACCEPTS = [
     "kdeconnect.ping", "kdeconnect.share.request", "kdeconnect.clipboard",
     "kdeconnect.clipboard.connect", "kdeconnect.findmyphone.request",
     "kdeconnect.runcommand", "kdeconnect.runcommand.output", "kdeconnect.battery",
-    "kdeconnect.notification.request", "kdeconnect.notification.action",
+    "kdeconnect.notification", "kdeconnect.notification.request", "kdeconnect.notification.action",
     "kdeconnect.notification.reply", "kdeconnect.mpris.request",
-    "kdeconnect.mousepad.echo", "kdeconnect.mousepad.keyboardstate",
+    "kdeconnect.mousepad.echo", "kdeconnect.mousepad.keyboardstate", "kdeconnect.mousepad.request",
     "kdeconnect.lock.request", "kdeconnect.lock", "kdeconnect.telephony.request_mute",
     "kdeconnect.sftp.request", "kdeconnect.connectivity_report.request",
+    "kdeconnect.mpris", "kdeconnect.systemvolume",
 ]
 PHONE_SENDS = [
     "kdeconnect.ping", "kdeconnect.share.request", "kdeconnect.clipboard",
@@ -21,7 +22,8 @@ PHONE_SENDS = [
     "kdeconnect.mpris", "kdeconnect.mousepad.request", "kdeconnect.lock",
     "kdeconnect.lock.request", "kdeconnect.telephony", "kdeconnect.sftp",
     "kdeconnect.connectivity_report", "kdeconnect.presenter", "kdeconnect.contacts.response_uids_timestamps",
-    "kdeconnect.sms.messages", "kdeconnect.systemvolume",
+    "kdeconnect.sms.messages", "kdeconnect.systemvolume", "kdeconnect.mpris.request",
+    "kdeconnect.systemvolume.request",
 ]
 
 ENCRYPTION = {
@@ -50,7 +52,6 @@ def build(manager):
         _device(
             manager, "a1" * 16, "Pixel 7", "phone",
             connected=True, secure=True, paired=True, battery=82, isCharging=True,
-            last_ping="Ping from Pixel 7",
             plugin_data={
                 "mpris": {"type": "kdeconnect.mpris", "id": 1, "body": {
                     "player": "Spotify", "title": "Comfortably Numb",

@@ -1,0 +1,9 @@
+[Nemo Action]
+Name=Send to Phone
+Comment=Send the selected files to a device connected with Satellite
+Exec=satellite-cli --pick send %F
+Icon-Name=phone-symbolic
+Selection=notnone
+Extensions=nodirs;
+Quote=double
+Dependencies=satellite-cli;

@@ -3,6 +3,7 @@
 import glob
 import threading
 import time
+from satellite.i18n import _
 
 ENABLED_BY_DEFAULT = True
 LOW_BATTERY_PERCENT = 15
@@ -25,14 +26,14 @@ def read_local_battery(root="/sys/class/power_supply"):
 
 class Plugin:
     plugin_id = "battery"
-    display_name = "Battery"
-    description = "Show the paired device's battery, and share this computer's battery with it."
+    display_name = _("Battery")
+    description = _("Show the paired device's battery, and share this computer's battery with it.")
     icon = "battery-good-symbolic"
     incoming_capabilities = ("kdeconnect.battery",)
     outgoing_capabilities = ("kdeconnect.battery",)
     settings_schema = (
-        {"key": "notify_low", "label": "Warn when the device battery is low", "type": "bool", "default": True},
-        {"key": "share", "label": "Share this computer's battery", "type": "bool", "default": True},
+        {"key": "notify_low", "label": _("Warn when the device battery is low"), "type": "bool", "default": True},
+        {"key": "share", "label": _("Share this computer's battery"), "type": "bool", "default": True},
     )
 
     def __init__(self, reader=read_local_battery):
@@ -111,8 +112,9 @@ class Plugin:
             self._low.add(link["id"])
             if settings.get("notify_low", True):
                 daemon.notify(
-                    "{} battery is low".format(link["name"]),
-                    "{}% remaining. Plug it in soon.".format(int(charge)),
+                    _("{} battery is low").format(link["name"]),
+                    # xgettext:no-python-format
+                    _("{}% remaining. Plug it in soon.").format(int(charge)),
                     icon="battery-caution-symbolic", timeout=10000,
                 )
         elif not low:

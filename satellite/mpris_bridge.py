@@ -1,6 +1,7 @@
 """Expose a connected KDE Connect media player through the desktop MPRIS bus."""
 
 import hashlib
+import os
 
 from gi.repository import Gio, GLib
 
@@ -89,6 +90,7 @@ class MprisBridge:
         self.device_name = "Satellite"
         self.player = ""
         self.media = {}
+        self.art = {}  # cached album art: {"url": phone's url, "path": local file}
         self._last_properties = {}
 
     def update(self, devices):
@@ -114,6 +116,7 @@ class MprisBridge:
             selected.get("plugin_data", {}).get("mpris", {}).get("body", {})
             if selected else {}
         )
+        self.art = selected.get("plugin_data", {}).get("mpris_art", {}) if selected else {}
         players = self.media.get("playerList", [])
         self.player = self.media.get("player") or (players[0] if players else "")
 
@@ -237,6 +240,9 @@ class MprisBridge:
         }
         if isinstance(media.get("length"), (int, float)):
             metadata["mpris:length"] = GLib.Variant("x", int(media["length"] * 1000))
+        art = self.art
+        if art.get("url") and art.get("url") == media.get("albumArtUrl") and os.path.exists(art.get("path", "")):
+            metadata["mpris:artUrl"] = GLib.Variant("s", GLib.filename_to_uri(art["path"]))
         player_values = {
             "PlaybackStatus": GLib.Variant("s", "Playing" if playing else ("Paused" if media else "Stopped")),
             "LoopStatus": GLib.Variant("s", str(media.get("loopStatus", "None"))),
