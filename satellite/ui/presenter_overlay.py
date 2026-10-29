@@ -17,7 +17,7 @@ gi.require_version("Gdk", "3.0")
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk, GLib, Gtk
 
-from satellite.presenter_look import Trail, draw_pointer, pointer_look
+from satellite.presenter_look import IMAGE_SCALE, Trail, draw_pointer, pointer_look
 from satellite.i18n import _
 
 FRAME_MS = 30  # redraws while the laser trail fades
@@ -103,6 +103,7 @@ class PresenterOverlay(Gtk.Window):
 
     def point(self, x, y, settings):
         """Show the pointer at (x, y), fractions of the screen size."""
+        old_x, old_y, old_look = self._x, self._y, self._look
         self._x, self._y = x, y
         self._look = pointer_look(settings)
         if self._look["trail"]:
@@ -112,12 +113,28 @@ class PresenterOverlay(Gtk.Window):
         if not self.get_visible():
             self._cover_monitor()
             self.show()
-        self.queue_draw()
+            self.queue_draw()
+        elif self._look != old_look or self._look["style"] == "spotlight" or self._look["trail"]:
+            self.queue_draw()  # these cover the whole screen
+        else:
+            # Repainting a whole monitor for a moving dot is what made it lag: only
+            # the spots it left and arrived at need it.
+            self._damage(old_x, old_y)
+            self._damage(x, y)
         if self._hide_source:
             GLib.source_remove(self._hide_source)
             self._hide_source = 0
         if self._look["hide_ms"] is not None:  # None: stays until the presentation stops
             self._hide_source = GLib.timeout_add(self._look["hide_ms"], self.stop)
+
+    def _damage(self, x, y):
+        """Ask GTK to repaint just the dot or picture at (x, y)."""
+        width, height = self.get_allocated_width(), self.get_allocated_height()
+        reach = max(4.0, width * self._look["size"] / 2)
+        if self._look["style"] == "image":
+            reach *= IMAGE_SCALE
+        reach = int(reach + self._look["outline"] + 3)
+        self.queue_draw_area(int(width * x) - reach, int(height * y) - reach, 2 * reach, 2 * reach)
 
     def _fade(self):
         self._trail.prune()

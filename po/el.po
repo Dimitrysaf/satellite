@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 22:08+0200\n"
+"POT-Creation-Date: 2026-10-29 22:33+0200\n"
 "PO-Revision-Date: 2026-10-28 15:08+0300\n"
 "Last-Translator: Dimitrysaf <demetresmeliates+github@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -250,7 +250,7 @@ msgid "Copy contacts from the phone"
 msgstr "Αντιγραφή των επαφών από το τηλέφωνο"
 
 #: satellite_contacts/window.py:227 satellite/plugins/contacts/__init__.py:112
-#: satellite_sms/window.py:100 satellite/vcard.py:19 satellite/vcard.py:101
+#: satellite_sms/window.py:100 satellite/vcard.py:19 satellite/vcard.py:145
 msgid "Phone"
 msgstr "Τηλέφωνο"
 
@@ -382,7 +382,7 @@ msgid "Could not send the clipboard"
 msgstr "Δεν ήταν δυνατή η αποστολή του προχείρου"
 
 #: satellite/plugins/clipboard/__init__.py:33
-#: satellite/plugins/sftp/__init__.py:94
+#: satellite/plugins/sftp/__init__.py:154
 #: satellite/plugins/share/__init__.py:381
 msgid "The connection is unavailable."
 msgstr "Η σύνδεση δεν είναι διαθέσιμη."
@@ -547,7 +547,7 @@ msgstr "Ποντίκι και πληκτρολόγιο"
 msgid "Use the paired device as a touchpad and keyboard."
 msgstr "Χρήση της συνδεδεμένης συσκευής ως επιφάνειας αφής και πληκτρολογίου."
 
-#: satellite/plugins/mousepad/__init__.py:198
+#: satellite/plugins/mousepad/__init__.py:199
 msgid "Swap left and right buttons"
 msgstr "Αντιμετάθεση αριστερού και δεξιού κουμπιού"
 
@@ -717,154 +717,154 @@ msgstr "Παρουσίαση"
 msgid "Point at your slides from the paired device."
 msgstr "Δείξτε τις διαφάνειές σας από τη συνδεδεμένη συσκευή."
 
-#: satellite/plugins/presenter/__init__.py:56
+#: satellite/plugins/presenter/__init__.py:57
 #: satellite/ui/presenter_settings.py:164
 msgid "Pointer"
 msgstr "Δείκτης"
 
-#: satellite/plugins/presenter/__init__.py:57
+#: satellite/plugins/presenter/__init__.py:58
 msgid "Dot"
 msgstr "Κουκκίδα"
 
-#: satellite/plugins/presenter/__init__.py:57
-#: satellite/plugins/presenter/__init__.py:66
+#: satellite/plugins/presenter/__init__.py:58
+#: satellite/plugins/presenter/__init__.py:67
 #: satellite_sms/conversation_list.py:14
 msgid "Picture"
 msgstr "Εικόνα"
 
-#: satellite/plugins/presenter/__init__.py:57
+#: satellite/plugins/presenter/__init__.py:58
 #: satellite/ui/presenter_settings.py:173
 msgid "Spotlight"
 msgstr "Προβολέας"
 
-#: satellite/plugins/presenter/__init__.py:58
+#: satellite/plugins/presenter/__init__.py:59
 msgid "Move the mouse pointer"
 msgstr "Μετακίνηση του δείκτη του ποντικιού"
 
-#: satellite/plugins/presenter/__init__.py:59
+#: satellite/plugins/presenter/__init__.py:60
 msgid "Colour"
 msgstr "Χρώμα"
 
-#: satellite/plugins/presenter/__init__.py:60
+#: satellite/plugins/presenter/__init__.py:61
 msgid "Size"
 msgstr "Μέγεθος"
 
-#: satellite/plugins/presenter/__init__.py:61
-#: satellite/plugins/presenter/__init__.py:71
+#: satellite/plugins/presenter/__init__.py:62
+#: satellite/plugins/presenter/__init__.py:72
 msgid "Small"
 msgstr "Μικρό"
 
-#: satellite/plugins/presenter/__init__.py:61
-#: satellite/plugins/presenter/__init__.py:71
+#: satellite/plugins/presenter/__init__.py:62
+#: satellite/plugins/presenter/__init__.py:72
 msgid "Medium"
 msgstr "Μεσαίο"
 
-#: satellite/plugins/presenter/__init__.py:61
-#: satellite/plugins/presenter/__init__.py:71
+#: satellite/plugins/presenter/__init__.py:62
+#: satellite/plugins/presenter/__init__.py:72
 msgid "Large"
 msgstr "Μεγάλο"
 
-#: satellite/plugins/presenter/__init__.py:62
+#: satellite/plugins/presenter/__init__.py:63
 msgid "Opacity (%)"
 msgstr "Αδιαφάνεια (%)"
 
-#: satellite/plugins/presenter/__init__.py:63
+#: satellite/plugins/presenter/__init__.py:64
 msgid "Outline"
 msgstr "Περίγραμμα"
 
-#: satellite/plugins/presenter/__init__.py:64
+#: satellite/plugins/presenter/__init__.py:65
 msgid "None"
 msgstr "Κανένα"
 
-#: satellite/plugins/presenter/__init__.py:64
+#: satellite/plugins/presenter/__init__.py:65
 msgid "Thin"
 msgstr "Λεπτό"
 
-#: satellite/plugins/presenter/__init__.py:64
+#: satellite/plugins/presenter/__init__.py:65
 msgid "Thick"
 msgstr "Χοντρό"
 
-#: satellite/plugins/presenter/__init__.py:65
+#: satellite/plugins/presenter/__init__.py:66
 msgid "Outline colour"
 msgstr "Χρώμα περιγράμματος"
 
-#: satellite/plugins/presenter/__init__.py:67
+#: satellite/plugins/presenter/__init__.py:68
 msgid "Laser trail"
 msgstr "Ίχνος λέιζερ"
 
-#: satellite/plugins/presenter/__init__.py:68
+#: satellite/plugins/presenter/__init__.py:69
 msgid "Darkness (%)"
 msgstr "Σκοτείνιασμα (%)"
 
-#: satellite/plugins/presenter/__init__.py:70
+#: satellite/plugins/presenter/__init__.py:71
 msgid "Spotlight size"
 msgstr "Μέγεθος προβολέα"
 
-#: satellite/plugins/presenter/__init__.py:72
+#: satellite/plugins/presenter/__init__.py:73
 msgid "Ring around the spotlight"
 msgstr "Δαχτυλίδι γύρω από τον προβολέα"
 
-#: satellite/plugins/presenter/__init__.py:73
+#: satellite/plugins/presenter/__init__.py:74
 msgid "Hide after"
 msgstr "Απόκρυψη μετά από"
 
-#: satellite/plugins/presenter/__init__.py:74
+#: satellite/plugins/presenter/__init__.py:75
 msgid "Half a second"
 msgstr "Μισό δευτερόλεπτο"
 
-#: satellite/plugins/presenter/__init__.py:74
+#: satellite/plugins/presenter/__init__.py:75
 msgid "2 seconds"
 msgstr "2 δευτερόλεπτα"
 
-#: satellite/plugins/presenter/__init__.py:74
+#: satellite/plugins/presenter/__init__.py:75
 msgid "5 seconds"
 msgstr "5 δευτερόλεπτα"
 
-#: satellite/plugins/presenter/__init__.py:75
+#: satellite/plugins/presenter/__init__.py:76
 msgid "When the presentation ends"
 msgstr "Στο τέλος της παρουσίασης"
 
-#: satellite/plugins/presenter/__init__.py:76
+#: satellite/plugins/presenter/__init__.py:77
 msgid "Speed"
 msgstr "Ταχύτητα"
 
-#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/presenter/__init__.py:78
 #: satellite/plugins/remoteinput/__init__.py:51
 msgid "Slow"
 msgstr "Αργή"
 
-#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/presenter/__init__.py:78
 #: satellite/plugins/remoteinput/__init__.py:51
 msgid "Normal"
 msgstr "Κανονική"
 
-#: satellite/plugins/presenter/__init__.py:77
+#: satellite/plugins/presenter/__init__.py:78
 #: satellite/plugins/remoteinput/__init__.py:51
 msgid "Fast"
 msgstr "Γρήγορη"
 
-#: satellite/plugins/presenter/__init__.py:109
+#: satellite/plugins/presenter/__init__.py:117
 msgid "Slides won't change"
 msgstr "Οι διαφάνειες δεν θα αλλάζουν"
 
-#: satellite/plugins/presenter/__init__.py:111
+#: satellite/plugins/presenter/__init__.py:119
 msgid "Turn on Mouse and keyboard"
 msgstr "Ενεργοποίηση του «Ποντίκι και πληκτρολόγιο»"
 
-#: satellite/plugins/presenter/__init__.py:139
+#: satellite/plugins/presenter/__init__.py:150
 msgid "The presenter pointer may not show"
 msgstr "Ο δείκτης παρουσίασης μπορεί να μην εμφανίζεται"
 
-#: satellite/plugins/presenter/__init__.py:141
-#: satellite/plugins/presenter/__init__.py:194
+#: satellite/plugins/presenter/__init__.py:152
+#: satellite/plugins/presenter/__init__.py:220
 msgid "Move the mouse pointer instead"
 msgstr "Μετακίνηση του δείκτη του ποντικιού αντί αυτού"
 
-#: satellite/plugins/presenter/__init__.py:197
+#: satellite/plugins/presenter/__init__.py:223
 msgid "Turn it on"
 msgstr "Ενεργοποίηση"
 
-#: satellite/plugins/presenter/__init__.py:200
+#: satellite/plugins/presenter/__init__.py:226
 msgid "The mouse pointer can't be moved here. "
 msgstr "Ο δείκτης του ποντικιού δεν μπορεί να μετακινηθεί εδώ. "
 
@@ -1095,36 +1095,45 @@ msgstr "Κρίσιμο"
 msgid "Send notifications from"
 msgstr "Αποστολή ειδοποιήσεων από"
 
-#: satellite/plugins/sftp/__init__.py:52 satellite/plugins/sftp/__init__.py:96
+#: satellite/plugins/sftp/__init__.py:105
+#: satellite/plugins/sftp/__init__.py:156
 msgid "Browse files"
 msgstr "Περιήγηση αρχείων"
 
-#: satellite/plugins/sftp/__init__.py:53
+#: satellite/plugins/sftp/__init__.py:106
 msgid "Open the paired device's files in the file manager."
 msgstr "Άνοιγμα των αρχείων της συνδεδεμένης συσκευής στη διαχείριση αρχείων."
 
-#: satellite/plugins/sftp/__init__.py:58
-msgid "Show the device's files as a drive while it's connected"
-msgstr "Εμφάνιση των αρχείων της συσκευής ως δίσκου όσο είναι συνδεδεμένη"
+#: satellite/plugins/sftp/__init__.py:111
+msgid "Keep the device's files mounted while it's connected"
+msgstr "Διατήρηση των αρχείων της συσκευής προσαρτημένων όσο είναι συνδεδεμένη"
 
-#: satellite/plugins/sftp/__init__.py:88
+#: satellite/plugins/sftp/__init__.py:113
+msgid "Mount in this folder (empty: a hidden folder)"
+msgstr "Προσάρτηση σε αυτόν τον φάκελο (κενό: κρυφός φάκελος)"
+
+#: satellite/plugins/sftp/__init__.py:135
+msgid "In a hidden folder, the device appears in the file manager's sidebar while it's mounted. In a visible folder in your home folder, it appears as a drive."
+msgstr "Σε κρυφό φάκελο, η συσκευή εμφανίζεται στην πλαϊνή στήλη του διαχειριστή αρχείων όσο είναι προσαρτημένη. Σε ορατό φάκελο μέσα στον προσωπικό σας φάκελο, εμφανίζεται ως δίσκος."
+
+#: satellite/plugins/sftp/__init__.py:148
 msgid "Browsing needs sshfs"
 msgstr "Η περιήγηση χρειάζεται το sshfs"
 
-#: satellite/plugins/sftp/__init__.py:88
+#: satellite/plugins/sftp/__init__.py:148
 msgid "Install the sshfs package, then try again."
 msgstr "Εγκαταστήστε το πακέτο sshfs και δοκιμάστε ξανά."
 
-#: satellite/plugins/sftp/__init__.py:94
+#: satellite/plugins/sftp/__init__.py:154
 msgid "Could not browse the device"
 msgstr "Δεν ήταν δυνατή η περιήγηση στη συσκευή"
 
-#: satellite/plugins/sftp/__init__.py:97
+#: satellite/plugins/sftp/__init__.py:157
 msgid "Open the device's files in the file manager"
 msgstr "Άνοιγμα των αρχείων της συσκευής στη διαχείριση αρχείων"
 
-#: satellite/plugins/sftp/__init__.py:107
-#: satellite/plugins/sftp/__init__.py:136
+#: satellite/plugins/sftp/__init__.py:167
+#: satellite/plugins/sftp/__init__.py:198
 msgid "Could not browse {}"
 msgstr "Δεν ήταν δυνατή η περιήγηση στη συσκευή {}"
 
@@ -1922,10 +1931,10 @@ msgstr "Βομβητής"
 msgid "Other"
 msgstr "Άλλο"
 
-#: satellite/vcard.py:40
+#: satellite/vcard.py:84
 msgid "Unnamed"
 msgstr "Χωρίς όνομα"
 
-#: satellite/vcard.py:126
+#: satellite/vcard.py:170
 msgid "Email"
 msgstr "Email"

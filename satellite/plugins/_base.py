@@ -37,6 +37,9 @@ class PacketStatePlugin:
     incoming_capabilities = ()
     outgoing_capabilities = ()
     settings_schema = ()
+    # Keep the latest packet on the device and tell the window. Off for plugins that get
+    # dozens of packets a second (pointer moves): redrawing the window for each one lags.
+    remember_packets = True
 
     @classmethod
     def is_supported(cls, remote_incoming, remote_outgoing):
@@ -54,6 +57,8 @@ class PacketStatePlugin:
         for field in cls.settings_schema:
             if field.get("key") == "receive" and not settings.get("receive", True):
                 return True
+        if not cls.remember_packets:
+            return True
         with daemon._lock:
             device = daemon._devices.get(link["id"])
             if device:

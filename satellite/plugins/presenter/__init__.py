@@ -51,6 +51,7 @@ class Plugin(PacketStatePlugin):
     incoming_capabilities = ("kdeconnect.presenter",)
     outgoing_capabilities = ("kdeconnect.presenter",)
     packet_types = incoming_capabilities
+    remember_packets = False  # pointer moves arrive dozens of times a second
     # Edited in the plugin's own dialog with a live preview (configure below).
     settings_schema = (
         {"key": "style", "label": _("Pointer"), "type": "choice", "default": "dot",
@@ -87,6 +88,13 @@ class Plugin(PacketStatePlugin):
         self._lock = threading.Lock()
         self._daemon = None
         self._warned = set()  # (device id, warning) already shown this session
+        self._checked = set()  # devices whose overlay limitation was checked this session
+        self._screen = None  # (width, height), read on the GTK thread
+        self._screen_requested = False
+        # Only the newest position is drawn: moves that arrive before the screen
+        # catches up are skipped, not queued, or the pointer trails behind the hand.
+        self._pending = None
+        self._draw_scheduled = False
 
     def on_connected(self, daemon, _device_id):
         report_problems(daemon)
@@ -128,6 +136,9 @@ class Plugin(PacketStatePlugin):
 
     def _check_overlay(self, device_id, settings):
         """Once a session: if the drawn pointer may not show, offer the mouse pointer."""
+        if device_id in self._checked:
+            return
+        self._checked.add(device_id)
         limitation = self._limitation() if self._limitation else _overlay_limitation()
         if limitation is None:
             return
@@ -167,10 +178,25 @@ class Plugin(PacketStatePlugin):
             from gi.repository import GLib
         except ImportError:
             return
-        GLib.idle_add(self._show_overlay, position, settings, device_id)
+        with self._lock:
+            self._pending = (position, settings, device_id)
+            if self._draw_scheduled:
+                return
+            self._draw_scheduled = True
+        GLib.idle_add(self._draw_pending, priority=GLib.PRIORITY_HIGH_IDLE)
+
+    def _draw_pending(self):
+        with self._lock:
+            pending, self._pending = self._pending, None
+            self._draw_scheduled = False
+        if pending is not None:
+            self._show_overlay(*pending)
+        return False
 
     def _show_overlay(self, position, settings, device_id):
         """Runs on the GTK main loop."""
+        if position is None:
+            self._screen = None  # read it again next time: monitors may have changed
         if position is not None:
             self._check_overlay(device_id, settings)
         try:
@@ -201,9 +227,24 @@ class Plugin(PacketStatePlugin):
                               cursor_only=True))
         return run_presenter_settings(ctx.parent, settings, self.settings_schema, notes)
 
-    @staticmethod
-    def _screen_size():
-        return screen_size(FALLBACK_SCREEN)
+    def _screen_size(self):
+        """Cached: packets arrive on the network thread, and GTK may only be asked on its own."""
+        if self._screen is None:
+            with self._lock:
+                asking, self._screen_requested = self._screen_requested, True
+            if not asking:
+                try:
+                    from gi.repository import GLib
+                    GLib.idle_add(self._read_screen)
+                except ImportError:
+                    pass
+            return FALLBACK_SCREEN
+        return self._screen
+
+    def _read_screen(self):
+        self._screen = screen_size(FALLBACK_SCREEN)
+        self._screen_requested = False
+        return False
 
 
 def _overlay_limitation():

@@ -6,7 +6,7 @@
     </linearGradient>
     <mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="256" height="256">
       <rect width="256" height="256" fill="#fff"/>
-      <circle cx="201.3" cy="115" r="29" fill="#000"/>
+      <circle cx="201.3" cy="115" r="31" fill="#000"/>
     </mask>
   </defs>
   <rect x="18" y="20" width="220" height="220" rx="47" fill="#000" fill-opacity=".18"/>
@@ -15,7 +15,7 @@
   <g transform="translate(-5 4)">
     <g transform="rotate(-28 128 128)" fill="#fff">
       <ellipse cx="128" cy="128" rx="78" ry="38" fill="none" stroke="#fff" stroke-width="16" mask="url(#gap)"/>
-      <circle cx="201.3" cy="115" r="18"/>
+      <path transform="translate(201.3 115) rotate(28)" d="M0 -28Q6 -6 28 0Q6 6 0 28Q-6 6 -28 0Q-6 -6 0 -28Z"/>
     </g>
     <circle cx="128" cy="128" r="25" fill="#fff"/>
   </g>

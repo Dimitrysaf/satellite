@@ -194,6 +194,7 @@ class Plugin(PacketStatePlugin):
         "kdeconnect.mousepad.keyboardstate",
     )
     packet_types = incoming_capabilities
+    remember_packets = False  # pointer moves arrive dozens of times a second
     settings_schema = (
         {"key": "left_handed", "label": _("Swap left and right buttons"), "type": "bool", "default": False},
     )

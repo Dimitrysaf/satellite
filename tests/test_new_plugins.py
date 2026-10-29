@@ -111,36 +111,73 @@ class MediaControlTests(unittest.TestCase):
 
 
 class SftpTests(unittest.TestCase):
+    def setUp(self):
+        self.folder = tempfile.TemporaryDirectory()
+        self.addCleanup(self.folder.cleanup)
+        self.home = os.path.join(self.folder.name, "home")
+        self.runtime = os.path.join(self.folder.name, "run")
+        os.makedirs(self.home)
+        env = mock.patch.dict(os.environ, {"HOME": self.home, "XDG_RUNTIME_DIR": self.runtime,
+                                           "XDG_CONFIG_HOME": os.path.join(self.home, ".config")})
+        env.start()
+        self.addCleanup(env.stop)
+        self.runs = []
+        self.plugin = Sftp(runner=lambda argv, **kwargs: self.runs.append((argv, kwargs.get("input"))))
+
+    def bookmarks(self):
+        try:
+            with open(os.path.join(self.home, ".config", "gtk-3.0", "bookmarks")) as stream:
+                return stream.read().splitlines()
+        except FileNotFoundError:
+            return []
+
     def test_sshfs_command(self):
         command = sshfs_command({"user": "kdeconnect", "port": 1739, "password": "x", "path": "/storage"},
                                 "192.168.1.5", "/run/m")
         self.assertEqual(command[:3], ["sshfs", "kdeconnect@192.168.1.5:/storage", "/run/m"])
         self.assertIn("password_stdin", command)
-        multi = sshfs_command({"user": "u", "port": 1, "multiPaths": ["/a"]}, "fe80::1", "/m")
-        self.assertEqual(multi[1], "u@[fe80::1]:/")
 
-    def test_mounts_as_a_drive_in_home_and_unmounts_on_disconnect(self):
-        runs = []
-        body = {"user": "u", "port": 1739, "password": "secret", "path": "/"}
-        with tempfile.TemporaryDirectory() as home, mock.patch.dict(os.environ, {"HOME": home}):
-            plugin = Sftp(runner=lambda argv, **kwargs: runs.append((argv, kwargs.get("input"))))
-            daemon = FakeDaemon()
-            plugin._mount(daemon, LINK, body)  # on connecting: mounted, not opened
-            mount = os.path.join(home, "Satellite", "Pixel 7")
-            self.assertEqual((runs[0][0][0], runs[0][0][2], runs[0][1]), ("sshfs", mount, "secret"))
-            self.assertEqual(daemon.urls, [])
-            with mock.patch("os.path.ismount", return_value=True):
-                plugin.on_disconnected(daemon, LINK["id"])
-            self.assertEqual(runs[1][0][1:], ["-u", mount])
-            self.assertFalse(os.path.exists(os.path.join(home, "Satellite")))  # nothing left behind
+    def test_starts_at_the_phones_own_storage(self):
+        # Android sends "path": "/" (the top of its file system) when it shares several
+        # storage folders; the phone's own storage is the first of "multiPaths".
+        body = {"user": "u", "port": 1, "path": "/",
+                "multiPaths": ["/storage/emulated/0", "/storage/1A2B-3C4D"], "pathNames": ["Internal", "SD"]}
+        self.assertEqual(sshfs_command(body, "fe80::1", "/m")[1], "u@[fe80::1]:/storage/emulated/0")
 
-    def test_browse_files_opens_the_drive(self):
-        with tempfile.TemporaryDirectory() as home, mock.patch.dict(os.environ, {"HOME": home}):
-            plugin = Sftp(runner=lambda argv, **kwargs: None)
-            daemon = FakeDaemon()
-            plugin._open_when_mounted.add(LINK["id"])
-            plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "x"})
-            self.assertEqual(daemon.urls, ["file://" + os.path.join(home, "Satellite", "Pixel%207")])
+    def test_hidden_by_default_with_a_sidebar_bookmark_while_mounted(self):
+        with open(os.path.join(self.home, "existing"), "w"):
+            pass
+        os.makedirs(os.path.join(self.home, ".config", "gtk-3.0"))
+        with open(os.path.join(self.home, ".config", "gtk-3.0", "bookmarks"), "w") as stream:
+            stream.write("file:///home/me/Music\n")
+        daemon = FakeDaemon()
+        self.plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "secret", "path": "/"})
+        mount = os.path.join(self.runtime, "satellite", "Pixel 7")
+        self.assertEqual((self.runs[0][0][2], self.runs[0][1]), (mount, "secret"))
+        self.assertEqual(daemon.urls, [])  # mounted on connecting, not opened
+        self.assertEqual(sorted(os.listdir(self.home)), [".config", "existing"])  # nothing new in home
+        self.assertEqual(self.bookmarks(), ["file:///home/me/Music", "file://{} Pixel 7".format(
+            mount.replace(" ", "%20"))])
+        with mock.patch("os.path.ismount", return_value=True):
+            self.plugin.on_disconnected(daemon, LINK["id"])
+        self.assertEqual(self.runs[1][0][1:], ["-u", mount])
+        self.assertEqual(self.bookmarks(), ["file:///home/me/Music"])  # only ours removed
+        self.assertFalse(os.path.exists(os.path.join(self.runtime, "satellite")))
+
+    def test_a_visible_folder_in_home_shows_as_a_drive(self):
+        folder = os.path.join(self.home, "Phones")
+        daemon = FakeDaemon(settings={"sftp": {"folder": folder}})
+        self.plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "x"})
+        self.assertEqual(self.runs[0][0][2], os.path.join(folder, "Pixel 7"))
+        self.assertEqual(self.bookmarks(), [])  # the file manager lists it as a drive itself
+        self.plugin.on_disconnected(daemon, LINK["id"])
+        self.assertTrue(os.path.isdir(folder))  # the user's folder stays
+
+    def test_browse_files_opens_the_mount(self):
+        daemon = FakeDaemon()
+        self.plugin._open_when_mounted.add(LINK["id"])
+        self.plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "x"})
+        self.assertEqual(daemon.urls, ["file://" + os.path.join(self.runtime, "satellite", "Pixel%207")])
 
     def test_device_error_is_shown_when_browsing(self):
         daemon = FakeDaemon()

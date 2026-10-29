@@ -2,12 +2,12 @@
   <defs>
     <mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
       <rect width="16" height="16" fill="#fff"/>
-      <circle cx="14" cy="6.8" r="2.8" fill="#000"/>
+      <circle cx="14" cy="6.8" r="3.2" fill="#000"/>
     </mask>
   </defs>
   <g transform="translate(-0.4 0.4) rotate(-28 8 8)" fill="#bebebe">
     <ellipse cx="8" cy="8" rx="6.4" ry="3.7" fill="none" stroke="#bebebe" stroke-width="1.5" mask="url(#gap)"/>
-    <circle cx="14" cy="6.8" r="1.8"/>
+    <path transform="translate(14 6.8) rotate(28)" d="M0 -2.9Q0.75 -0.75 2.9 0Q0.75 0.75 0 2.9Q-0.75 0.75 -2.9 0Q-0.75 -0.75 0 -2.9Z"/>
   </g>
   <circle cx="7.6" cy="8.4" r="1.9" fill="#bebebe"/>
 </svg>
