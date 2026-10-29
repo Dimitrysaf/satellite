@@ -9,14 +9,11 @@ install_data(
   'satellite.svg', 'satellite-sms.svg', 'satellite-contacts.svg',
   install_dir: datadir / 'icons' / 'hicolor' / 'scalable' / 'apps',
 )
-# The tray icon, and the main window's hamburger (themes like Papirus draw open-menu as dots).
+# The tray icon. In symbolic/apps: hicolor's index declares no other symbolic folder,
+# so themes that go by it (Mint-Y) find nothing anywhere else.
 install_data(
   'satellite-symbolic.svg',
   install_dir: datadir / 'icons' / 'hicolor' / 'symbolic' / 'apps',
-)
-install_data(
-  'satellite-menu-symbolic.svg',
-  install_dir: datadir / 'icons' / 'hicolor' / 'symbolic' / 'actions',
 )
 
 # Satellite, and its companion apps Satellite Messages and Satellite Contacts.

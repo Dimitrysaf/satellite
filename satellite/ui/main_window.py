@@ -108,11 +108,10 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         quit_section = Gio.Menu()
         quit_section.append(_("Quit"), "app.quit")
         menu.append_section(None, quit_section)
-        # A plain dropdown (a popover would point at the button with an arrow), and Satellite's
-        # own hamburger: some themes, like Papirus, draw open-menu-symbolic as three dots.
+        # A plain dropdown: a popover would point at the button with an arrow.
         menu_button = Gtk.MenuButton()
         menu_button.set_use_popover(False)
-        menu_button.set_image(Gtk.Image.new_from_icon_name("satellite-menu-symbolic", Gtk.IconSize.BUTTON))
+        menu_button.set_image(Gtk.Image.new_from_icon_name("open-menu-symbolic", Gtk.IconSize.BUTTON))
         menu_button.set_tooltip_text(_("Menu"))
         menu_button.set_menu_model(menu)
         header.pack_end(menu_button)
