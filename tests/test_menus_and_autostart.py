@@ -24,22 +24,33 @@ class DeviceMenuTests(unittest.TestCase):
     def test_connected_device(self):
         actions = [PluginAction("ping", "Ping", "", None),
                    PluginAction("send-files", "Send files…", "", None, opens_window=True)]
-        entries = device_entries(FakeController(actions),
-                                 {"id": "d", "connected": True, "secure": True, "paired": True})
+        entries = device_entries(FakeController(actions), {
+            "id": "d", "connected": True, "secure": True, "paired": True,
+            "available_plugins": [{"id": "ping"}]})
         self.assertEqual(labels(entries),
-                         ["Send files…", "Ping", None, "Rename…", "Encryption info", None, "Unpair…"])
+                         ["Send files…", "Ping", None, "Plugin settings", "Encryption info", None, "Unpair"])
         self.assertEqual([e.opens_window for e in entries if e], [True, False, True, True, True])
 
     def test_pairing_request_only_in_the_tray(self):
         device = {"id": "d", "secure": True, "pair_requested": True, "verification_code": "AB12"}
         tray = labels(device_entries(FakeController(), device))
         page = labels(device_entries(FakeController(), device, include_pairing=False))
-        self.assertEqual(tray[:3], ["Verification code: AB12", "Accept pairing", "Reject"])
-        self.assertNotIn("Accept pairing", page)
+        self.assertEqual(tray[:3], ["🔑 AB12", "Accept", "Reject"])
+        self.assertNotIn("Accept", page)
+
+    def test_not_paired_device(self):
+        device = {"id": "d", "secure": True, "available_plugins": [{"id": "ping"}]}
+        self.assertEqual(labels(device_entries(FakeController(), device, include_pairing=False)),
+                         ["Plugin settings", "Encryption info"])
+        self.assertEqual(labels(device_entries(FakeController(), device))[0], "Request pairing")
+
+    def test_pair_requested_can_be_cancelled_from_the_tray(self):
+        device = {"id": "d", "secure": True, "pair_pending": True}
+        self.assertEqual(labels(device_entries(FakeController(), device))[0], "Cancel pairing")
 
     def test_offline_device(self):
         self.assertEqual(labels(device_entries(FakeController(), {"id": "d", "paired": True})),
-                         ["Rename…", None, "Unpair…"])
+                         ["Unpair"])
 
 
 class AutostartTests(unittest.TestCase):

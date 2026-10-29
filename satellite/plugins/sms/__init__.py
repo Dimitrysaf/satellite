@@ -99,6 +99,13 @@ class Plugin:
     def is_supported(remote_incoming, remote_outgoing):
         return "kdeconnect.sms.messages" in remote_outgoing
 
+    @staticmethod
+    def configure(ctx, _settings):
+        """Google Messages for web and signing out of it (GTK, loaded only when asked)."""
+        from satellite_sms import settings_dialog
+        settings_dialog.run(ctx.parent)
+        return None
+
     # -- incoming ----------------------------------------------------------
 
     def handle_packet(self, daemon, link, packet):

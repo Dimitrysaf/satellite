@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 15:08+0000\n"
+"POT-Creation-Date: 2026-10-29 21:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: data/org.x.Satellite-autostart.desktop.in:4
 #: data/org.x.Satellite.desktop.in:4 satellite/satellite.py:99
-#: satellite/ui/main_window.py:39 satellite/ui/main_window.py:90
+#: satellite/ui/main_window.py:41 satellite/ui/main_window.py:92
 #: satellite/ui/tray.py:57
 msgid "Satellite"
 msgstr ""
@@ -45,6 +45,10 @@ msgstr ""
 msgid "contacts;address book;phone;KDE Connect;"
 msgstr ""
 
+#: data/org.x.Satellite.desktop.in:5
+msgid "Pair and sync with KDE Connect compatible devices"
+msgstr ""
+
 #: data/org.x.Satellite.SMS.desktop.in:4
 msgid "Satellite Messages"
 msgstr ""
@@ -59,10 +63,6 @@ msgstr ""
 
 #: data/org.x.Satellite.SMS.desktop.in:11
 msgid "SMS;MMS;text;phone;KDE Connect;"
-msgstr ""
-
-#: data/org.x.Satellite.desktop.in:5
-msgid "Pair and sync with KDE Connect compatible devices"
 msgstr ""
 
 #: data/satellite-send.nemo_action.in:3
@@ -106,15 +106,16 @@ msgid "Connect a device with Satellite, then try again."
 msgstr ""
 
 #: satellite/cli.py:82 satellite/plugins/ring/__init__.py:139
-#: satellite/plugins/runcommand/__init__.py:319 satellite/ui/context.py:44
+#: satellite/plugins/runcommand/__init__.py:319
+#: satellite_sms/settings_dialog.py:34 satellite/ui/context.py:44
 #: satellite/ui/dialogs.py:26 satellite/ui/dialogs.py:38
-#: satellite/ui/plugin_config_dialog.py:62
-#: satellite/ui/presenter_settings.py:134 satellite_sms/window.py:465
+#: satellite/ui/plugin_config_dialog.py:63
+#: satellite/ui/presenter_settings.py:134
 msgid "Cancel"
 msgstr ""
 
 #: satellite/cli.py:83 satellite/plugins/share/__init__.py:379
-#: satellite/ui/context.py:45 satellite/ui/main_window.py:354
+#: satellite/ui/context.py:45 satellite/ui/main_window.py:362
 msgid "Send"
 msgstr ""
 
@@ -190,6 +191,88 @@ msgstr ""
 
 #: satellite/cli.py:175
 msgid "{} could not do that (is the plugin switched on?)."
+msgstr ""
+
+#: satellite_contacts/app.py:21
+msgid "Show this phone's contacts"
+msgstr ""
+
+#: satellite_contacts/app.py:26 satellite_contacts/window.py:137
+#: satellite_contacts/window.py:154 satellite/plugins/contacts/__init__.py:82
+#: satellite/plugins/contacts/__init__.py:223
+msgid "Contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:81
+msgid "Send a text message"
+msgstr ""
+
+#: satellite_contacts/window.py:83 satellite_contacts/window.py:89
+#: satellite_contacts/window.py:93
+msgid "Copy"
+msgstr ""
+
+#: satellite_contacts/window.py:87
+msgid "Write an email"
+msgstr ""
+
+#: satellite_contacts/window.py:92
+msgid "Address"
+msgstr ""
+
+#: satellite_contacts/window.py:95
+msgid "Birthday"
+msgstr ""
+
+#: satellite_contacts/window.py:97
+msgid "Note"
+msgstr ""
+
+#: satellite_contacts/window.py:107
+msgid "Copied from {}. Change this contact on the phone."
+msgstr ""
+
+#: satellite_contacts/window.py:107
+msgid "the phone"
+msgstr ""
+
+#: satellite_contacts/window.py:158
+msgid "Back to contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:162
+msgid "Copy contacts from the phone again"
+msgstr ""
+
+#: satellite_contacts/window.py:172
+msgid "Search contacts"
+msgstr ""
+
+#: satellite_contacts/window.py:196
+msgid "Copy contacts from the phone"
+msgstr ""
+
+#: satellite_contacts/window.py:227 satellite/plugins/contacts/__init__.py:112
+#: satellite_sms/window.py:100 satellite/vcard.py:19 satellite/vcard.py:101
+msgid "Phone"
+msgstr ""
+
+#: satellite_contacts/window.py:276
+msgid "No contacts yet. Connect {} and copy its contacts."
+msgstr ""
+
+#: satellite_contacts/window.py:277
+msgid "Pair a phone in Satellite to see its contacts here."
+msgstr ""
+
+#: satellite_contacts/window.py:281
+msgid "{} contact"
+msgid_plural "{} contacts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite_contacts/window.py:287
+msgid "The phone is not connected."
 msgstr ""
 
 #: satellite/desktop_input.py:185
@@ -352,38 +435,60 @@ msgstr ""
 msgid "Mobile"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:50
-#: satellite/plugins/contacts/__init__.py:186 satellite_contacts/app.py:26
-#: satellite_contacts/window.py:137 satellite_contacts/window.py:154
-msgid "Contacts"
+#: satellite/plugins/contacts/__init__.py:60
+msgid "No contacts to export"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:51
+#: satellite/plugins/contacts/__init__.py:61
+msgid "Connect the phone with this plugin on to copy its contacts first."
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:65
+msgid "Export contacts"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:65
+msgid "Export"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:67
+msgid "{} contacts.vcf"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:73
+msgid "Could not export"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:83
 msgid "Keep a copy of the paired phone's contacts on this computer."
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:62
+#: satellite/plugins/contacts/__init__.py:94
 msgid "Copy the phone's contacts to this computer"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:64
+#: satellite/plugins/contacts/__init__.py:96
 msgid ""
 "Share them with other address book apps (GNOME Contacts, Evolution, ...)"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:66
+#: satellite/plugins/contacts/__init__.py:98
 msgid "Also share them with KDE apps"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:184
+#: satellite/plugins/contacts/__init__.py:113
+msgid "Export contacts…"
+msgstr ""
+
+#: satellite/plugins/contacts/__init__.py:221
 msgid "Could not open Contacts"
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:184
+#: satellite/plugins/contacts/__init__.py:221
 msgid "Satellite Contacts is not installed."
 msgstr ""
 
-#: satellite/plugins/contacts/__init__.py:187
+#: satellite/plugins/contacts/__init__.py:224
 msgid "See the phone's contacts"
 msgstr ""
 
@@ -460,18 +565,6 @@ msgstr ""
 msgid "Swap left and right buttons"
 msgstr ""
 
-#: satellite/plugins/mpris/__init__.py:30
-msgid "Media player control"
-msgstr ""
-
-#: satellite/plugins/mpris/__init__.py:31
-msgid "Show and control the device's music and videos from this desktop."
-msgstr ""
-
-#: satellite/plugins/mpris/__init__.py:37
-msgid "Show album art from the device"
-msgstr ""
-
 #: satellite/plugins/mpriscontrol/__init__.py:132
 msgid "Control media on this computer"
 msgstr ""
@@ -483,6 +576,18 @@ msgstr ""
 
 #: satellite/plugins/mpriscontrol/__init__.py:138
 msgid "Send album art to the device"
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:30
+msgid "Media player control"
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:31
+msgid "Show and control the device's music and videos from this desktop."
+msgstr ""
+
+#: satellite/plugins/mpris/__init__.py:37
+msgid "Show album art from the device"
 msgstr ""
 
 #: satellite/plugins/notifications/__init__.py:34
@@ -856,7 +961,7 @@ msgstr ""
 
 #: satellite/plugins/ring/__init__.py:140
 #: satellite/plugins/runcommand/__init__.py:320 satellite/ui/dialogs.py:34
-#: satellite/ui/plugin_config_dialog.py:63
+#: satellite/ui/plugin_config_dialog.py:64
 #: satellite/ui/presenter_settings.py:135
 msgid "Save"
 msgstr ""
@@ -938,12 +1043,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: satellite/plugins/runcommand/__init__.py:398
-#: satellite/ui/preferences_dialog.py:79
+#: satellite/ui/custom_devices_dialog.py:63
 msgid "Remove"
 msgstr ""
 
 #: satellite/plugins/runcommand/__init__.py:398
-#: satellite/ui/preferences_dialog.py:65
 msgid "Add"
 msgstr ""
 
@@ -1166,9 +1270,9 @@ msgid ""
 "keyboard: sending them needs an X11 session."
 msgstr ""
 
-#: satellite/plugins/sms/__init__.py:83 satellite/plugins/sms/__init__.py:197
-#: satellite_sms/app.py:28 satellite_sms/window.py:33
-#: satellite_sms/window.py:65
+#: satellite/plugins/sms/__init__.py:83 satellite/plugins/sms/__init__.py:204
+#: satellite_sms/app.py:33 satellite_sms/window.py:24
+#: satellite_sms/window.py:56
 msgid "Messages"
 msgstr ""
 
@@ -1176,15 +1280,15 @@ msgstr ""
 msgid "Read and send the paired phone's text messages (SMS and MMS)."
 msgstr ""
 
-#: satellite/plugins/sms/__init__.py:195
+#: satellite/plugins/sms/__init__.py:202
 msgid "Could not open Messages"
 msgstr ""
 
-#: satellite/plugins/sms/__init__.py:195
+#: satellite/plugins/sms/__init__.py:202
 msgid "Satellite Messages is not installed."
 msgstr ""
 
-#: satellite/plugins/sms/__init__.py:198
+#: satellite/plugins/sms/__init__.py:205
 msgid "Read and send text messages"
 msgstr ""
 
@@ -1244,8 +1348,239 @@ msgstr ""
 msgid "Connect your phone and computer with the KDE Connect protocol."
 msgstr ""
 
+#: satellite_sms/app.py:22
+msgid "Show this phone's messages"
+msgstr ""
+
+#: satellite_sms/app.py:24
+msgid "Start a message to this number"
+msgstr ""
+
+#: satellite_sms/conversation_list.py:15
+msgid "You: {}"
+msgstr ""
+
+#: satellite_sms/conversation_list.py:57
+msgid "Search conversations"
+msgstr ""
+
+#: satellite_sms/google_messages.py:115
+msgid "Try again"
+msgstr ""
+
+#: satellite_sms/google_messages.py:175
+msgid ""
+"The connection to Google Messages isn't secure, so Satellite stopped loading "
+"it."
+msgstr ""
+
+#: satellite_sms/google_messages.py:221
+msgid ""
+"Google Messages couldn't be opened (error {}). Check this computer's "
+"internet connection, or try again later."
+msgstr ""
+
+#: satellite_sms/google_messages.py:223
+msgid ""
+"Couldn't reach Google Messages. Check this computer's internet connection."
+msgstr ""
+
+#: satellite_sms/model.py:21 satellite_sms/model.py:37
+msgid "Yesterday"
+msgstr ""
+
+#: satellite_sms/model.py:35
+msgid "Today"
+msgstr ""
+
+#: satellite_sms/model.py:69
+msgid "Unknown"
+msgstr ""
+
+#: satellite_sms/model.py:71
+msgid "{}, {} and {} other"
+msgid_plural "{}, {} and {} others"
+msgstr[0] ""
+msgstr[1] ""
+
+#: satellite_sms/settings_dialog.py:17
+msgid ""
+"Messages will be shown by Google's website instead of by Satellite.\n"
+"\n"
+"• Satellite can't see, check or control what Google shows or does in this "
+"view.\n"
+"• Messages go through Google's servers and the internet, not only your local "
+"network. Your phone needs internet access, and Google Messages must be its "
+"messaging app.\n"
+"• Google's terms and privacy policy apply. Google can change or stop this "
+"service, or stop it from working here.\n"
+"• The pairing stays on this computer until you sign out, so anyone using "
+"this computer account can read your messages.\n"
+"• Only messages.google.com opens here; links in messages open in your web "
+"browser. Camera, microphone, location and website notifications are "
+"blocked.\n"
+"• To unpair later, sign out in the Messages plugin settings, or on the phone "
+"open Google Messages → Device pairing."
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:77
+msgid "Messages settings"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:78 satellite/ui/custom_devices_dialog.py:15
+#: satellite/ui/main_window.py:308 satellite/ui/preferences_dialog.py:16
+msgid "Close"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:83
+msgid "Use Google Messages for web"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:84
+msgid ""
+"Satellite Messages shows Google's website instead of the phone's SMS and "
+"MMS. It can show RCS chats."
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:92
+msgid "Sign out of Google Messages…"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:100
+msgid "Google Messages for web needs WebKitGTK"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:101
+msgid "Install the gir1.2-webkit2-4.1 package, then try again."
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:103
+msgid "Use Google Messages for web?"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:103
+msgid "Use Google Messages"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:107
+msgid "Stop using Google Messages for web?"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:108
+msgid "Satellite Messages will show your phone's SMS and MMS again."
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:108
+msgid "Stop Using"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:109
+msgid "Also sign out and delete Google Messages data from this computer"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:119
+msgid "Sign out of Google Messages?"
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:120
+msgid ""
+"This computer forgets the pairing. To use it again, scan a new QR code with "
+"the phone."
+msgstr ""
+
+#: satellite_sms/settings_dialog.py:121
+msgid "Sign Out"
+msgstr ""
+
+#: satellite_sms/thread_view.py:111
+msgid "Attachment"
+msgstr ""
+
+#: satellite_sms/thread_view.py:145
+msgid "Attach a picture or file"
+msgstr ""
+
+#: satellite_sms/thread_view.py:165
+msgid "Send (Enter)"
+msgstr ""
+
+#: satellite_sms/thread_view.py:197
+msgid "Attach"
+msgstr ""
+
+#: satellite_sms/thread_view.py:312
+msgid "To:"
+msgstr ""
+
+#: satellite_sms/thread_view.py:316
+msgid "Name or phone number"
+msgstr ""
+
+#: satellite_sms/window.py:60
+msgid "Back to conversations"
+msgstr ""
+
+#: satellite_sms/window.py:64
+msgid "New message (Ctrl+N)"
+msgstr ""
+
+#: satellite_sms/window.py:69 satellite_sms/window.py:386
+msgid "Load messages from the phone (F5)"
+msgstr ""
+
+#: satellite_sms/window.py:90
+msgid "Start Satellite"
+msgstr ""
+
+#: satellite_sms/window.py:116
+msgid "Pick a conversation, or start a new one."
+msgstr ""
+
+#: satellite_sms/window.py:132
+msgid "Add one person for a text message, or several for a group message."
+msgstr ""
+
+#: satellite_sms/window.py:168
+msgid "Satellite is not running, so messages can't be loaded."
+msgstr ""
+
+#: satellite_sms/window.py:221
+msgid ""
+"No paired phone with Messages switched on. Pair a phone in Satellite first."
+msgstr ""
+
+#: satellite_sms/window.py:223
+msgid "{} is not connected. New messages appear when it reconnects."
+msgstr ""
+
+#: satellite_sms/window.py:380
+msgid "Google Messages for web"
+msgstr ""
+
+#: satellite_sms/window.py:381
+msgid "Reload Google Messages (F5)"
+msgstr ""
+
 #: satellite/ui/context.py:25
 msgid "this device"
+msgstr ""
+
+#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:106
+msgid "Add devices by IP"
+msgstr ""
+
+#: satellite/ui/custom_devices_dialog.py:21
+msgid ""
+"If your device is not automatically detected, you can add its IP address or "
+"hostname."
+msgstr ""
+
+#: satellite/ui/custom_devices_dialog.py:30
+msgid "Hostname or IP address"
+msgstr ""
+
+#: satellite/ui/custom_devices_dialog.py:32
+msgid "Add device"
 msgstr ""
 
 #: satellite/ui/device_list.py:55
@@ -1274,47 +1609,47 @@ msgstr ""
 msgid "Search again"
 msgstr ""
 
-#: satellite/ui/device_menu.py:42
-msgid "Verification code: {}"
+#: satellite/ui/device_menu.py:43 satellite/ui/pairing_prompt.py:22
+msgid "Accept"
 msgstr ""
 
-#: satellite/ui/device_menu.py:43
-msgid "Accept pairing"
-msgstr ""
-
-#: satellite/ui/device_menu.py:44
+#: satellite/ui/device_menu.py:44 satellite/ui/pairing_prompt.py:22
 msgid "Reject"
 msgstr ""
 
-#: satellite/ui/device_menu.py:46
+#: satellite/ui/device_menu.py:46 satellite/ui/pairing_prompt.py:26
+msgid "Cancel pairing"
+msgstr ""
+
+#: satellite/ui/device_menu.py:48 satellite/ui/pairing_prompt.py:34
 msgid "Request pairing"
 msgstr ""
 
-#: satellite/ui/device_menu.py:51
-msgid "Rename…"
+#: satellite/ui/device_menu.py:53 satellite/ui/main_window.py:306
+msgid "Plugin settings"
 msgstr ""
 
-#: satellite/ui/device_menu.py:54
+#: satellite/ui/device_menu.py:56
 msgid "Encryption info"
 msgstr ""
 
-#: satellite/ui/device_menu.py:57
-msgid "Unpair…"
+#: satellite/ui/device_menu.py:63 satellite/ui/main_window.py:295
+msgid "Unpair"
 msgstr ""
 
-#: satellite/ui/device_page.py:53
+#: satellite/ui/device_page.py:61
 msgid "PLUGINS"
 msgstr ""
 
-#: satellite/ui/device_page.py:91
+#: satellite/ui/device_page.py:101
 msgid "Device actions"
 msgstr ""
 
-#: satellite/ui/device_page.py:105
+#: satellite/ui/device_page.py:120
 msgid "Battery · {}% · Charging"
 msgstr ""
 
-#: satellite/ui/device_page.py:105
+#: satellite/ui/device_page.py:120
 msgid "Battery · {}%"
 msgstr ""
 
@@ -1342,31 +1677,31 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
-#: satellite/ui/main_window.py:94
+#: satellite/ui/main_window.py:96
 msgid "Search for devices (F5)"
 msgstr ""
 
-#: satellite/ui/main_window.py:99
+#: satellite/ui/main_window.py:101
 msgid "Back to devices (Esc)"
 msgstr ""
 
-#: satellite/ui/main_window.py:104 satellite/ui/preferences_dialog.py:14
+#: satellite/ui/main_window.py:107 satellite/ui/preferences_dialog.py:14
 msgid "Preferences"
 msgstr ""
 
-#: satellite/ui/main_window.py:105
+#: satellite/ui/main_window.py:108
 msgid "About Satellite"
 msgstr ""
 
-#: satellite/ui/main_window.py:107 satellite/ui/tray.py:107
+#: satellite/ui/main_window.py:110 satellite/ui/tray.py:107
 msgid "Quit"
 msgstr ""
 
-#: satellite/ui/main_window.py:132
+#: satellite/ui/main_window.py:135
 msgid "Select a device"
 msgstr ""
 
-#: satellite/ui/main_window.py:133
+#: satellite/ui/main_window.py:136
 msgid "Pick a device on the left to see its status and change its plugins."
 msgstr ""
 
@@ -1378,73 +1713,48 @@ msgstr ""
 msgid "This removes the trusted connection to this device."
 msgstr ""
 
-#: satellite/ui/main_window.py:295
-msgid "Unpair"
-msgstr ""
-
-#: satellite/ui/main_window.py:305
-msgid "Rename device"
-msgstr ""
-
-#: satellite/ui/main_window.py:306
-msgid "Name shown only on this computer (leave empty to use “{}”):"
-msgstr ""
-
-#: satellite/ui/main_window.py:343
+#: satellite/ui/main_window.py:351
 msgid "{} failed"
 msgstr ""
 
-#: satellite/ui/main_window.py:360
+#: satellite/ui/main_window.py:368
 msgid "Could not exchange the pairing request"
 msgstr ""
 
-#: satellite/ui/main_window.py:361
+#: satellite/ui/main_window.py:369
 msgid ""
 "The secure device connection is not available. Check that both devices are "
 "on the same network and that the KDE Connect ports are allowed through the "
 "firewall."
 msgstr ""
 
-#: satellite/ui/pairing_prompt.py:23
-msgid "{} is asking to pair with this computer."
+#: satellite/ui/pairing_prompt.py:20
+msgid "Pairing request from '{}'"
 msgstr ""
 
-#: satellite/ui/pairing_prompt.py:25
-msgid "Pairing request sent to {}. Waiting for a response."
+#: satellite/ui/pairing_prompt.py:24 satellite/ui/widgets.py:75
+#: satellite/ui/widgets.py:91
+msgid "Pair requested"
 msgstr ""
 
-#: satellite/ui/pairing_prompt.py:27
-msgid ""
-"This device is paired but it is offline.\n"
-"Open KDE Connect on it to reconnect."
+#: satellite/ui/pairing_prompt.py:28 satellite/ui/pairing_prompt.py:36
+msgid "Device not reachable"
 msgstr ""
 
 #: satellite/ui/pairing_prompt.py:29
-msgid "Do you want to pair with {}?"
+msgid ""
+"This paired device is not reachable. Make sure it is connected to your same "
+"network."
 msgstr ""
 
-#: satellite/ui/pairing_prompt.py:31
-msgid "Establishing a secure connection with {}…"
+#: satellite/ui/pairing_prompt.py:32
+msgid "Device not paired"
 msgstr ""
 
-#: satellite/ui/pairing_prompt.py:39
-msgid "Security code"
-msgstr ""
-
-#: satellite/ui/pairing_prompt.py:43
-msgid "Check that both devices show the same code."
-msgstr ""
-
-#: satellite/ui/pairing_prompt.py:50
-msgid "Accept"
-msgstr ""
-
-#: satellite/ui/pairing_prompt.py:53
-msgid "Deny"
-msgstr ""
-
-#: satellite/ui/pairing_prompt.py:58
-msgid "Pair"
+#: satellite/ui/pairing_prompt.py:33
+msgid ""
+"Pairing two devices will give them access to each other. Only pair together "
+"your own devices."
 msgstr ""
 
 #: satellite/ui/plugin_config_dialog.py:35
@@ -1452,7 +1762,7 @@ msgid ""
 "Apps show up here once they show a notification while a device is connected."
 msgstr ""
 
-#: satellite/ui/plugin_config_dialog.py:61 satellite/ui/plugin_row.py:40
+#: satellite/ui/plugin_config_dialog.py:62 satellite/ui/plugin_row.py:40
 msgid "Configure {}"
 msgstr ""
 
@@ -1466,10 +1776,6 @@ msgstr ""
 
 #: satellite/ui/plugin_row.py:47
 msgid "Enable or disable {}"
-msgstr ""
-
-#: satellite/ui/preferences_dialog.py:16
-msgid "Close"
 msgstr ""
 
 #: satellite/ui/preferences_dialog.py:23
@@ -1510,18 +1816,6 @@ msgstr ""
 msgid ""
 "Finds devices on networks that block broadcasts, like some routers and guest "
 "Wi-Fi."
-msgstr ""
-
-#: satellite/ui/preferences_dialog.py:54
-msgid "Devices added by address"
-msgstr ""
-
-#: satellite/ui/preferences_dialog.py:55
-msgid "For a device on another network or a VPN: its IP address or host name."
-msgstr ""
-
-#: satellite/ui/preferences_dialog.py:64
-msgid "e.g. {}"
 msgstr ""
 
 #: satellite/ui/presenter_overlay.py:43
@@ -1660,44 +1954,24 @@ msgstr ""
 msgid "Connected"
 msgstr ""
 
-#: satellite/ui/widgets.py:73
+#: satellite/ui/widgets.py:73 satellite/ui/widgets.py:89
 msgid "Pairing request"
-msgstr ""
-
-#: satellite/ui/widgets.py:75
-msgid "Pair request sent"
 msgstr ""
 
 #: satellite/ui/widgets.py:77 satellite/ui/widgets.py:95
 msgid "Offline"
 msgstr ""
 
-#: satellite/ui/widgets.py:79
-msgid "Secure link established"
+#: satellite/ui/widgets.py:79 satellite/ui/widgets.py:97
+msgid "Not paired"
 msgstr ""
 
-#: satellite/ui/widgets.py:80
-msgid "Available"
-msgstr ""
-
-#: satellite/ui/widgets.py:89
-msgid "Pairing request received"
-msgstr ""
-
-#: satellite/ui/widgets.py:91
-msgid "Pairing request sent"
+#: satellite/ui/widgets.py:80 satellite/ui/widgets.py:98
+msgid "Not reachable"
 msgstr ""
 
 #: satellite/ui/widgets.py:94
 msgid "Offline · Battery {}% (last reported)"
-msgstr ""
-
-#: satellite/ui/widgets.py:97
-msgid "Secure link established · Not paired"
-msgstr ""
-
-#: satellite/ui/widgets.py:98
-msgid "Detected, not paired"
 msgstr ""
 
 #: satellite/vcard.py:18
@@ -1720,12 +1994,6 @@ msgstr ""
 msgid "Pager"
 msgstr ""
 
-#: satellite/vcard.py:19 satellite/vcard.py:101
-#: satellite_contacts/window.py:231 satellite_contacts/window.py:336
-#: satellite_sms/window.py:118
-msgid "Phone"
-msgstr ""
-
 #: satellite/vcard.py:19
 msgid "Other"
 msgstr ""
@@ -1736,293 +2004,4 @@ msgstr ""
 
 #: satellite/vcard.py:126
 msgid "Email"
-msgstr ""
-
-#: satellite_contacts/app.py:21
-msgid "Show this phone's contacts"
-msgstr ""
-
-#: satellite_contacts/window.py:81
-msgid "Send a text message"
-msgstr ""
-
-#: satellite_contacts/window.py:83 satellite_contacts/window.py:89
-#: satellite_contacts/window.py:93
-msgid "Copy"
-msgstr ""
-
-#: satellite_contacts/window.py:87
-msgid "Write an email"
-msgstr ""
-
-#: satellite_contacts/window.py:92
-msgid "Address"
-msgstr ""
-
-#: satellite_contacts/window.py:95
-msgid "Birthday"
-msgstr ""
-
-#: satellite_contacts/window.py:97
-msgid "Note"
-msgstr ""
-
-#: satellite_contacts/window.py:107
-msgid "Copied from {}. Change this contact on the phone."
-msgstr ""
-
-#: satellite_contacts/window.py:107
-msgid "the phone"
-msgstr ""
-
-#: satellite_contacts/window.py:158
-msgid "Back to contacts"
-msgstr ""
-
-#: satellite_contacts/window.py:162
-msgid "Copy contacts from the phone again"
-msgstr ""
-
-#: satellite_contacts/window.py:166
-msgid "Export as a vCard file (for Thunderbird and other apps)"
-msgstr ""
-
-#: satellite_contacts/window.py:176
-msgid "Search contacts"
-msgstr ""
-
-#: satellite_contacts/window.py:200
-msgid "Copy contacts from the phone"
-msgstr ""
-
-#: satellite_contacts/window.py:280
-msgid "No contacts yet. Connect {} and copy its contacts."
-msgstr ""
-
-#: satellite_contacts/window.py:281
-msgid "Pair a phone in Satellite to see its contacts here."
-msgstr ""
-
-#: satellite_contacts/window.py:285
-msgid "{} contact"
-msgid_plural "{} contacts"
-msgstr[0] ""
-msgstr[1] ""
-
-#: satellite_contacts/window.py:291
-msgid "The phone is not connected."
-msgstr ""
-
-#: satellite_contacts/window.py:334
-msgid "Export contacts"
-msgstr ""
-
-#: satellite_contacts/window.py:334
-msgid "Export"
-msgstr ""
-
-#: satellite_contacts/window.py:336
-msgid "{} contacts.vcf"
-msgstr ""
-
-#: satellite_contacts/window.py:342
-msgid "Could not export"
-msgstr ""
-
-#: satellite_sms/app.py:21
-msgid "Show this phone's messages"
-msgstr ""
-
-#: satellite_sms/app.py:23
-msgid "Start a message to this number"
-msgstr ""
-
-#: satellite_sms/conversation_list.py:15
-msgid "You: {}"
-msgstr ""
-
-#: satellite_sms/conversation_list.py:57
-msgid "Search conversations"
-msgstr ""
-
-#: satellite_sms/google_messages.py:115
-msgid "Try again"
-msgstr ""
-
-#: satellite_sms/google_messages.py:175
-msgid ""
-"The connection to Google Messages isn't secure, so Satellite stopped loading "
-"it."
-msgstr ""
-
-#: satellite_sms/google_messages.py:221
-msgid ""
-"Google Messages couldn't be opened (error {}). Check this computer's "
-"internet connection, or try again later."
-msgstr ""
-
-#: satellite_sms/google_messages.py:223
-msgid ""
-"Couldn't reach Google Messages. Check this computer's internet connection."
-msgstr ""
-
-#: satellite_sms/model.py:21 satellite_sms/model.py:37
-msgid "Yesterday"
-msgstr ""
-
-#: satellite_sms/model.py:35
-msgid "Today"
-msgstr ""
-
-#: satellite_sms/model.py:69
-msgid "Unknown"
-msgstr ""
-
-#: satellite_sms/model.py:71
-msgid "{}, {} and {} other"
-msgid_plural "{}, {} and {} others"
-msgstr[0] ""
-msgstr[1] ""
-
-#: satellite_sms/thread_view.py:111
-msgid "Attachment"
-msgstr ""
-
-#: satellite_sms/thread_view.py:145
-msgid "Attach a picture or file"
-msgstr ""
-
-#: satellite_sms/thread_view.py:165
-msgid "Send (Enter)"
-msgstr ""
-
-#: satellite_sms/thread_view.py:197
-msgid "Attach"
-msgstr ""
-
-#: satellite_sms/thread_view.py:312
-msgid "To:"
-msgstr ""
-
-#: satellite_sms/thread_view.py:316
-msgid "Name or phone number"
-msgstr ""
-
-#: satellite_sms/window.py:21
-msgid ""
-"Messages will be shown by Google's website instead of by Satellite.\n"
-"\n"
-"• Satellite can't see, check or control what Google shows or does in this "
-"view.\n"
-"• Messages go through Google's servers and the internet, not only your local "
-"network. Your phone needs internet access, and Google Messages must be its "
-"messaging app.\n"
-"• Google's terms and privacy policy apply. Google can change or stop this "
-"service, or stop it from working here.\n"
-"• The pairing stays on this computer until you sign out, so anyone using "
-"this computer account can read your messages.\n"
-"• Only messages.google.com opens here; links in messages open in your web "
-"browser. Camera, microphone, location and website notifications are "
-"blocked.\n"
-"• To unpair later, sign out from this menu, or on the phone open Google "
-"Messages → Device pairing."
-msgstr ""
-
-#: satellite_sms/window.py:69
-msgid "Back to conversations"
-msgstr ""
-
-#: satellite_sms/window.py:73
-msgid "New message (Ctrl+N)"
-msgstr ""
-
-#: satellite_sms/window.py:78
-msgid "Use Google Messages for web"
-msgstr ""
-
-#: satellite_sms/window.py:79
-msgid "Sign out of Google Messages…"
-msgstr ""
-
-#: satellite_sms/window.py:84 satellite_sms/window.py:405
-msgid "Load messages from the phone (F5)"
-msgstr ""
-
-#: satellite_sms/window.py:108
-msgid "Start Satellite"
-msgstr ""
-
-#: satellite_sms/window.py:134
-msgid "Pick a conversation, or start a new one."
-msgstr ""
-
-#: satellite_sms/window.py:150
-msgid "Add one person for a text message, or several for a group message."
-msgstr ""
-
-#: satellite_sms/window.py:186
-msgid "Satellite is not running, so messages can't be loaded."
-msgstr ""
-
-#: satellite_sms/window.py:239
-msgid ""
-"No paired phone with Messages switched on. Pair a phone in Satellite first."
-msgstr ""
-
-#: satellite_sms/window.py:241
-msgid "{} is not connected. New messages appear when it reconnects."
-msgstr ""
-
-#: satellite_sms/window.py:399
-msgid "Google Messages for web"
-msgstr ""
-
-#: satellite_sms/window.py:400
-msgid "Reload Google Messages (F5)"
-msgstr ""
-
-#: satellite_sms/window.py:414
-msgid "Google Messages for web needs WebKitGTK"
-msgstr ""
-
-#: satellite_sms/window.py:415
-msgid "Install the gir1.2-webkit2-4.1 package, then try again."
-msgstr ""
-
-#: satellite_sms/window.py:417
-msgid "Use Google Messages for web?"
-msgstr ""
-
-#: satellite_sms/window.py:417
-msgid "Use Google Messages"
-msgstr ""
-
-#: satellite_sms/window.py:422
-msgid "Stop using Google Messages for web?"
-msgstr ""
-
-#: satellite_sms/window.py:423
-msgid "Satellite will show your phone's SMS and MMS again."
-msgstr ""
-
-#: satellite_sms/window.py:424
-msgid "Stop Using"
-msgstr ""
-
-#: satellite_sms/window.py:424
-msgid "Also sign out and delete Google Messages data from this computer"
-msgstr ""
-
-#: satellite_sms/window.py:455
-msgid "Sign out of Google Messages?"
-msgstr ""
-
-#: satellite_sms/window.py:456
-msgid ""
-"This computer forgets the pairing. To use it again, scan a new QR code with "
-"the phone."
-msgstr ""
-
-#: satellite_sms/window.py:457
-msgid "Sign Out"
 msgstr ""

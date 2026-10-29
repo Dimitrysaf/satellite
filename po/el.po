@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 15:08+0300\n"
+"POT-Creation-Date: 2026-10-29 21:28+0200\n"
 "PO-Revision-Date: 2026-10-28 15:08+0300\n"
 "Last-Translator: Dimitrysaf <demetresmeliates+github@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: data/org.x.Satellite-autostart.desktop.in:4
 #: data/org.x.Satellite.desktop.in:4 satellite/satellite.py:99
-#: satellite/ui/main_window.py:39 satellite/ui/main_window.py:90
+#: satellite/ui/main_window.py:41 satellite/ui/main_window.py:92
 #: satellite/ui/tray.py:57
 msgid "Satellite"
 msgstr "Satellite"
@@ -42,6 +42,10 @@ msgstr "Οι επαφές του τηλεφώνου σας σε αυτόν το�
 msgid "contacts;address book;phone;KDE Connect;"
 msgstr "επαφές;βιβλίο διευθύνσεων;τηλέφωνο;contacts;address book;phone;KDE Connect;"
 
+#: data/org.x.Satellite.desktop.in:5
+msgid "Pair and sync with KDE Connect compatible devices"
+msgstr "Σύζευξη και συγχρονισμός με συσκευές συμβατές με το KDE Connect"
+
 #: data/org.x.Satellite.SMS.desktop.in:4
 msgid "Satellite Messages"
 msgstr "Μηνύματα Satellite"
@@ -57,10 +61,6 @@ msgstr "Διαβάστε και στείλτε τα μηνύματα κειμέ�
 #: data/org.x.Satellite.SMS.desktop.in:11
 msgid "SMS;MMS;text;phone;KDE Connect;"
 msgstr "SMS;MMS;μηνύματα;κείμενο;τηλέφωνο;text;phone;KDE Connect;"
-
-#: data/org.x.Satellite.desktop.in:5
-msgid "Pair and sync with KDE Connect compatible devices"
-msgstr "Σύζευξη και συγχρονισμός με συσκευές συμβατές με το KDE Connect"
 
 #: data/satellite-send.nemo_action.in:3
 msgid "Send to Phone"
@@ -103,15 +103,16 @@ msgid "Connect a device with Satellite, then try again."
 msgstr "Συνδέστε μια συσκευή με το Satellite και δοκιμάστε ξανά."
 
 #: satellite/cli.py:82 satellite/plugins/ring/__init__.py:139
-#: satellite/plugins/runcommand/__init__.py:319 satellite/ui/context.py:44
+#: satellite/plugins/runcommand/__init__.py:319
+#: satellite_sms/settings_dialog.py:34 satellite/ui/context.py:44
 #: satellite/ui/dialogs.py:26 satellite/ui/dialogs.py:38
-#: satellite/ui/plugin_config_dialog.py:62
-#: satellite/ui/presenter_settings.py:134 satellite_sms/window.py:465
+#: satellite/ui/plugin_config_dialog.py:63
+#: satellite/ui/presenter_settings.py:134
 msgid "Cancel"
 msgstr "Ακύρωση"
 
 #: satellite/cli.py:83 satellite/plugins/share/__init__.py:379
-#: satellite/ui/context.py:45 satellite/ui/main_window.py:354
+#: satellite/ui/context.py:45 satellite/ui/main_window.py:362
 msgid "Send"
 msgstr "Αποστολή"
 
@@ -188,6 +189,88 @@ msgstr "Δεν ήταν δυνατή η αποστολή: {}"
 #: satellite/cli.py:175
 msgid "{} could not do that (is the plugin switched on?)."
 msgstr "Η συσκευή {} δεν μπόρεσε να το κάνει (είναι ενεργοποιημένο το πρόσθετο;)."
+
+#: satellite_contacts/app.py:21
+msgid "Show this phone's contacts"
+msgstr "Εμφάνιση των επαφών αυτού του τηλεφώνου"
+
+#: satellite_contacts/app.py:26 satellite_contacts/window.py:137
+#: satellite_contacts/window.py:154 satellite/plugins/contacts/__init__.py:82
+#: satellite/plugins/contacts/__init__.py:223
+msgid "Contacts"
+msgstr "Επαφές"
+
+#: satellite_contacts/window.py:81
+msgid "Send a text message"
+msgstr "Αποστολή μηνύματος κειμένου"
+
+#: satellite_contacts/window.py:83 satellite_contacts/window.py:89
+#: satellite_contacts/window.py:93
+msgid "Copy"
+msgstr "Αντιγραφή"
+
+#: satellite_contacts/window.py:87
+msgid "Write an email"
+msgstr "Σύνταξη email"
+
+#: satellite_contacts/window.py:92
+msgid "Address"
+msgstr "Διεύθυνση"
+
+#: satellite_contacts/window.py:95
+msgid "Birthday"
+msgstr "Γενέθλια"
+
+#: satellite_contacts/window.py:97
+msgid "Note"
+msgstr "Σημείωση"
+
+#: satellite_contacts/window.py:107
+msgid "Copied from {}. Change this contact on the phone."
+msgstr "Αντιγράφηκε από τη συσκευή {}. Αλλάξτε αυτή την επαφή στο τηλέφωνο."
+
+#: satellite_contacts/window.py:107
+msgid "the phone"
+msgstr "το τηλέφωνο"
+
+#: satellite_contacts/window.py:158
+msgid "Back to contacts"
+msgstr "Πίσω στις επαφές"
+
+#: satellite_contacts/window.py:162
+msgid "Copy contacts from the phone again"
+msgstr "Νέα αντιγραφή των επαφών από το τηλέφωνο"
+
+#: satellite_contacts/window.py:172
+msgid "Search contacts"
+msgstr "Αναζήτηση επαφών"
+
+#: satellite_contacts/window.py:196
+msgid "Copy contacts from the phone"
+msgstr "Αντιγραφή των επαφών από το τηλέφωνο"
+
+#: satellite_contacts/window.py:227 satellite/plugins/contacts/__init__.py:112
+#: satellite_sms/window.py:100 satellite/vcard.py:19 satellite/vcard.py:101
+msgid "Phone"
+msgstr "Τηλέφωνο"
+
+#: satellite_contacts/window.py:276
+msgid "No contacts yet. Connect {} and copy its contacts."
+msgstr "Δεν υπάρχουν ακόμα επαφές. Συνδέστε τη συσκευή {} και αντιγράψτε τις επαφές της."
+
+#: satellite_contacts/window.py:277
+msgid "Pair a phone in Satellite to see its contacts here."
+msgstr "Κάντε σύζευξη ενός τηλεφώνου στο Satellite για να δείτε τις επαφές του εδώ."
+
+#: satellite_contacts/window.py:281
+msgid "{} contact"
+msgid_plural "{} contacts"
+msgstr[0] "{} επαφή"
+msgstr[1] "{} επαφές"
+
+#: satellite_contacts/window.py:287
+msgid "The phone is not connected."
+msgstr "Το τηλέφωνο δεν είναι συνδεδεμένο."
 
 #: satellite/desktop_input.py:185
 msgid "To type letters outside the US keyboard (such as Greek), install wl-clipboard: sudo apt install wl-clipboard"
@@ -340,37 +423,59 @@ msgstr "Εμφάνιση του σήματος του δικτύου κινητ�
 msgid "Mobile"
 msgstr "Κινητό"
 
-#: satellite/plugins/contacts/__init__.py:50
-#: satellite/plugins/contacts/__init__.py:186 satellite_contacts/app.py:26
-#: satellite_contacts/window.py:137 satellite_contacts/window.py:154
-msgid "Contacts"
-msgstr "Επαφές"
+#: satellite/plugins/contacts/__init__.py:60
+msgid "No contacts to export"
+msgstr "Δεν υπάρχουν επαφές για εξαγωγή"
 
-#: satellite/plugins/contacts/__init__.py:51
+#: satellite/plugins/contacts/__init__.py:61
+msgid "Connect the phone with this plugin on to copy its contacts first."
+msgstr "Συνδέστε πρώτα το τηλέφωνο με αυτό το πρόσθετο ενεργό, για να αντιγραφούν οι επαφές του."
+
+#: satellite/plugins/contacts/__init__.py:65
+msgid "Export contacts"
+msgstr "Εξαγωγή επαφών"
+
+#: satellite/plugins/contacts/__init__.py:65
+msgid "Export"
+msgstr "Εξαγωγή"
+
+#: satellite/plugins/contacts/__init__.py:67
+msgid "{} contacts.vcf"
+msgstr "Επαφές {}.vcf"
+
+#: satellite/plugins/contacts/__init__.py:73
+msgid "Could not export"
+msgstr "Δεν ήταν δυνατή η εξαγωγή"
+
+#: satellite/plugins/contacts/__init__.py:83
 msgid "Keep a copy of the paired phone's contacts on this computer."
 msgstr "Διατήρηση αντιγράφου των επαφών του συνδεδεμένου τηλεφώνου σε αυτόν τον υπολογιστή."
 
-#: satellite/plugins/contacts/__init__.py:62
+#: satellite/plugins/contacts/__init__.py:94
 msgid "Copy the phone's contacts to this computer"
 msgstr "Αντιγραφή των επαφών του τηλεφώνου σε αυτόν τον υπολογιστή"
 
-#: satellite/plugins/contacts/__init__.py:64
+#: satellite/plugins/contacts/__init__.py:96
 msgid "Share them with other address book apps (GNOME Contacts, Evolution, ...)"
 msgstr "Κοινή χρήση τους με άλλες εφαρμογές επαφών (Επαφές GNOME, Evolution, ...)"
 
-#: satellite/plugins/contacts/__init__.py:66
+#: satellite/plugins/contacts/__init__.py:98
 msgid "Also share them with KDE apps"
 msgstr "Κοινή χρήση τους και με εφαρμογές του KDE"
 
-#: satellite/plugins/contacts/__init__.py:184
+#: satellite/plugins/contacts/__init__.py:113
+msgid "Export contacts…"
+msgstr "Εξαγωγή επαφών…"
+
+#: satellite/plugins/contacts/__init__.py:221
 msgid "Could not open Contacts"
 msgstr "Δεν ήταν δυνατό το άνοιγμα των Επαφών"
 
-#: satellite/plugins/contacts/__init__.py:184
+#: satellite/plugins/contacts/__init__.py:221
 msgid "Satellite Contacts is not installed."
 msgstr "Οι Επαφές Satellite δεν είναι εγκατεστημένες."
 
-#: satellite/plugins/contacts/__init__.py:187
+#: satellite/plugins/contacts/__init__.py:224
 msgid "See the phone's contacts"
 msgstr "Προβολή των επαφών του τηλεφώνου"
 
@@ -442,18 +547,6 @@ msgstr "Χρήση της συνδεδεμένης συσκευής ως επι�
 msgid "Swap left and right buttons"
 msgstr "Αντιμετάθεση αριστερού και δεξιού κουμπιού"
 
-#: satellite/plugins/mpris/__init__.py:30
-msgid "Media player control"
-msgstr "Έλεγχος αναπαραγωγής πολυμέσων"
-
-#: satellite/plugins/mpris/__init__.py:31
-msgid "Show and control the device's music and videos from this desktop."
-msgstr "Εμφάνιση και έλεγχος της μουσικής και των βίντεο της συσκευής από αυτή την επιφάνεια εργασίας."
-
-#: satellite/plugins/mpris/__init__.py:37
-msgid "Show album art from the device"
-msgstr "Εμφάνιση εξωφύλλων από τη συσκευή"
-
 #: satellite/plugins/mpriscontrol/__init__.py:132
 msgid "Control media on this computer"
 msgstr "Έλεγχος πολυμέσων σε αυτόν τον υπολογιστή"
@@ -465,6 +558,18 @@ msgstr "Αναπαραγωγή, παύση και παράλειψη της μο
 #: satellite/plugins/mpriscontrol/__init__.py:138
 msgid "Send album art to the device"
 msgstr "Αποστολή εξωφύλλων στη συσκευή"
+
+#: satellite/plugins/mpris/__init__.py:30
+msgid "Media player control"
+msgstr "Έλεγχος αναπαραγωγής πολυμέσων"
+
+#: satellite/plugins/mpris/__init__.py:31
+msgid "Show and control the device's music and videos from this desktop."
+msgstr "Εμφάνιση και έλεγχος της μουσικής και των βίντεο της συσκευής από αυτή την επιφάνεια εργασίας."
+
+#: satellite/plugins/mpris/__init__.py:37
+msgid "Show album art from the device"
+msgstr "Εμφάνιση εξωφύλλων από τη συσκευή"
 
 #: satellite/plugins/notifications/__init__.py:34
 msgid "Notification"
@@ -829,7 +934,7 @@ msgstr "Να χτυπήσει η συσκευή"
 
 #: satellite/plugins/ring/__init__.py:140
 #: satellite/plugins/runcommand/__init__.py:320 satellite/ui/dialogs.py:34
-#: satellite/ui/plugin_config_dialog.py:63
+#: satellite/ui/plugin_config_dialog.py:64
 #: satellite/ui/presenter_settings.py:135
 msgid "Save"
 msgstr "Αποθήκευση"
@@ -911,12 +1016,11 @@ msgstr[0] "Μπορείτε να ρυθμίσετε έως {} εντολή αν�
 msgstr[1] "Μπορείτε να ρυθμίσετε έως {} εντολές ανά συσκευή."
 
 #: satellite/plugins/runcommand/__init__.py:398
-#: satellite/ui/preferences_dialog.py:79
+#: satellite/ui/custom_devices_dialog.py:63
 msgid "Remove"
 msgstr "Αφαίρεση"
 
 #: satellite/plugins/runcommand/__init__.py:398
-#: satellite/ui/preferences_dialog.py:65
 msgid "Add"
 msgstr "Προσθήκη"
 
@@ -1135,9 +1239,9 @@ msgstr "Φέρτε τον δείκτη πίσω από την ίδια άκρη 
 msgid "On Wayland this computer can only receive the other one's mouse and keyboard: sending them needs an X11 session."
 msgstr "Σε Wayland αυτός ο υπολογιστής μπορεί μόνο να δέχεται το ποντίκι και το πληκτρολόγιο του άλλου: η αποστολή τους χρειάζεται συνεδρία X11."
 
-#: satellite/plugins/sms/__init__.py:83 satellite/plugins/sms/__init__.py:197
-#: satellite_sms/app.py:28 satellite_sms/window.py:33
-#: satellite_sms/window.py:65
+#: satellite/plugins/sms/__init__.py:83 satellite/plugins/sms/__init__.py:204
+#: satellite_sms/app.py:33 satellite_sms/window.py:24
+#: satellite_sms/window.py:56
 msgid "Messages"
 msgstr "Μηνύματα"
 
@@ -1145,15 +1249,15 @@ msgstr "Μηνύματα"
 msgid "Read and send the paired phone's text messages (SMS and MMS)."
 msgstr "Ανάγνωση και αποστολή των μηνυμάτων κειμένου του συνδεδεμένου τηλεφώνου (SMS και MMS)."
 
-#: satellite/plugins/sms/__init__.py:195
+#: satellite/plugins/sms/__init__.py:202
 msgid "Could not open Messages"
 msgstr "Δεν ήταν δυνατό το άνοιγμα των Μηνυμάτων"
 
-#: satellite/plugins/sms/__init__.py:195
+#: satellite/plugins/sms/__init__.py:202
 msgid "Satellite Messages is not installed."
 msgstr "Τα Μηνύματα Satellite δεν είναι εγκατεστημένα."
 
-#: satellite/plugins/sms/__init__.py:198
+#: satellite/plugins/sms/__init__.py:205
 msgid "Read and send text messages"
 msgstr "Ανάγνωση και αποστολή μηνυμάτων κειμένου"
 
@@ -1213,9 +1317,228 @@ msgstr "Εκκίνηση ελαχιστοποιημένο στην περιοχ�
 msgid "Connect your phone and computer with the KDE Connect protocol."
 msgstr "Συνδέστε το τηλέφωνο και τον υπολογιστή σας με το πρωτόκολλο KDE Connect."
 
+#: satellite_sms/app.py:22
+msgid "Show this phone's messages"
+msgstr "Εμφάνιση των μηνυμάτων αυτού του τηλεφώνου"
+
+#: satellite_sms/app.py:24
+msgid "Start a message to this number"
+msgstr "Νέο μήνυμα σε αυτόν τον αριθμό"
+
+#: satellite_sms/conversation_list.py:15
+msgid "You: {}"
+msgstr "Εσείς: {}"
+
+#: satellite_sms/conversation_list.py:57
+msgid "Search conversations"
+msgstr "Αναζήτηση συνομιλιών"
+
+#: satellite_sms/google_messages.py:115
+msgid "Try again"
+msgstr "Δοκιμάστε ξανά"
+
+#: satellite_sms/google_messages.py:175
+msgid "The connection to Google Messages isn't secure, so Satellite stopped loading it."
+msgstr "Η σύνδεση με τα Google Messages δεν είναι ασφαλής, οπότε το Satellite σταμάτησε τη φόρτωσή τους."
+
+#: satellite_sms/google_messages.py:221
+msgid "Google Messages couldn't be opened (error {}). Check this computer's internet connection, or try again later."
+msgstr "Δεν ήταν δυνατό το άνοιγμα των Google Messages (σφάλμα {}). Ελέγξτε τη σύνδεση αυτού του υπολογιστή στο διαδίκτυο ή δοκιμάστε ξανά αργότερα."
+
+#: satellite_sms/google_messages.py:223
+msgid "Couldn't reach Google Messages. Check this computer's internet connection."
+msgstr "Δεν ήταν δυνατή η πρόσβαση στα Google Messages. Ελέγξτε τη σύνδεση αυτού του υπολογιστή στο διαδίκτυο."
+
+#: satellite_sms/model.py:21 satellite_sms/model.py:37
+msgid "Yesterday"
+msgstr "Χθες"
+
+#: satellite_sms/model.py:35
+msgid "Today"
+msgstr "Σήμερα"
+
+#: satellite_sms/model.py:69
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: satellite_sms/model.py:71
+msgid "{}, {} and {} other"
+msgid_plural "{}, {} and {} others"
+msgstr[0] "{}, {} και {} ακόμα"
+msgstr[1] "{}, {} και {} ακόμα"
+
+#: satellite_sms/settings_dialog.py:17
+msgid ""
+"Messages will be shown by Google's website instead of by Satellite.\n"
+"\n"
+"• Satellite can't see, check or control what Google shows or does in this view.\n"
+"• Messages go through Google's servers and the internet, not only your local network. Your phone needs internet access, and Google Messages must be its messaging app.\n"
+"• Google's terms and privacy policy apply. Google can change or stop this service, or stop it from working here.\n"
+"• The pairing stays on this computer until you sign out, so anyone using this computer account can read your messages.\n"
+"• Only messages.google.com opens here; links in messages open in your web browser. Camera, microphone, location and website notifications are blocked.\n"
+"• To unpair later, sign out in the Messages plugin settings, or on the phone open Google Messages → Device pairing."
+msgstr ""
+"Τα μηνύματα θα εμφανίζονται από τον ιστότοπο της Google αντί για το Satellite.\n"
+"\n"
+"• Το Satellite δεν μπορεί να δει, να ελέγξει ή να ρυθμίσει τι δείχνει ή κάνει η Google σε αυτή την προβολή.\n"
+"• Τα μηνύματα περνούν από τους διακομιστές της Google και το διαδίκτυο, όχι μόνο από το τοπικό σας δίκτυο. Το τηλέφωνό σας χρειάζεται πρόσβαση στο διαδίκτυο και τα Google Messages πρέπει να είναι η εφαρμογή μηνυμάτων του.\n"
+"• Ισχύουν οι όροι και η πολιτική απορρήτου της Google. Η Google μπορεί να αλλάξει ή να σταματήσει αυτή την υπηρεσία, ή να σταματήσει τη λειτουργία της εδώ.\n"
+"• Η σύζευξη μένει σε αυτόν τον υπολογιστή μέχρι να αποσυνδεθείτε, οπότε όποιος χρησιμοποιεί αυτόν τον λογαριασμό υπολογιστή μπορεί να διαβάσει τα μηνύματά σας.\n"
+"• Εδώ ανοίγει μόνο το messages.google.com· οι σύνδεσμοι στα μηνύματα ανοίγουν στο πρόγραμμα περιήγησής σας. Η κάμερα, το μικρόφωνο, η τοποθεσία και οι ειδοποιήσεις ιστοτόπων είναι αποκλεισμένα.\n"
+"• Για να καταργήσετε τη σύζευξη αργότερα, αποσυνδεθείτε από τις ρυθμίσεις του πρόσθετου Μηνύματα, ή στο τηλέφωνο ανοίξτε Google Messages → Σύζευξη συσκευών."
+
+#: satellite_sms/settings_dialog.py:77
+msgid "Messages settings"
+msgstr "Ρυθμίσεις Μηνυμάτων"
+
+#: satellite_sms/settings_dialog.py:78 satellite/ui/custom_devices_dialog.py:15
+#: satellite/ui/main_window.py:308 satellite/ui/preferences_dialog.py:16
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: satellite_sms/settings_dialog.py:83
+msgid "Use Google Messages for web"
+msgstr "Χρήση των Google Messages για τον ιστό"
+
+#: satellite_sms/settings_dialog.py:84
+msgid "Satellite Messages shows Google's website instead of the phone's SMS and MMS. It can show RCS chats."
+msgstr "Τα Μηνύματα του Satellite δείχνουν τον ιστότοπο της Google αντί για τα SMS και MMS του τηλεφώνου. Μπορούν να δείξουν συνομιλίες RCS."
+
+#: satellite_sms/settings_dialog.py:92
+msgid "Sign out of Google Messages…"
+msgstr "Αποσύνδεση από τα Google Messages…"
+
+#: satellite_sms/settings_dialog.py:100
+msgid "Google Messages for web needs WebKitGTK"
+msgstr "Τα Google Messages για τον ιστό χρειάζονται το WebKitGTK"
+
+#: satellite_sms/settings_dialog.py:101
+msgid "Install the gir1.2-webkit2-4.1 package, then try again."
+msgstr "Εγκαταστήστε το πακέτο gir1.2-webkit2-4.1 και δοκιμάστε ξανά."
+
+#: satellite_sms/settings_dialog.py:103
+msgid "Use Google Messages for web?"
+msgstr "Χρήση των Google Messages για τον ιστό;"
+
+#: satellite_sms/settings_dialog.py:103
+msgid "Use Google Messages"
+msgstr "Χρήση των Google Messages"
+
+#: satellite_sms/settings_dialog.py:107
+msgid "Stop using Google Messages for web?"
+msgstr "Διακοπή χρήσης των Google Messages για τον ιστό;"
+
+#: satellite_sms/settings_dialog.py:108
+msgid "Satellite Messages will show your phone's SMS and MMS again."
+msgstr "Τα Μηνύματα του Satellite θα εμφανίζουν ξανά τα SMS και MMS του τηλεφώνου σας."
+
+#: satellite_sms/settings_dialog.py:108
+msgid "Stop Using"
+msgstr "Διακοπή χρήσης"
+
+#: satellite_sms/settings_dialog.py:109
+msgid "Also sign out and delete Google Messages data from this computer"
+msgstr "Αποσύνδεση και διαγραφή των δεδομένων των Google Messages από αυτόν τον υπολογιστή"
+
+#: satellite_sms/settings_dialog.py:119
+msgid "Sign out of Google Messages?"
+msgstr "Αποσύνδεση από τα Google Messages;"
+
+#: satellite_sms/settings_dialog.py:120
+msgid "This computer forgets the pairing. To use it again, scan a new QR code with the phone."
+msgstr "Αυτός ο υπολογιστής ξεχνά τη σύζευξη. Για να τον χρησιμοποιήσετε ξανά, σαρώστε νέο κωδικό QR με το τηλέφωνο."
+
+#: satellite_sms/settings_dialog.py:121
+msgid "Sign Out"
+msgstr "Αποσύνδεση"
+
+#: satellite_sms/thread_view.py:111
+msgid "Attachment"
+msgstr "Συνημμένο"
+
+#: satellite_sms/thread_view.py:145
+msgid "Attach a picture or file"
+msgstr "Επισύναψη εικόνας ή αρχείου"
+
+#: satellite_sms/thread_view.py:165
+msgid "Send (Enter)"
+msgstr "Αποστολή (Enter)"
+
+#: satellite_sms/thread_view.py:197
+msgid "Attach"
+msgstr "Επισύναψη"
+
+#: satellite_sms/thread_view.py:312
+msgid "To:"
+msgstr "Προς:"
+
+#: satellite_sms/thread_view.py:316
+msgid "Name or phone number"
+msgstr "Όνομα ή αριθμός τηλεφώνου"
+
+#: satellite_sms/window.py:60
+msgid "Back to conversations"
+msgstr "Πίσω στις συνομιλίες"
+
+#: satellite_sms/window.py:64
+msgid "New message (Ctrl+N)"
+msgstr "Νέο μήνυμα (Ctrl+N)"
+
+#: satellite_sms/window.py:69 satellite_sms/window.py:386
+msgid "Load messages from the phone (F5)"
+msgstr "Φόρτωση μηνυμάτων από το τηλέφωνο (F5)"
+
+#: satellite_sms/window.py:90
+msgid "Start Satellite"
+msgstr "Εκκίνηση του Satellite"
+
+#: satellite_sms/window.py:116
+msgid "Pick a conversation, or start a new one."
+msgstr "Επιλέξτε μια συνομιλία ή ξεκινήστε μια νέα."
+
+#: satellite_sms/window.py:132
+msgid "Add one person for a text message, or several for a group message."
+msgstr "Προσθέστε ένα άτομο για μήνυμα κειμένου ή περισσότερα για ομαδικό μήνυμα."
+
+#: satellite_sms/window.py:168
+msgid "Satellite is not running, so messages can't be loaded."
+msgstr "Το Satellite δεν εκτελείται, οπότε δεν είναι δυνατή η φόρτωση των μηνυμάτων."
+
+#: satellite_sms/window.py:221
+msgid "No paired phone with Messages switched on. Pair a phone in Satellite first."
+msgstr "Δεν υπάρχει τηλέφωνο σε σύζευξη με ενεργοποιημένα τα Μηνύματα. Κάντε πρώτα σύζευξη ενός τηλεφώνου στο Satellite."
+
+#: satellite_sms/window.py:223
+msgid "{} is not connected. New messages appear when it reconnects."
+msgstr "Η συσκευή {} δεν είναι συνδεδεμένη. Τα νέα μηνύματα εμφανίζονται όταν επανασυνδεθεί."
+
+#: satellite_sms/window.py:380
+msgid "Google Messages for web"
+msgstr "Google Messages για τον ιστό"
+
+#: satellite_sms/window.py:381
+msgid "Reload Google Messages (F5)"
+msgstr "Επαναφόρτωση των Google Messages (F5)"
+
 #: satellite/ui/context.py:25
 msgid "this device"
 msgstr "αυτή τη συσκευή"
+
+#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:106
+msgid "Add devices by IP"
+msgstr "Προσθήκη συσκευών ανά IP"
+
+#: satellite/ui/custom_devices_dialog.py:21
+msgid "If your device is not automatically detected, you can add its IP address or hostname."
+msgstr "Αν η συσκευή σας δεν εντοπίζεται αυτόματα, μπορείτε να προσθέσετε τη διεύθυνση IP ή το όνομά της."
+
+#: satellite/ui/custom_devices_dialog.py:30
+msgid "Hostname or IP address"
+msgstr "Όνομα ή IP διεύθυνση"
+
+#: satellite/ui/custom_devices_dialog.py:32
+msgid "Add device"
+msgstr "Προσθήκη συσκευής"
 
 #: satellite/ui/device_list.py:55
 msgid "CONNECTED"
@@ -1241,47 +1564,47 @@ msgstr "Ανοίξτε το KDE Connect στο τηλέφωνό σας και σ
 msgid "Search again"
 msgstr "Νέα αναζήτηση"
 
-#: satellite/ui/device_menu.py:42
-msgid "Verification code: {}"
-msgstr "Κωδικός επαλήθευσης: {}"
+#: satellite/ui/device_menu.py:43 satellite/ui/pairing_prompt.py:22
+msgid "Accept"
+msgstr "Αποδοχή"
 
-#: satellite/ui/device_menu.py:43
-msgid "Accept pairing"
-msgstr "Αποδοχή σύζευξης"
-
-#: satellite/ui/device_menu.py:44
+#: satellite/ui/device_menu.py:44 satellite/ui/pairing_prompt.py:22
 msgid "Reject"
 msgstr "Απόρριψη"
 
-#: satellite/ui/device_menu.py:46
+#: satellite/ui/device_menu.py:46 satellite/ui/pairing_prompt.py:26
+msgid "Cancel pairing"
+msgstr "Ακύρωση σύζευξης"
+
+#: satellite/ui/device_menu.py:48 satellite/ui/pairing_prompt.py:34
 msgid "Request pairing"
 msgstr "Αίτημα σύζευξης"
 
-#: satellite/ui/device_menu.py:51
-msgid "Rename…"
-msgstr "Μετονομασία…"
+#: satellite/ui/device_menu.py:53 satellite/ui/main_window.py:306
+msgid "Plugin settings"
+msgstr "Ρυθμίσεις προσθέτων"
 
-#: satellite/ui/device_menu.py:54
+#: satellite/ui/device_menu.py:56
 msgid "Encryption info"
 msgstr "Πληροφορίες κρυπτογράφησης"
 
-#: satellite/ui/device_menu.py:57
-msgid "Unpair…"
-msgstr "Κατάργηση σύζευξης…"
+#: satellite/ui/device_menu.py:63 satellite/ui/main_window.py:295
+msgid "Unpair"
+msgstr "Κατάργηση σύζευξης"
 
-#: satellite/ui/device_page.py:53
+#: satellite/ui/device_page.py:61
 msgid "PLUGINS"
 msgstr "ΠΡΟΣΘΕΤΑ"
 
-#: satellite/ui/device_page.py:91
+#: satellite/ui/device_page.py:101
 msgid "Device actions"
 msgstr "Ενέργειες συσκευής"
 
-#: satellite/ui/device_page.py:105
+#: satellite/ui/device_page.py:120
 msgid "Battery · {}% · Charging"
 msgstr "Μπαταρία · {}% · Φορτίζει"
 
-#: satellite/ui/device_page.py:105
+#: satellite/ui/device_page.py:120
 msgid "Battery · {}%"
 msgstr "Μπαταρία · {}%"
 
@@ -1313,31 +1636,31 @@ msgstr "Άγνωστη σουίτα κρυπτογράφησης"
 msgid "Unavailable"
 msgstr "Μη διαθέσιμο"
 
-#: satellite/ui/main_window.py:94
+#: satellite/ui/main_window.py:96
 msgid "Search for devices (F5)"
 msgstr "Αναζήτηση συσκευών (F5)"
 
-#: satellite/ui/main_window.py:99
+#: satellite/ui/main_window.py:101
 msgid "Back to devices (Esc)"
 msgstr "Πίσω στις συσκευές (Esc)"
 
-#: satellite/ui/main_window.py:104 satellite/ui/preferences_dialog.py:14
+#: satellite/ui/main_window.py:107 satellite/ui/preferences_dialog.py:14
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
-#: satellite/ui/main_window.py:105
+#: satellite/ui/main_window.py:108
 msgid "About Satellite"
 msgstr "Σχετικά με το Satellite"
 
-#: satellite/ui/main_window.py:107 satellite/ui/tray.py:107
+#: satellite/ui/main_window.py:110 satellite/ui/tray.py:107
 msgid "Quit"
 msgstr "Έξοδος"
 
-#: satellite/ui/main_window.py:132
+#: satellite/ui/main_window.py:135
 msgid "Select a device"
 msgstr "Επιλέξτε μια συσκευή"
 
-#: satellite/ui/main_window.py:133
+#: satellite/ui/main_window.py:136
 msgid "Pick a device on the left to see its status and change its plugins."
 msgstr "Επιλέξτε μια συσκευή στα αριστερά για να δείτε την κατάστασή της και να αλλάξετε τα πρόσθετά της."
 
@@ -1349,79 +1672,48 @@ msgstr "Κατάργηση σύζευξης με τη συσκευή {};"
 msgid "This removes the trusted connection to this device."
 msgstr "Αυτό καταργεί την έμπιστη σύνδεση με αυτή τη συσκευή."
 
-#: satellite/ui/main_window.py:295
-msgid "Unpair"
-msgstr "Κατάργηση σύζευξης"
-
-#: satellite/ui/main_window.py:305
-msgid "Rename device"
-msgstr "Μετονομασία συσκευής"
-
-#: satellite/ui/main_window.py:306
-msgid "Name shown only on this computer (leave empty to use “{}”):"
-msgstr "Όνομα που εμφανίζεται μόνο σε αυτόν τον υπολογιστή (αφήστε το κενό για «{}»):"
-
-#: satellite/ui/main_window.py:343
+#: satellite/ui/main_window.py:351
 msgid "{} failed"
 msgstr "Το «{}» απέτυχε"
 
-#: satellite/ui/main_window.py:360
+#: satellite/ui/main_window.py:368
 msgid "Could not exchange the pairing request"
 msgstr "Δεν ήταν δυνατή η ανταλλαγή του αιτήματος σύζευξης"
 
-#: satellite/ui/main_window.py:361
+#: satellite/ui/main_window.py:369
 msgid "The secure device connection is not available. Check that both devices are on the same network and that the KDE Connect ports are allowed through the firewall."
 msgstr "Η ασφαλής σύνδεση με τη συσκευή δεν είναι διαθέσιμη. Ελέγξτε ότι και οι δύο συσκευές είναι στο ίδιο δίκτυο και ότι οι θύρες του KDE Connect επιτρέπονται από το τείχος προστασίας."
 
-#: satellite/ui/pairing_prompt.py:23
-msgid "{} is asking to pair with this computer."
-msgstr "Η συσκευή {} ζητά σύζευξη με αυτόν τον υπολογιστή."
+#: satellite/ui/pairing_prompt.py:20
+msgid "Pairing request from '{}'"
+msgstr "Αίτημα σύζευξης από '{}'"
 
-#: satellite/ui/pairing_prompt.py:25
-msgid "Pairing request sent to {}. Waiting for a response."
-msgstr "Το αίτημα σύζευξης στάλθηκε στη συσκευή {}. Αναμονή για απάντηση."
+#: satellite/ui/pairing_prompt.py:24 satellite/ui/widgets.py:75
+#: satellite/ui/widgets.py:91
+msgid "Pair requested"
+msgstr "Ζητήθηκε σύζευξη"
 
-#: satellite/ui/pairing_prompt.py:27
-msgid ""
-"This device is paired but it is offline.\n"
-"Open KDE Connect on it to reconnect."
-msgstr ""
-"Αυτή η συσκευή έχει σύζευξη αλλά είναι εκτός σύνδεσης.\n"
-"Ανοίξτε το KDE Connect σε αυτή για να επανασυνδεθεί."
+#: satellite/ui/pairing_prompt.py:28 satellite/ui/pairing_prompt.py:36
+msgid "Device not reachable"
+msgstr "Η συσκευή δεν είναι προσβάσιμη"
 
 #: satellite/ui/pairing_prompt.py:29
-msgid "Do you want to pair with {}?"
-msgstr "Θέλετε σύζευξη με τη συσκευή {};"
+msgid "This paired device is not reachable. Make sure it is connected to your same network."
+msgstr "Αυτή η συζευγμένη συσκευή δεν είναι προσβάσιμη. Βεβαιωθείτε ότι είναι συνδεδεμένη στο δίκτυό σας."
 
-#: satellite/ui/pairing_prompt.py:31
-msgid "Establishing a secure connection with {}…"
-msgstr "Δημιουργία ασφαλούς σύνδεσης με τη συσκευή {}…"
+#: satellite/ui/pairing_prompt.py:32
+msgid "Device not paired"
+msgstr "Η συσκευή δεν συζεύχθηκε"
 
-#: satellite/ui/pairing_prompt.py:39
-msgid "Security code"
-msgstr "Κωδικός ασφαλείας"
-
-#: satellite/ui/pairing_prompt.py:43
-msgid "Check that both devices show the same code."
-msgstr "Ελέγξτε ότι και οι δύο συσκευές δείχνουν τον ίδιο κωδικό."
-
-#: satellite/ui/pairing_prompt.py:50
-msgid "Accept"
-msgstr "Αποδοχή"
-
-#: satellite/ui/pairing_prompt.py:53
-msgid "Deny"
-msgstr "Άρνηση"
-
-#: satellite/ui/pairing_prompt.py:58
-msgid "Pair"
-msgstr "Σύζευξη"
+#: satellite/ui/pairing_prompt.py:33
+msgid "Pairing two devices will give them access to each other. Only pair together your own devices."
+msgstr "Η σύζευξη δύο συσκευών τους δίνει πρόσβαση η μία στην άλλη. Συζεύξτε μόνο δικές σας συσκευές."
 
 #: satellite/ui/plugin_config_dialog.py:35
 msgid "Apps show up here once they show a notification while a device is connected."
 msgstr "Οι εφαρμογές εμφανίζονται εδώ μόλις δείξουν μια ειδοποίηση ενώ είναι συνδεδεμένη μια συσκευή."
 
-#: satellite/ui/plugin_config_dialog.py:61 satellite/ui/plugin_row.py:40
+#: satellite/ui/plugin_config_dialog.py:62 satellite/ui/plugin_row.py:40
 msgid "Configure {}"
 msgstr "Ρύθμιση: {}"
 
@@ -1436,10 +1728,6 @@ msgstr "Δεν βρέθηκαν πρόσθετα"
 #: satellite/ui/plugin_row.py:47
 msgid "Enable or disable {}"
 msgstr "Ενεργοποίηση ή απενεργοποίηση: {}"
-
-#: satellite/ui/preferences_dialog.py:16
-msgid "Close"
-msgstr "Κλείσιμο"
 
 #: satellite/ui/preferences_dialog.py:23
 msgid "Start when you log in"
@@ -1476,18 +1764,6 @@ msgstr "Χρήση mDNS (Avahi)"
 #: satellite/ui/preferences_dialog.py:50
 msgid "Finds devices on networks that block broadcasts, like some routers and guest Wi-Fi."
 msgstr "Βρίσκει συσκευές σε δίκτυα που μπλοκάρουν τις εκπομπές, όπως κάποιοι δρομολογητές και τα Wi-Fi επισκεπτών."
-
-#: satellite/ui/preferences_dialog.py:54
-msgid "Devices added by address"
-msgstr "Συσκευές που προστέθηκαν με διεύθυνση"
-
-#: satellite/ui/preferences_dialog.py:55
-msgid "For a device on another network or a VPN: its IP address or host name."
-msgstr "Για συσκευή σε άλλο δίκτυο ή σε VPN: η διεύθυνση IP ή το όνομα κεντρικού υπολογιστή της."
-
-#: satellite/ui/preferences_dialog.py:64
-msgid "e.g. {}"
-msgstr "π.χ. {}"
 
 #: satellite/ui/presenter_overlay.py:43
 msgid "This desktop can't draw see-through windows (compositing is off), so the pointer can't be drawn over the slides."
@@ -1617,45 +1893,25 @@ msgstr "Άνοιγμα του Satellite"
 msgid "Connected"
 msgstr "Συνδεδεμένη"
 
-#: satellite/ui/widgets.py:73
+#: satellite/ui/widgets.py:73 satellite/ui/widgets.py:89
 msgid "Pairing request"
 msgstr "Αίτημα σύζευξης"
-
-#: satellite/ui/widgets.py:75
-msgid "Pair request sent"
-msgstr "Στάλθηκε αίτημα σύζευξης"
 
 #: satellite/ui/widgets.py:77 satellite/ui/widgets.py:95
 msgid "Offline"
 msgstr "Εκτός σύνδεσης"
 
-#: satellite/ui/widgets.py:79
-msgid "Secure link established"
-msgstr "Δημιουργήθηκε ασφαλής σύνδεση"
+#: satellite/ui/widgets.py:79 satellite/ui/widgets.py:97
+msgid "Not paired"
+msgstr "Χωρίς σύζευξη"
 
-#: satellite/ui/widgets.py:80
-msgid "Available"
-msgstr "Διαθέσιμη"
-
-#: satellite/ui/widgets.py:89
-msgid "Pairing request received"
-msgstr "Λήφθηκε αίτημα σύζευξης"
-
-#: satellite/ui/widgets.py:91
-msgid "Pairing request sent"
-msgstr "Στάλθηκε αίτημα σύζευξης"
+#: satellite/ui/widgets.py:80 satellite/ui/widgets.py:98
+msgid "Not reachable"
+msgstr "Μη προσβάσιμη"
 
 #: satellite/ui/widgets.py:94
 msgid "Offline · Battery {}% (last reported)"
 msgstr "Εκτός σύνδεσης · Μπαταρία {}% (τελευταία ένδειξη)"
-
-#: satellite/ui/widgets.py:97
-msgid "Secure link established · Not paired"
-msgstr "Δημιουργήθηκε ασφαλής σύνδεση · Χωρίς σύζευξη"
-
-#: satellite/ui/widgets.py:98
-msgid "Detected, not paired"
-msgstr "Εντοπίστηκε, χωρίς σύζευξη"
 
 #: satellite/vcard.py:18
 msgid "Home"
@@ -1677,12 +1933,6 @@ msgstr "Φαξ"
 msgid "Pager"
 msgstr "Βομβητής"
 
-#: satellite/vcard.py:19 satellite/vcard.py:101
-#: satellite_contacts/window.py:231 satellite_contacts/window.py:336
-#: satellite_sms/window.py:118
-msgid "Phone"
-msgstr "Τηλέφωνο"
-
 #: satellite/vcard.py:19
 msgid "Other"
 msgstr "Άλλο"
@@ -1694,284 +1944,3 @@ msgstr "Χωρίς όνομα"
 #: satellite/vcard.py:126
 msgid "Email"
 msgstr "Email"
-
-#: satellite_contacts/app.py:21
-msgid "Show this phone's contacts"
-msgstr "Εμφάνιση των επαφών αυτού του τηλεφώνου"
-
-#: satellite_contacts/window.py:81
-msgid "Send a text message"
-msgstr "Αποστολή μηνύματος κειμένου"
-
-#: satellite_contacts/window.py:83 satellite_contacts/window.py:89
-#: satellite_contacts/window.py:93
-msgid "Copy"
-msgstr "Αντιγραφή"
-
-#: satellite_contacts/window.py:87
-msgid "Write an email"
-msgstr "Σύνταξη email"
-
-#: satellite_contacts/window.py:92
-msgid "Address"
-msgstr "Διεύθυνση"
-
-#: satellite_contacts/window.py:95
-msgid "Birthday"
-msgstr "Γενέθλια"
-
-#: satellite_contacts/window.py:97
-msgid "Note"
-msgstr "Σημείωση"
-
-#: satellite_contacts/window.py:107
-msgid "Copied from {}. Change this contact on the phone."
-msgstr "Αντιγράφηκε από τη συσκευή {}. Αλλάξτε αυτή την επαφή στο τηλέφωνο."
-
-#: satellite_contacts/window.py:107
-msgid "the phone"
-msgstr "το τηλέφωνο"
-
-#: satellite_contacts/window.py:158
-msgid "Back to contacts"
-msgstr "Πίσω στις επαφές"
-
-#: satellite_contacts/window.py:162
-msgid "Copy contacts from the phone again"
-msgstr "Νέα αντιγραφή των επαφών από το τηλέφωνο"
-
-#: satellite_contacts/window.py:166
-msgid "Export as a vCard file (for Thunderbird and other apps)"
-msgstr "Εξαγωγή ως αρχείο vCard (για το Thunderbird και άλλες εφαρμογές)"
-
-#: satellite_contacts/window.py:176
-msgid "Search contacts"
-msgstr "Αναζήτηση επαφών"
-
-#: satellite_contacts/window.py:200
-msgid "Copy contacts from the phone"
-msgstr "Αντιγραφή των επαφών από το τηλέφωνο"
-
-#: satellite_contacts/window.py:280
-msgid "No contacts yet. Connect {} and copy its contacts."
-msgstr "Δεν υπάρχουν ακόμα επαφές. Συνδέστε τη συσκευή {} και αντιγράψτε τις επαφές της."
-
-#: satellite_contacts/window.py:281
-msgid "Pair a phone in Satellite to see its contacts here."
-msgstr "Κάντε σύζευξη ενός τηλεφώνου στο Satellite για να δείτε τις επαφές του εδώ."
-
-#: satellite_contacts/window.py:285
-msgid "{} contact"
-msgid_plural "{} contacts"
-msgstr[0] "{} επαφή"
-msgstr[1] "{} επαφές"
-
-#: satellite_contacts/window.py:291
-msgid "The phone is not connected."
-msgstr "Το τηλέφωνο δεν είναι συνδεδεμένο."
-
-#: satellite_contacts/window.py:334
-msgid "Export contacts"
-msgstr "Εξαγωγή επαφών"
-
-#: satellite_contacts/window.py:334
-msgid "Export"
-msgstr "Εξαγωγή"
-
-#: satellite_contacts/window.py:336
-msgid "{} contacts.vcf"
-msgstr "Επαφές {}.vcf"
-
-#: satellite_contacts/window.py:342
-msgid "Could not export"
-msgstr "Δεν ήταν δυνατή η εξαγωγή"
-
-#: satellite_sms/app.py:21
-msgid "Show this phone's messages"
-msgstr "Εμφάνιση των μηνυμάτων αυτού του τηλεφώνου"
-
-#: satellite_sms/app.py:23
-msgid "Start a message to this number"
-msgstr "Νέο μήνυμα σε αυτόν τον αριθμό"
-
-#: satellite_sms/conversation_list.py:15
-msgid "You: {}"
-msgstr "Εσείς: {}"
-
-#: satellite_sms/conversation_list.py:57
-msgid "Search conversations"
-msgstr "Αναζήτηση συνομιλιών"
-
-#: satellite_sms/google_messages.py:115
-msgid "Try again"
-msgstr "Δοκιμάστε ξανά"
-
-#: satellite_sms/google_messages.py:175
-msgid "The connection to Google Messages isn't secure, so Satellite stopped loading it."
-msgstr "Η σύνδεση με τα Google Messages δεν είναι ασφαλής, οπότε το Satellite σταμάτησε τη φόρτωσή τους."
-
-#: satellite_sms/google_messages.py:221
-msgid "Google Messages couldn't be opened (error {}). Check this computer's internet connection, or try again later."
-msgstr "Δεν ήταν δυνατό το άνοιγμα των Google Messages (σφάλμα {}). Ελέγξτε τη σύνδεση αυτού του υπολογιστή στο διαδίκτυο ή δοκιμάστε ξανά αργότερα."
-
-#: satellite_sms/google_messages.py:223
-msgid "Couldn't reach Google Messages. Check this computer's internet connection."
-msgstr "Δεν ήταν δυνατή η πρόσβαση στα Google Messages. Ελέγξτε τη σύνδεση αυτού του υπολογιστή στο διαδίκτυο."
-
-#: satellite_sms/model.py:21 satellite_sms/model.py:37
-msgid "Yesterday"
-msgstr "Χθες"
-
-#: satellite_sms/model.py:35
-msgid "Today"
-msgstr "Σήμερα"
-
-#: satellite_sms/model.py:69
-msgid "Unknown"
-msgstr "Άγνωστο"
-
-#: satellite_sms/model.py:71
-msgid "{}, {} and {} other"
-msgid_plural "{}, {} and {} others"
-msgstr[0] "{}, {} και {} ακόμα"
-msgstr[1] "{}, {} και {} ακόμα"
-
-#: satellite_sms/thread_view.py:111
-msgid "Attachment"
-msgstr "Συνημμένο"
-
-#: satellite_sms/thread_view.py:145
-msgid "Attach a picture or file"
-msgstr "Επισύναψη εικόνας ή αρχείου"
-
-#: satellite_sms/thread_view.py:165
-msgid "Send (Enter)"
-msgstr "Αποστολή (Enter)"
-
-#: satellite_sms/thread_view.py:197
-msgid "Attach"
-msgstr "Επισύναψη"
-
-#: satellite_sms/thread_view.py:312
-msgid "To:"
-msgstr "Προς:"
-
-#: satellite_sms/thread_view.py:316
-msgid "Name or phone number"
-msgstr "Όνομα ή αριθμός τηλεφώνου"
-
-#: satellite_sms/window.py:21
-msgid ""
-"Messages will be shown by Google's website instead of by Satellite.\n"
-"\n"
-"• Satellite can't see, check or control what Google shows or does in this view.\n"
-"• Messages go through Google's servers and the internet, not only your local network. Your phone needs internet access, and Google Messages must be its messaging app.\n"
-"• Google's terms and privacy policy apply. Google can change or stop this service, or stop it from working here.\n"
-"• The pairing stays on this computer until you sign out, so anyone using this computer account can read your messages.\n"
-"• Only messages.google.com opens here; links in messages open in your web browser. Camera, microphone, location and website notifications are blocked.\n"
-"• To unpair later, sign out from this menu, or on the phone open Google Messages → Device pairing."
-msgstr ""
-"Τα μηνύματα θα εμφανίζονται από τον ιστότοπο της Google αντί για το Satellite.\n"
-"\n"
-"• Το Satellite δεν μπορεί να δει, να ελέγξει ή να ρυθμίσει τι δείχνει ή κάνει η Google σε αυτή την προβολή.\n"
-"• Τα μηνύματα περνούν από τους διακομιστές της Google και το διαδίκτυο, όχι μόνο από το τοπικό σας δίκτυο. Το τηλέφωνό σας χρειάζεται πρόσβαση στο διαδίκτυο και τα Google Messages πρέπει να είναι η εφαρμογή μηνυμάτων του.\n"
-"• Ισχύουν οι όροι και η πολιτική απορρήτου της Google. Η Google μπορεί να αλλάξει ή να σταματήσει αυτή την υπηρεσία, ή να σταματήσει τη λειτουργία της εδώ.\n"
-"• Η σύζευξη μένει σε αυτόν τον υπολογιστή μέχρι να αποσυνδεθείτε, οπότε όποιος χρησιμοποιεί αυτόν τον λογαριασμό υπολογιστή μπορεί να διαβάσει τα μηνύματά σας.\n"
-"• Εδώ ανοίγει μόνο το messages.google.com· οι σύνδεσμοι στα μηνύματα ανοίγουν στο πρόγραμμα περιήγησής σας. Η κάμερα, το μικρόφωνο, η τοποθεσία και οι ειδοποιήσεις ιστοτόπων είναι αποκλεισμένα.\n"
-"• Για να καταργήσετε τη σύζευξη αργότερα, αποσυνδεθείτε από αυτό το μενού, ή στο τηλέφωνο ανοίξτε Google Messages → Σύζευξη συσκευών."
-
-#: satellite_sms/window.py:69
-msgid "Back to conversations"
-msgstr "Πίσω στις συνομιλίες"
-
-#: satellite_sms/window.py:73
-msgid "New message (Ctrl+N)"
-msgstr "Νέο μήνυμα (Ctrl+N)"
-
-#: satellite_sms/window.py:78
-msgid "Use Google Messages for web"
-msgstr "Χρήση των Google Messages για τον ιστό"
-
-#: satellite_sms/window.py:79
-msgid "Sign out of Google Messages…"
-msgstr "Αποσύνδεση από τα Google Messages…"
-
-#: satellite_sms/window.py:84 satellite_sms/window.py:405
-msgid "Load messages from the phone (F5)"
-msgstr "Φόρτωση μηνυμάτων από το τηλέφωνο (F5)"
-
-#: satellite_sms/window.py:108
-msgid "Start Satellite"
-msgstr "Εκκίνηση του Satellite"
-
-#: satellite_sms/window.py:134
-msgid "Pick a conversation, or start a new one."
-msgstr "Επιλέξτε μια συνομιλία ή ξεκινήστε μια νέα."
-
-#: satellite_sms/window.py:150
-msgid "Add one person for a text message, or several for a group message."
-msgstr "Προσθέστε ένα άτομο για μήνυμα κειμένου ή περισσότερα για ομαδικό μήνυμα."
-
-#: satellite_sms/window.py:186
-msgid "Satellite is not running, so messages can't be loaded."
-msgstr "Το Satellite δεν εκτελείται, οπότε δεν είναι δυνατή η φόρτωση των μηνυμάτων."
-
-#: satellite_sms/window.py:239
-msgid "No paired phone with Messages switched on. Pair a phone in Satellite first."
-msgstr "Δεν υπάρχει τηλέφωνο σε σύζευξη με ενεργοποιημένα τα Μηνύματα. Κάντε πρώτα σύζευξη ενός τηλεφώνου στο Satellite."
-
-#: satellite_sms/window.py:241
-msgid "{} is not connected. New messages appear when it reconnects."
-msgstr "Η συσκευή {} δεν είναι συνδεδεμένη. Τα νέα μηνύματα εμφανίζονται όταν επανασυνδεθεί."
-
-#: satellite_sms/window.py:399
-msgid "Google Messages for web"
-msgstr "Google Messages για τον ιστό"
-
-#: satellite_sms/window.py:400
-msgid "Reload Google Messages (F5)"
-msgstr "Επαναφόρτωση των Google Messages (F5)"
-
-#: satellite_sms/window.py:414
-msgid "Google Messages for web needs WebKitGTK"
-msgstr "Τα Google Messages για τον ιστό χρειάζονται το WebKitGTK"
-
-#: satellite_sms/window.py:415
-msgid "Install the gir1.2-webkit2-4.1 package, then try again."
-msgstr "Εγκαταστήστε το πακέτο gir1.2-webkit2-4.1 και δοκιμάστε ξανά."
-
-#: satellite_sms/window.py:417
-msgid "Use Google Messages for web?"
-msgstr "Χρήση των Google Messages για τον ιστό;"
-
-#: satellite_sms/window.py:417
-msgid "Use Google Messages"
-msgstr "Χρήση των Google Messages"
-
-#: satellite_sms/window.py:422
-msgid "Stop using Google Messages for web?"
-msgstr "Διακοπή χρήσης των Google Messages για τον ιστό;"
-
-#: satellite_sms/window.py:423
-msgid "Satellite will show your phone's SMS and MMS again."
-msgstr "Το Satellite θα εμφανίζει ξανά τα SMS και MMS του τηλεφώνου σας."
-
-#: satellite_sms/window.py:424
-msgid "Stop Using"
-msgstr "Διακοπή χρήσης"
-
-#: satellite_sms/window.py:424
-msgid "Also sign out and delete Google Messages data from this computer"
-msgstr "Αποσύνδεση και διαγραφή των δεδομένων των Google Messages από αυτόν τον υπολογιστή"
-
-#: satellite_sms/window.py:455
-msgid "Sign out of Google Messages?"
-msgstr "Αποσύνδεση από τα Google Messages;"
-
-#: satellite_sms/window.py:456
-msgid "This computer forgets the pairing. To use it again, scan a new QR code with the phone."
-msgstr "Αυτός ο υπολογιστής ξεχνά τη σύζευξη. Για να τον χρησιμοποιήσετε ξανά, σαρώστε νέο κωδικό QR με το τηλέφωνο."
-
-#: satellite_sms/window.py:457
-msgid "Sign Out"
-msgstr "Αποσύνδεση"

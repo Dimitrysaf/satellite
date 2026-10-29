@@ -6,7 +6,6 @@ import threading
 
 DEFAULTS = {
     "background": True,           # keep running in the tray when the window closes
-    "nicknames": {},              # device id -> local display name
 }
 
 
@@ -36,18 +35,6 @@ class AppSettings:
         with self._lock:
             self._data[key] = value
             self._save()
-
-    def nickname(self, device_id):
-        return self.get("nicknames").get(device_id)
-
-    def set_nickname(self, device_id, name):
-        nicknames = self.get("nicknames")
-        name = (name or "").strip()[:64]
-        if name:
-            nicknames[device_id] = name
-        else:
-            nicknames.pop(device_id, None)
-        self.set("nicknames", nicknames)
 
     def _save(self):
         temporary = self._path + ".tmp"

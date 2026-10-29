@@ -232,6 +232,11 @@ class PluginManager:
             return False, None
         return True, configure(ctx, settings)
 
+    def settings_buttons(self, plugin_id, ctx):
+        """(label, callback(parent)) buttons a plugin adds under its settings."""
+        buttons = getattr(self.plugins.get(plugin_id), "settings_buttons", None)
+        return list(buttons(ctx)) if buttons else []
+
     def settings_notes(self, plugin_id, daemon, device_id):
         """Lines a plugin wants shown above its settings (its current state)."""
         notes = getattr(self.plugins.get(plugin_id), "settings_notes", None)

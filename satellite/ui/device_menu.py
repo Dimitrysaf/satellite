@@ -36,25 +36,31 @@ def device_entries(controller, device, include_pairing=True):
             entries.append(MenuEntry(
                 action.label, lambda a=action: controller.run_action(device_id, a),
                 opens_window=action.opens_window, action=action))
-    elif device.get("pair_requested") and include_pairing:
+    elif include_pairing and device.get("pair_requested"):
         code = device.get("verification_code")
         if code:
-            entries.append(MenuEntry(_("Verification code: {}").format(code), None, sensitive=False))
-        entries.append(MenuEntry(_("Accept pairing"), lambda: controller.accept_pair(device_id)))
+            entries.append(MenuEntry("🔑 {}".format(code), None, sensitive=False))
+        entries.append(MenuEntry(_("Accept"), lambda: controller.accept_pair(device_id)))
         entries.append(MenuEntry(_("Reject"), lambda: controller.deny_pair(device_id)))
-    elif include_pairing and not device.get("paired") and not device.get("pair_pending"):
+    elif include_pairing and device.get("pair_pending"):
+        entries.append(MenuEntry(_("Cancel pairing"), lambda: controller.cancel_pair(device_id)))
+    elif include_pairing and device.get("secure") and not device.get("paired"):
         entries.append(MenuEntry(_("Request pairing"), lambda: controller.pair(device_id)))
 
-    if device.get("secure") or device.get("paired"):
+    settings = []
+    if device.get("available_plugins"):
+        settings.append(MenuEntry(
+            _("Plugin settings"), lambda: controller.show_plugin_settings(device_id), opens_window=True))
+    if device.get("secure"):
+        settings.append(MenuEntry(
+            _("Encryption info"), lambda: controller.show_encryption(device_id), opens_window=True))
+    if settings and entries:
+        entries.append(None)
+    entries.extend(settings)
+    if device.get("paired"):
         if entries:
             entries.append(None)
-        entries.append(MenuEntry(_("Rename…"), lambda: controller.rename(device_id), opens_window=True))
-        if device.get("secure"):
-            entries.append(MenuEntry(
-                _("Encryption info"), lambda: controller.show_encryption(device_id), opens_window=True))
-        if device.get("paired"):
-            entries.append(None)
-            entries.append(MenuEntry(_("Unpair…"), lambda: controller.unpair(device_id), opens_window=True))
+        entries.append(MenuEntry(_("Unpair"), lambda: controller.unpair(device_id), opens_window=True))
     return entries
 
 

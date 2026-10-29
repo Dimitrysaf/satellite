@@ -52,10 +52,11 @@ def _app_switches(field, muted):
     return scroller, switches
 
 
-def run_plugin_config(parent, plugin, settings, notes=()):
+def run_plugin_config(parent, plugin, settings, notes=(), buttons=()):
     """Show the dialog. Returns the new settings dict, or None if cancelled.
 
-    ``notes`` are lines about the plugin's state, shown above the settings.
+    ``notes`` are lines about the plugin's state, shown above the settings;
+    ``buttons`` are (label, callback(dialog)) actions shown below them.
     """
     dialog = Gtk.Dialog(
         title=_("Configure {}").format(plugin["name"]), transient_for=parent, modal=True)
@@ -131,6 +132,12 @@ def run_plugin_config(parent, plugin, settings, notes=()):
             widget = control
         grid.attach(widget, 1, row, 1, 1)
         controls[key] = (kind, control)
+        row += 1
+
+    for label, callback in buttons:
+        button = Gtk.Button(label=label, halign=Gtk.Align.START)
+        button.connect("clicked", lambda _b, cb=callback: cb(dialog))
+        grid.attach(button, 0, row, 2, 1)
         row += 1
 
     dialog.get_content_area().add(grid)

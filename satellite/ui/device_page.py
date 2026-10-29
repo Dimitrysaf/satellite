@@ -16,19 +16,26 @@ class DevicePage(Gtk.Box):
     """Rebuilds itself from a device dict. ``controller`` is the main window.
 
     The controller provides: ``daemon``, ``pair``, ``accept_pair``,
-    ``deny_pair``, ``unpair``, ``rename``, ``show_encryption``,
-    ``toggle_plugin``, ``configure_plugin`` and ``run_action`` (all
-    taking the device id first where relevant).
+    ``deny_pair``, ``cancel_pair``, ``unpair``, ``show_plugin_settings``,
+    ``show_encryption``, ``toggle_plugin``, ``configure_plugin`` and
+    ``run_action`` (all taking the device id first where relevant).
     """
 
     def __init__(self, controller):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
         self.menu_button = None
+        self._pending = None
 
     def show_device(self, device):
+        # Rebuilding under an open menu destroys it mid-grab, which floods GTK-CRITICALs.
+        if self.menu_button is not None and self.menu_button.get_active():
+            self._pending = device
+            return
+        self._pending = None
         for child in self.get_children():
             self.remove(child)
+        self.menu_button = None
         controller = self._controller
         device_id = device["id"]
         connected = bool(device.get("connected"))
@@ -41,6 +48,7 @@ class DevicePage(Gtk.Box):
                 on_pair=lambda: controller.pair(device_id),
                 on_accept=lambda: controller.accept_pair(device_id),
                 on_deny=lambda: controller.deny_pair(device_id),
+                on_cancel=lambda: controller.cancel_pair(device_id),
             ), True, True, 0)
             self.show_all()
             return
@@ -75,15 +83,17 @@ class DevicePage(Gtk.Box):
         titles.pack_start(status, False, False, 0)
         box.pack_start(titles, True, True, 0)
 
-        if device.get("secure") or device.get("paired"):
-            box.pack_end(self._menu_button(device), False, False, 0)
+        entries = device_entries(self._controller, device, include_pairing=False)
+        if entries:
+            box.pack_end(self._menu_button(entries), False, False, 0)
         return box
 
-    def _menu_button(self, device):
+    def _menu_button(self, entries):
         menu = Gtk.Menu()
-        for entry in device_entries(self._controller, device, include_pairing=False):
+        for entry in entries:
             menu.append(menu_item(entry))
         menu.show_all()
+        menu.connect("hide", lambda _m: GLib.idle_add(self._show_pending))
 
         button = Gtk.MenuButton()
         button.set_direction(Gtk.ArrowType.NONE)
@@ -93,6 +103,11 @@ class DevicePage(Gtk.Box):
         button.set_popup(menu)
         self.menu_button = button
         return button
+
+    def _show_pending(self):
+        if self._pending is not None:
+            self.show_device(self._pending)
+        return GLib.SOURCE_REMOVE
 
     def _add_status(self, device):
         """Battery with its bar, then plugin statuses as one row of icons."""

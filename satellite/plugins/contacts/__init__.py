@@ -45,6 +45,38 @@ def _local_timestamp(path):
     return int(match.group(1)) if match else None
 
 
+def export_dialog(parent, device_id, device_name):
+    """Save the copied contacts as one vCard file (GTK, loaded only when asked)."""
+    import gi
+    gi.require_version("Gtk", "3.0")
+    from gi.repository import Gtk
+
+    from satellite.contacts_share import export
+    from satellite.vcard import load_directory
+
+    contacts = load_directory(contacts_dir(device_id), device_id)
+    if not contacts:
+        dialog = Gtk.MessageDialog(transient_for=parent, modal=True, buttons=Gtk.ButtonsType.OK,
+                                   message_type=Gtk.MessageType.INFO, text=_("No contacts to export"))
+        dialog.format_secondary_text(_("Connect the phone with this plugin on to copy its contacts first."))
+        dialog.run()
+        dialog.destroy()
+        return
+    chooser = Gtk.FileChooserNative.new(_("Export contacts"), parent, Gtk.FileChooserAction.SAVE, _("Export"), None)
+    chooser.set_do_overwrite_confirmation(True)
+    chooser.set_current_name(_("{} contacts.vcf").format(device_name))
+    if chooser.run() == Gtk.ResponseType.ACCEPT:
+        try:
+            export(contacts, chooser.get_filename())
+        except OSError as error:
+            dialog = Gtk.MessageDialog(transient_for=parent, modal=True, buttons=Gtk.ButtonsType.OK,
+                                       message_type=Gtk.MessageType.WARNING, text=_("Could not export"))
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
+    chooser.destroy()
+
+
 class Plugin:
     plugin_id = "contacts"
     display_name = _("Contacts")
@@ -74,6 +106,11 @@ class Plugin:
     @staticmethod
     def is_supported(remote_incoming, remote_outgoing):
         return "kdeconnect.contacts.response_uids_timestamps" in remote_outgoing
+
+    @staticmethod
+    def settings_buttons(ctx):
+        name = ctx.device.get("name") or _("Phone")
+        return [(_("Export contacts…"), lambda parent: export_dialog(parent, ctx.device_id, name))]
 
     def on_connected(self, daemon, device_id):
         if daemon.plugins.get_settings(device_id, self.plugin_id).get("receive", True):

@@ -72,12 +72,12 @@ def short_status(device):
     if device.get("pair_requested"):
         return _("Pairing request")
     if device.get("pair_pending"):
-        return _("Pair request sent")
-    if device.get("paired") and not device.get("secure"):
+        return _("Pair requested")
+    if device.get("paired"):
         return _("Offline") + suffix
     if device.get("secure"):
-        return _("Secure link established")
-    return _("Available")
+        return _("Not paired")
+    return _("Not reachable")
 
 
 def long_status(device):
@@ -86,13 +86,13 @@ def long_status(device):
     if device.get("connected"):
         return _("Connected")
     if device.get("pair_requested"):
-        return _("Pairing request received")
+        return _("Pairing request")
     if device.get("pair_pending"):
-        return _("Pairing request sent")
+        return _("Pair requested")
     if device.get("paired"):
         if battery is not None:
             return _("Offline · Battery {}% (last reported)").format(battery)
         return _("Offline")
     if device.get("secure"):
-        return _("Secure link established · Not paired")
-    return _("Detected, not paired")
+        return _("Not paired")
+    return _("Not reachable")

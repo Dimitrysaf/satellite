@@ -1,4 +1,4 @@
-"""Pair / accept / deny prompt shown for devices that are not connected."""
+"""The page for a device that is not connected, worded like KDE Connect for Android."""
 
 import gi
 
@@ -8,55 +8,54 @@ from satellite.i18n import _
 
 
 class PairingPrompt(Gtk.Box):
-    def __init__(self, device, on_pair, on_accept, on_deny):
+    def __init__(self, device, on_pair, on_accept, on_deny, on_cancel):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.set_vexpand(True)
         self.set_valign(Gtk.Align.CENTER)
         self.set_halign(Gtk.Align.CENTER)
+        self.set_margin_start(24)
+        self.set_margin_end(24)
 
-        icon = Gtk.Image.new_from_icon_name("dialog-question-symbolic", Gtk.IconSize.DIALOG)
-        self.pack_start(icon, False, False, 0)
-
-        name = device["name"]
-        incoming = bool(device.get("pair_requested"))
-        if incoming:
-            text = _("{} is asking to pair with this computer.").format(name)
+        if device.get("pair_requested"):
+            title = _("Pairing request from '{}'").format(device["name"])
+            text = None
+            buttons = ((_("Accept"), on_accept, True), (_("Reject"), on_deny, False))
         elif device.get("pair_pending"):
-            text = _("Pairing request sent to {}. Waiting for a response.").format(name)
+            title = _("Pair requested")
+            text = None
+            buttons = ((_("Cancel pairing"), on_cancel, False),)
         elif device.get("paired"):
-            text = _("This device is paired but it is offline.\nOpen KDE Connect on it to reconnect.")
+            title = _("Device not reachable")
+            text = _("This paired device is not reachable. Make sure it is connected to your same network.")
+            buttons = ()
         elif device.get("secure"):
-            text = _("Do you want to pair with {}?").format(name)
+            title = _("Device not paired")
+            text = _("Pairing two devices will give them access to each other. Only pair together your own devices.")
+            buttons = ((_("Request pairing"), on_pair, True),)
         else:
-            text = _("Establishing a secure connection with {}…").format(name)
-        label = Gtk.Label(label=text, justify=Gtk.Justification.CENTER)
-        label.get_style_context().add_class("dim-label")
-        self.pack_start(label, False, False, 0)
+            title = _("Device not reachable")
+            text = None
+            buttons = ()
 
-        if device.get("verification_code"):
-            code = Gtk.Label()
-            code.set_markup("{}\n<span size='x-large' weight='bold'>{}</span>".format(
-                GLib.markup_escape_text(_("Security code")), GLib.markup_escape_text(device["verification_code"])))
-            code.set_justify(Gtk.Justification.CENTER)
-            code.set_selectable(True)
+        heading = Gtk.Label(justify=Gtk.Justification.CENTER, wrap=True, max_width_chars=48)
+        heading.set_markup("<span size='large' weight='bold'>{}</span>".format(GLib.markup_escape_text(title)))
+        self.pack_start(heading, False, False, 0)
+        if text:
+            label = Gtk.Label(label=text, justify=Gtk.Justification.CENTER, wrap=True, max_width_chars=48)
+            label.get_style_context().add_class("dim-label")
+            self.pack_start(label, False, False, 0)
+
+        if device.get("verification_code") and (device.get("pair_requested") or device.get("pair_pending")):
+            code = Gtk.Label(selectable=True)
+            code.set_markup("<span size='x-large' weight='bold'>🔑 {}</span>".format(
+                GLib.markup_escape_text(device["verification_code"])))
             self.pack_start(code, False, False, 0)
-            hint = Gtk.Label(label=_("Check that both devices show the same code."))
-            hint.get_style_context().add_class("dim-label")
-            self.pack_start(hint, False, False, 0)
 
-        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        buttons.set_halign(Gtk.Align.CENTER)
-        if incoming:
-            accept = Gtk.Button(label=_("Accept"))
-            accept.get_style_context().add_class("suggested-action")
-            accept.connect("clicked", lambda _b: on_accept())
-            deny = Gtk.Button(label=_("Deny"))
-            deny.connect("clicked", lambda _b: on_deny())
-            buttons.pack_start(accept, False, False, 0)
-            buttons.pack_start(deny, False, False, 0)
-        elif device.get("secure") and not device.get("pair_pending") and not device.get("paired"):
-            pair = Gtk.Button(label=_("Pair"))
-            pair.get_style_context().add_class("suggested-action")
-            pair.connect("clicked", lambda _b: on_pair())
-            buttons.pack_start(pair, False, False, 0)
-        self.pack_start(buttons, False, False, 0)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, halign=Gtk.Align.CENTER)
+        for label, callback, suggested in buttons:
+            button = Gtk.Button(label=label)
+            if suggested:
+                button.get_style_context().add_class("suggested-action")
+            button.connect("clicked", lambda _b, cb=callback: cb())
+            box.pack_start(button, False, False, 0)
+        self.pack_start(box, False, False, 0)

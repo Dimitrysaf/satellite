@@ -50,56 +50,6 @@ class PreferencesDialog(Gtk.Dialog):
                   _("Finds devices on networks that block broadcasts, like some routers and guest Wi-Fi."),
                   discovery.get("mdns"), change("mdns"))
 
-        labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        labels.pack_start(Gtk.Label(label=_("Devices added by address"), xalign=0), False, False, 0)
-        hint = Gtk.Label(label=_("For a device on another network or a VPN: its IP address or host name."),
-                         xalign=0, wrap=True, max_width_chars=40)
-        hint.get_style_context().add_class("dim-label")
-        labels.pack_start(hint, False, False, 0)
-        grid.attach(labels, 0, first + 3, 2, 1)
-
-        self._addresses = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-        self._addresses.get_style_context().add_class("frame")
-        grid.attach(self._addresses, 0, first + 4, 2, 1)
-        entry = Gtk.Entry(placeholder_text=_("e.g. {}").format("192.168.20.15"), hexpand=True)
-        add = Gtk.Button(label=_("Add"))
-
-        def save(addresses):
-            discovery.set("custom_devices", addresses)
-            daemon.apply_discovery_settings()  # contacts the new list right away
-            refresh()
-
-        def refresh():
-            for child in self._addresses.get_children():
-                self._addresses.remove(child)
-            for address in discovery.get("custom_devices"):
-                row = Gtk.Box(spacing=8, margin=6)
-                row.pack_start(Gtk.Label(label=address, xalign=0), True, True, 6)
-                remove = Gtk.Button.new_from_icon_name("list-remove-symbolic", Gtk.IconSize.BUTTON)
-                remove.set_tooltip_text(_("Remove"))
-                remove.connect("clicked", lambda _b, a=address: save(
-                    [x for x in discovery.get("custom_devices") if x != a]))
-                row.pack_start(remove, False, False, 0)
-                self._addresses.add(row)
-            if discovery.get("custom_devices"):
-                self._addresses.show_all()
-            else:
-                self._addresses.hide()
-
-        def add_address(*_args):
-            text = entry.get_text().strip()
-            if text:
-                save(discovery.get("custom_devices") + [text])
-                entry.set_text("")
-
-        entry.connect("activate", add_address)
-        add.connect("clicked", add_address)
-        row = Gtk.Box(spacing=8)
-        row.pack_start(entry, True, True, 0)
-        row.pack_start(add, False, False, 0)
-        grid.attach(row, 0, first + 5, 2, 1)
-        refresh()
-
     def _row(self, grid, index, title, subtitle, active, on_change):
         labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         labels.set_hexpand(True)

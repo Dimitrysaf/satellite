@@ -162,10 +162,6 @@ class ContactsWindow(Gtk.ApplicationWindow):
         self.sync_button.set_tooltip_text(_("Copy contacts from the phone again"))
         self.sync_button.connect("clicked", lambda _b: self.sync())
         header.pack_end(self.sync_button)
-        export = Gtk.Button.new_from_icon_name("document-save-as-symbolic", Gtk.IconSize.BUTTON)
-        export.set_tooltip_text(_("Export as a vCard file (for Thunderbird and other apps)"))
-        export.connect("clicked", lambda _b: self.export())
-        header.pack_end(export)
 
         self.layout = Gtk.Box()
         side = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -326,24 +322,6 @@ class ContactsWindow(Gtk.ApplicationWindow):
     def message(self, number):
         launch("satellite-sms", "satellite_sms", "--device", self.device or "", "--to", number)
 
-    def export(self):
-        from satellite.contacts_share import export
-        contacts = self.directory.contacts if self.directory else []
-        if not contacts:
-            return
-        chooser = Gtk.FileChooserNative.new(_("Export contacts"), self, Gtk.FileChooserAction.SAVE, _("Export"), None)
-        chooser.set_do_overwrite_confirmation(True)
-        chooser.set_current_name(_("{} contacts.vcf").format(self._device_name() or _("Phone")))
-        if chooser.run() == Gtk.ResponseType.ACCEPT:
-            try:
-                export(contacts, chooser.get_filename())
-            except OSError as error:
-                dialog = Gtk.MessageDialog(transient_for=self, modal=True, buttons=Gtk.ButtonsType.OK,
-                                           message_type=Gtk.MessageType.WARNING, text=_("Could not export"))
-                dialog.format_secondary_text(str(error))
-                dialog.run()
-                dialog.destroy()
-        chooser.destroy()
 
     def copy(self, text):
         Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(text, -1)

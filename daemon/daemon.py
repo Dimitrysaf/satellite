@@ -29,11 +29,16 @@ PROJECT_VERSION = "__PROJECT_VERSION__"
 
 UDP_PORT = 1716
 TCP_PORTS = range(1716, 1765)
-DISCOVERY_INTERVAL = 15
+DISCOVERY_INTERVAL = 15  # only while a paired device is offline: each broadcast makes phones reconnect
+# Android drops a second UDP packet or TCP connection from the same address within 1 s.
+CONTACT_GAP = 1.2
+# Android swaps in a new connection whenever it hears from us; a link closing is
+# only a disconnect if no replacement arrives within this time.
+LINK_GRACE = 3
 DEVICE_TIMEOUT = 90
 MAX_CONCURRENT_LINKS = 42
 MAX_TRACKED_DEVICES = 1024
-PAIR_TIMEOUT = 90
+PAIR_TIMEOUT = 30  # as KDE Connect; Android gives up on its side after 25-30 s
 PAIR_TIMESTAMP_WINDOW = 30 * 60
 DEVICE_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{32,38}$")
 
@@ -72,6 +77,10 @@ class SatelliteDaemon:
         self._reconnect_timers = {}
         self._reconnect_attempts = {}
         self._pair_timers = {}
+        self._disconnect_timers = {}
+        self._last_contact = {}  # address -> when we last sent it UDP or opened TCP to it
+        self._last_broadcast = 0.0
+        self._deferred_connects = set()
         self._connection_slots = threading.BoundedSemaphore(MAX_CONCURRENT_LINKS)
         self._lock = threading.RLock()
         self._stop = threading.Event()
@@ -224,7 +233,8 @@ class SatelliteDaemon:
                 if now >= next_broadcast or self._refresh_requested.is_set():
                     refreshing = self._refresh_requested.is_set()
                     self._refresh_requested.clear()
-                    self._broadcast()
+                    if refreshing or self._paired_device_offline():
+                        self._broadcast()
                     if refreshing:
                         self._connect_known_devices()
                     next_broadcast = now + DISCOVERY_INTERVAL
@@ -284,10 +294,21 @@ class SatelliteDaemon:
             self._mdns.stop()
             self._mdns = None
 
+    def _paired_device_offline(self):
+        try:
+            trusted = {name[:-4] for name in os.listdir(self._trusted_dir) if name.endswith(".crt")}
+        except OSError:
+            return False
+        with self._lock:
+            return bool(trusted - set(self._active))
+
     def _broadcast(self):
         payload = json.dumps(self._identity_packet(), separators=(",", ":")).encode("utf-8")
+        now = time.monotonic()
+        self._last_broadcast = now
         # Addresses added by hand get the identity directly, broadcast or not.
         for address in self.discovery.get("custom_devices"):
+            self._last_contact[address] = now
             try:
                 self._udp.sendto(payload, (address, UDP_PORT))
             except OSError as error:  # unknown host name, unreachable network, ...
@@ -380,6 +401,17 @@ class SatelliteDaemon:
     def _connect_to_device(self, device):
         device_id = device["id"]
         now = time.monotonic()
+        address = device.get("address")
+        wait = max(self._last_broadcast, self._last_contact.get(address, 0)) + CONTACT_GAP - now
+        if wait > 0:
+            with self._lock:
+                if device_id in self._deferred_connects:
+                    return
+                self._deferred_connects.add(device_id)
+            timer = threading.Timer(wait, self._deferred_connect, args=(device,))
+            timer.daemon = True
+            timer.start()
+            return
         if not self._connection_slots.acquire(blocking=False):
             return
         with self._lock:
@@ -391,6 +423,7 @@ class SatelliteDaemon:
                 self._connection_slots.release()
                 return
             self._last_connect_attempt[device_id] = now
+            self._last_contact[address] = now
             self._connecting.add(device_id)
         thread = threading.Thread(
             target=self._connect_outgoing,
@@ -399,6 +432,12 @@ class SatelliteDaemon:
             daemon=True,
         )
         thread.start()
+
+    def _deferred_connect(self, device):
+        with self._lock:
+            self._deferred_connects.discard(device["id"])
+        if not self._stop.is_set():
+            self._connect_to_device(device)
 
     def _accept_connection(self):
         raw_socket, address = self._tcp.accept()
@@ -420,12 +459,9 @@ class SatelliteDaemon:
             self._connection_slots.release()
 
     def _connection_packet(self, device_id):
-        return json_packet("kdeconnect.identity", {
-            "deviceId": self.device_id,
-            "protocolVersion": 8,
-            "targetDeviceId": device_id,
-            "targetProtocolVersion": 8,
-        })
+        # Android drops a connection whose identity lacks the name, type and capabilities.
+        body = dict(self._identity_packet()["body"], targetDeviceId=device_id, targetProtocolVersion=8)
+        return json_packet("kdeconnect.identity", body)
 
     def _connect_outgoing(self, device):
         raw_socket = None
@@ -461,16 +497,27 @@ class SatelliteDaemon:
                 self._schedule_reconnect(device["id"])
 
     def _recover_connection_error(self, address):
-        """Ask the peer to try the reverse TCP connection, as KDE Connect does."""
+        """Ask the peer to try the reverse TCP connection, as KDE Connect does.
+
+        Sent once the failed connection is CONTACT_GAP old, or Android would drop it too.
+        """
         if not address or self._udp is None or self._stop.is_set():
             return
-        payload = json.dumps(
-            self._identity_packet(), separators=(",", ":")
-        ).encode("utf-8")
-        try:
-            self._udp.sendto(payload, (address, UDP_PORT))
-        except OSError:
-            pass
+
+        def send():
+            if self._stop.is_set():
+                return
+            self._last_contact[address] = time.monotonic()
+            payload = json.dumps(self._identity_packet(), separators=(",", ":")).encode("utf-8")
+            try:
+                self._udp.sendto(payload, (address, UDP_PORT))
+            except OSError:
+                pass
+
+        wait = self._last_contact.get(address, 0) + CONTACT_GAP - time.monotonic()
+        timer = threading.Timer(max(0, wait), send)
+        timer.daemon = True
+        timer.start()
 
     def _handle_incoming(self, raw_socket, address):
         try:
@@ -547,10 +594,11 @@ class SatelliteDaemon:
         return crypto.dump_certificate(crypto.FILETYPE_ASN1, certificate)
 
     def _pairing_verification_code(self, peer_certificate, timestamp):
+        # KDE Connect hashes the larger key first; any other order gives a different code.
         public_keys = sorted((
             crypto.dump_publickey(crypto.FILETYPE_ASN1, self._certificate.get_pubkey()),
             crypto.dump_publickey(crypto.FILETYPE_ASN1, peer_certificate.get_pubkey()),
-        ))
+        ), reverse=True)
         digest = hashlib.sha256(
             public_keys[0] + public_keys[1] + str(int(timestamp)).encode("ascii")
         ).hexdigest()
@@ -688,6 +736,11 @@ class SatelliteDaemon:
             return False
         with self._lock:
             previous = self._active.get(device_id)
+            closing = self._disconnect_timers.pop(device_id, None)
+            # A replacement for a paired link: plugins carry on as if nothing happened.
+            continuing = link["paired"] and (closing is not None or bool(previous and previous["paired"]))
+            if closing is not None:
+                closing.cancel()
             if previous:
                 # KDE Connect replaces the active link with the newest
                 # authenticated socket. Both endpoints must follow that same
@@ -727,6 +780,8 @@ class SatelliteDaemon:
         self._cancel_reconnect(device_id)
         with self._lock:
             self._reconnect_attempts.pop(device_id, None)
+        if continuing:
+            return True
         if link["paired"] and self.plugins.is_enabled_for(device_id, "mpris"):
             self.send_plugin_packet(
                 "mpris",
@@ -749,6 +804,9 @@ class SatelliteDaemon:
             self._handle_pair_packet(link, packet["body"])
         elif link["paired"]:
             self.plugins.handle_packet(self, link, packet)
+        else:
+            # Like KDE Connect: a phone still sending as if paired learns it was unpaired.
+            self._send_unpair(link)
 
     def _handle_pair_packet(self, link, body):
         pair_value = body.get("pair")
@@ -823,6 +881,20 @@ class SatelliteDaemon:
             self._cancel_pair_timeout(device_id)
             self._notify_devices_changed()
             return False
+        self._notify_devices_changed()
+        return True
+
+    def cancel_pair(self, device_id):
+        with self._lock:
+            device = self._devices.get(device_id)
+            if not device or not device.get("pair_pending"):
+                return False
+            device["pair_pending"] = False
+            device.pop("pair_timestamp", None)
+            device.pop("verification_code", None)
+            link = self._active.get(device_id)
+        self._cancel_pair_timeout(device_id)
+        self._send_unpair(link)
         self._notify_devices_changed()
         return True
 
@@ -980,14 +1052,17 @@ class SatelliteDaemon:
         with self._lock:
             link = self._active.get(device_id)
             device = self._devices.get(device_id)
-            if not link or not device or not device.get("paired"):
+            if not device or not device.get("paired"):
                 return False
         try:
-            self._send_packet(link, json_packet("kdeconnect.pair", {"pair": False}))
             os.unlink(self._trusted_certificate_path(device_id))
-        except (OSError, SSL.Error):
+        except FileNotFoundError:
+            pass
+        except OSError:
             return False
-        link["paired"] = False
+        if link is not None:
+            link["paired"] = False
+        self._send_unpair(link)  # an offline phone is told when it next sends something
         self._cancel_reconnect(device_id)
         with self._lock:
             self._reconnect_attempts.pop(device_id, None)
@@ -998,7 +1073,8 @@ class SatelliteDaemon:
                 device["connected"] = False
                 device.pop("battery", None)
                 device.pop("isCharging", None)
-        self.plugins.device_disconnected(self, device_id)
+        if link is not None:
+            self.plugins.device_disconnected(self, device_id)
         self._notify_devices_changed()
         return True
 
@@ -1128,33 +1204,66 @@ class SatelliteDaemon:
             device.pop("pair_request_time", None)
             device.pop("pair_timestamp", None)
             device.pop("verification_code", None)
+            link = self._active.get(device_id)
+        self._send_unpair(link)
         self._notify_devices_changed()
+
+    def _send_unpair(self, link):
+        """Tell the other side pairing is off (cancelled, timed out or unpaired), if it's there."""
+        if link is None:
+            return
+        try:
+            self._send_packet(link, json_packet("kdeconnect.pair", {"pair": False}))
+        except (OSError, SSL.Error):
+            pass
 
     def _remove_link(self, link):
         device_id = link["id"]
-        removed_active_link = False
         with self._lock:
-            if self._active.get(device_id) is link:
+            removed_active_link = self._active.get(device_id) is link
+            if removed_active_link:
                 del self._active[device_id]
-                removed_active_link = True
-                device = self._devices.get(device_id)
-                if device:
-                    device["secure"] = False
-                    device["connected"] = False
-                    device["pair_requested"] = False
-                    device["pair_pending"] = False
-                    device.pop("pair_request_time", None)
-                    device.pop("pair_timestamp", None)
-                    device.pop("verification_code", None)
         try:
             link["socket"].close()
         except OSError:
             pass
-        if removed_active_link:
-            self.plugins.device_disconnected(self, device_id)
-            self._cancel_pair_timeout(device_id)
-            self._schedule_reconnect(device_id)
-            self._notify_devices_changed()
+        if not removed_active_link:
+            return
+        if not link.get("paired") or self._stop.is_set():
+            self._finish_disconnect(device_id)
+            return
+        timer = threading.Timer(LINK_GRACE, self._finish_disconnect)
+        timer.args = (device_id, timer)
+        timer.daemon = True
+        with self._lock:
+            previous = self._disconnect_timers.get(device_id)
+            self._disconnect_timers[device_id] = timer
+        if previous:
+            previous.cancel()
+        timer.start()
+
+    def _finish_disconnect(self, device_id, timer=None):
+        """Show the device as gone, unless a new link replaced the closed one meanwhile."""
+        with self._lock:
+            if timer is not None:
+                if self._disconnect_timers.get(device_id) is not timer:
+                    return
+                del self._disconnect_timers[device_id]
+            if self._active.get(device_id) is not None:
+                return
+            device = self._devices.get(device_id)
+            if device:
+                device["secure"] = False
+                device["connected"] = False
+                device["pair_requested"] = False
+                device["pair_pending"] = False
+                device.pop("pair_request_time", None)
+                device.pop("pair_timestamp", None)
+                device.pop("verification_code", None)
+        self.plugins.device_disconnected(self, device_id)
+        self._cancel_pair_timeout(device_id)
+        self._schedule_reconnect(device_id)
+        self._notify_devices_changed()
 
     def _expire_devices(self):
         now = time.monotonic()

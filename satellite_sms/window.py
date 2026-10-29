@@ -18,15 +18,6 @@ from satellite.i18n import _
 NARROW_WIDTH = 640
 PAGE = 50  # messages fetched at a time when scrolling back
 
-GOOGLE_WARNING = _("""Messages will be shown by Google's website instead of by Satellite.
-
-• Satellite can't see, check or control what Google shows or does in this view.
-• Messages go through Google's servers and the internet, not only your local network. Your phone needs internet access, and Google Messages must be its messaging app.
-• Google's terms and privacy policy apply. Google can change or stop this service, or stop it from working here.
-• The pairing stays on this computer until you sign out, so anyone using this computer account can read your messages.
-• Only messages.google.com opens here; links in messages open in your web browser. Camera, microphone, location and website notifications are blocked.
-• To unpair later, sign out from this menu, or on the phone open Google Messages → Device pairing.""")
-
 
 class MessagesWindow(Gtk.ApplicationWindow):
     def __init__(self, app, client):
@@ -74,24 +65,15 @@ class MessagesWindow(Gtk.ApplicationWindow):
         self.new_button.connect("clicked", lambda _b: self.new_message())
         header.pack_start(self.new_button)
 
-        menu = Gio.Menu()
-        menu.append(_("Use Google Messages for web"), "win.google-messages")
-        menu.append(_("Sign out of Google Messages…"), "win.google-sign-out")
-        menu_button = Gtk.MenuButton(use_popover=True, menu_model=menu)
-        menu_button.set_image(Gtk.Image.new_from_icon_name("open-menu-symbolic", Gtk.IconSize.BUTTON))
-        header.pack_end(menu_button)
         self.refresh_button = Gtk.Button.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.BUTTON)
         self.refresh_button.set_tooltip_text(_("Load messages from the phone (F5)"))
         self.refresh_button.connect("clicked", lambda _b: self.refresh())
         header.pack_end(self.refresh_button)
 
-        self.google_action = Gio.SimpleAction.new_stateful(
-            "google-messages", None, GLib.Variant("b", self.settings.get("google_messages")))
-        self.google_action.connect("change-state", self._on_google_toggled)
-        self.add_action(self.google_action)
-        self.sign_out_action = Gio.SimpleAction.new("google-sign-out", None)
-        self.sign_out_action.connect("activate", lambda *_a: self._sign_out())
-        self.add_action(self.sign_out_action)
+        # Google Messages is switched on and off in the Messages plugin settings, in Satellite.
+        self._settings_monitor = Gio.File.new_for_path(self.settings.path).monitor_file(
+            Gio.FileMonitorFlags.WATCH_MOVES, None)
+        self._settings_monitor.connect("changed", lambda *_a: self._on_settings_changed())
 
         for name, callback, accels in (("new", self.new_message, ["<Primary>n"]),
                                        ("refresh", self.refresh, ["F5"])):
@@ -390,7 +372,6 @@ class MessagesWindow(Gtk.ApplicationWindow):
     def _apply_mode(self):
         """Show Google's page or Satellite's view. Returns True for Google's."""
         google = self.settings.get("google_messages") and google_messages.available()
-        self.sign_out_action.set_enabled(google)
         if google:
             if self.google_view is None:
                 self.google_view = google_messages.GoogleMessagesView()
@@ -407,31 +388,24 @@ class MessagesWindow(Gtk.ApplicationWindow):
         self.back_button.set_visible(not google and bool(self._narrow and self._showing_detail))
         return google
 
-    def _on_google_toggled(self, action, value):
-        turning_on = value.get_boolean()
-        if turning_on:
-            if not google_messages.available():
-                self._message(_("Google Messages for web needs WebKitGTK"),
-                              _("Install the gir1.2-webkit2-4.1 package, then try again."))
-                return
-            if not self._ask(_("Use Google Messages for web?"), GOOGLE_WARNING, _("Use Google Messages")):
-                return
-            remove_data = False
-        else:
-            choice = self._ask(
-                _("Stop using Google Messages for web?"),
-                _("Satellite will show your phone's SMS and MMS again."),
-                _("Stop Using"), check=_("Also sign out and delete Google Messages data from this computer"))
-            if not choice:
-                return
-            remove_data = choice == "checked"
-        self.settings.set("google_messages", turning_on)
-        action.set_state(value)
+    def _on_settings_changed(self):
+        was_on = self.settings.get("google_messages")
+        self.settings = MessagesSettings(self.settings.path)
+        turning_on = self.settings.get("google_messages")
+        if turning_on == was_on:
+            return
         if not turning_on:
-            self._close_google(remove_data)
+            self._close_google(False)
         self._apply_mode()
         if not turning_on:
             self.start(*(self._requested or (None, None)))
+
+    def sign_out_google(self):
+        """Asked by the Messages plugin settings, which already confirmed it."""
+        if self.google_view is None:
+            google_messages.delete_data()
+        else:
+            self.google_view.sign_out(self.google_view.reload)
 
     def _close_google(self, remove_data):
         view, self.google_view = self.google_view, None
@@ -448,42 +422,6 @@ class MessagesWindow(Gtk.ApplicationWindow):
             view.sign_out(forget)
         else:
             view.destroy()
-
-    def _sign_out(self):
-        if self.google_view is None:
-            return
-        if self._ask(_("Sign out of Google Messages?"),
-                     _("This computer forgets the pairing. To use it again, scan a new QR code with the phone."),
-                     _("Sign Out")):
-            self.google_view.sign_out(self.google_view.reload)
-
-    def _ask(self, title, text, accept, check=None):
-        """A confirmation dialog. With ``check``, returns "checked"/"unchecked"/None."""
-        dialog = Gtk.MessageDialog(transient_for=self, modal=True, message_type=Gtk.MessageType.WARNING,
-                                   buttons=Gtk.ButtonsType.NONE, text=title)
-        dialog.format_secondary_text(text)
-        dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
-        dialog.add_button(accept, Gtk.ResponseType.ACCEPT)
-        dialog.set_default_response(Gtk.ResponseType.CANCEL)
-        box = None
-        if check:
-            box = Gtk.CheckButton(label=check, active=True)
-            box.set_margin_start(12)
-            dialog.get_message_area().pack_start(box, False, False, 0)
-            box.show()
-        accepted = dialog.run() == Gtk.ResponseType.ACCEPT
-        checked = box.get_active() if box else False
-        dialog.destroy()
-        if not accepted:
-            return None if check else False
-        return ("checked" if checked else "unchecked") if check else True
-
-    def _message(self, title, text):
-        dialog = Gtk.MessageDialog(transient_for=self, modal=True, message_type=Gtk.MessageType.INFO,
-                                   buttons=Gtk.ButtonsType.OK, text=title)
-        dialog.format_secondary_text(text)
-        dialog.run()
-        dialog.destroy()
 
     # -- narrow windows (like Satellite's main window) -------------------------------
 

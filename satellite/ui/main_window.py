@@ -9,11 +9,13 @@ from gi.repository import Gdk, Gio, GLib, Gtk
 from satellite.mpris_bridge import MprisBridge
 from satellite.ui.clipboard_sync import ClipboardSync
 from satellite.ui.context import ActionContext, BackgroundContext
+from satellite.ui.custom_devices_dialog import CustomDevicesDialog
 from satellite.ui.device_list import DeviceList
 from satellite.ui.device_page import DevicePage
 from satellite.ui.dialogs import ask_text, confirm, show_encryption_info, show_message
 from satellite.ui.empty_state import EmptyState
 from satellite.ui.plugin_config_dialog import run_plugin_config
+from satellite.ui.plugin_list import PluginList
 from satellite.ui.transfer_tracker import TransferTracker
 from satellite.i18n import _
 
@@ -101,6 +103,7 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         header.pack_start(self.back_button)
 
         menu = Gio.Menu()
+        menu.append(_("Add devices by IP"), "win.add-devices")
         menu.append(_("Preferences"), "app.preferences")
         menu.append(_("About Satellite"), "app.about")
         quit_section = Gio.Menu()
@@ -145,6 +148,14 @@ class SatelliteWindow(Gtk.ApplicationWindow):
             action.connect("activate", lambda *_a, cb=callback: cb())
             self.add_action(action)
             self.get_application().set_accels_for_action("win." + name, accels)
+        add_devices = Gio.SimpleAction.new("add-devices", None)
+        add_devices.connect("activate", lambda *_a: self._show_custom_devices())
+        self.add_action(add_devices)
+
+    def _show_custom_devices(self):
+        dialog = CustomDevicesDialog(self, self.daemon)
+        dialog.run()
+        dialog.destroy()
 
     # -- window behaviour ---------------------------------------------------
 
@@ -212,18 +223,7 @@ class SatelliteWindow(Gtk.ApplicationWindow):
 
     # -- device updates -------------------------------------------------------
 
-    def _decorate(self, devices):
-        """Apply local nicknames without touching the daemon's data."""
-        nicknames = self.settings.get("nicknames")
-        decorated = []
-        for device in devices:
-            if device["id"] in nicknames:
-                device = dict(device, name=nicknames[device["id"]], real_name=device["name"])
-            decorated.append(device)
-        return decorated
-
     def _refresh_devices(self, devices):
-        devices = self._decorate(devices)
         for listener in self.device_listeners:
             listener(devices)
         if self.media_bridge:
@@ -268,7 +268,7 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         self._update_layout()
 
     def current_devices(self):
-        return self._decorate(self.daemon.devices())
+        return self.daemon.devices()
 
     def _device(self, device_id):
         devices = self.current_devices()
@@ -296,19 +296,26 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         ) and not self.daemon.unpair(device_id):
             self._pairing_error()
 
-    def rename(self, device_id):
+    def cancel_pair(self, device_id):
+        self.daemon.cancel_pair(device_id)
+
+    def show_plugin_settings(self, device_id):
         device = self._device(device_id)
         if not device:
             return
-        original = device.get("real_name", device["name"])
-        name = ask_text(
-            self, _("Rename device"),
-            _("Name shown only on this computer (leave empty to use “{}”):").format(original),
-            device["name"] if device["name"] != original else "",
-        )
-        if name is not None:
-            self.settings.set_nickname(device_id, name)
-            self._refresh_devices(self.daemon.devices())
+        dialog = Gtk.Dialog(title=_("Plugin settings"), transient_for=self, modal=True)
+        dialog.set_default_size(460, 520)
+        dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE)
+        scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
+        scroller.add(PluginList(
+            device.get("available_plugins", []),
+            lambda plugin_id, state: self.toggle_plugin(device_id, plugin_id, state),
+            lambda plugin_id: self.configure_plugin(device_id, plugin_id),
+        ))
+        dialog.get_content_area().pack_start(scroller, True, True, 0)
+        dialog.show_all()
+        dialog.run()
+        dialog.destroy()
 
     def show_encryption(self, device_id):
         device = self._device(device_id)
@@ -325,11 +332,12 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         if not plugin:
             return
         settings = self.daemon.plugin_settings(device_id, plugin_id)
-        handled, values = self.daemon.plugins.configure(
-            plugin_id, ActionContext(self, self.daemon, device_id), settings)
+        context = ActionContext(self, self.daemon, device_id)
+        handled, values = self.daemon.plugins.configure(plugin_id, context, settings)
         if not handled:
             notes = self.daemon.plugins.settings_notes(plugin_id, self.daemon, device_id)
-            values = run_plugin_config(self, plugin, settings, notes)
+            buttons = self.daemon.plugins.settings_buttons(plugin_id, context)
+            values = run_plugin_config(self, plugin, settings, notes, buttons)
         if values is not None:
             self.daemon.set_plugin_settings(device_id, plugin_id, values)
 
