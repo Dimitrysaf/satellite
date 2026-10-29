@@ -17,7 +17,6 @@ class ClipboardSync:
         self._last_text = None
         self._sent = {}
         self._received = {}
-        self.on_received = None  # (device) when a device's clipboard was put here
 
     def start(self, interval_ms=1000):
         GLib.timeout_add(interval_ms, self._tick)
@@ -40,17 +39,6 @@ class ClipboardSync:
                 self._last_text = content
                 self._clipboard.set_text(content, -1)
                 self._sent[device["id"]] = content
-                if self.on_received is not None:
-                    self.on_received(device, content)
-
-    def send_to(self, device_id, text):
-        """Put text on a device's clipboard, whatever is on this computer's."""
-        if not self._daemon.send_plugin_packet("clipboard", device_id, "kdeconnect.clipboard",
-                                               {"content": text}):
-            return False
-        # Sending this computer's clipboard again would replace it there.
-        self._sent[device_id] = self._clipboard.wait_for_text()
-        return True
 
     def _tick(self):
         content = self._clipboard.wait_for_text()

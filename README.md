@@ -38,11 +38,7 @@ which covers RCS.
 - Incoming and missed calls with the caller's photo and a Silence button;
   media is paused or muted while the phone rings.
 - This computer's notifications on the phone, with a switch for each app.
-- Clipboard sharing, which can skip passwords. Clipboard histories (such as
-  Xclipy) can show which phone a copy came from and send text to a phone:
-  `org.x.Satellite.Phone` says when a phone's copy arrives
-  (`ClipboardReceived`, with the text's SHA-256 but never the text) and
-  sends text to a phone's clipboard (`SendClipboard`).
+- Clipboard sharing, which can skip passwords.
 - The phone as a touchpad and keyboard, and as a presenter with a dot,
   picture or spotlight pointer (live preview in its settings).
 - This computer's mouse and keyboard on the phone.
