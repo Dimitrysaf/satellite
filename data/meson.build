@@ -48,6 +48,12 @@ install_data(
   '60-satellite-battery.rules',
   install_dir: get_option('prefix') / 'lib' / 'udev' / 'rules.d',
 )
+# Loads uhid at boot, so the logged-in user can open /dev/uhid (see 60-satellite-battery.rules).
+install_data(
+  'satellite-modules-load.conf',
+  install_dir: get_option('prefix') / 'lib' / 'modules-load.d',
+  rename: 'satellite.conf',
+)
 
 gnome.post_install(
   glib_compile_schemas: true,

@@ -10,7 +10,7 @@ from gi.repository import Gdk, Gio, GLib, Gtk, Pango
 
 from satellite.launch import launch
 from satellite.ui.avatar import Avatar
-from satellite.vcard import Directory
+from satellite.vcard import Directory, format_date
 from satellite.i18n import _, ngettext
 
 NARROW_WIDTH = 640
@@ -92,7 +92,7 @@ class Details(Gtk.ScrolledWindow):
             rows.append((_("Address") if label == "Phone" else label, address, [
                 ("edit-copy-symbolic", _("Copy"), lambda a=address: self._window.copy(a))]))
         if contact.birthday:
-            rows.append((_("Birthday"), contact.birthday, []))
+            rows.append((_("Birthday"), format_date(contact.birthday), []))
         if contact.note:
             rows.append((_("Note"), contact.note, []))
         if rows:

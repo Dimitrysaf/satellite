@@ -19,6 +19,50 @@ TYPE_LABELS = {
     "pager": N_("Pager"), "voice": N_("Phone"), "other": N_("Other"), "internet": "", "pref": "",
 }
 
+# BDAY: 1990-05-21, 19900521, --05-21 or --0521 (no year), maybe followed by a time.
+DATE = re.compile(r"^(?:(\d{4})|--)-?(\d{2})-?(\d{2})")
+NO_YEAR = 1604  # what some phones write when the year isn't known
+SAMPLE_YEAR = 1988  # a leap year (for 29 February) whose digits can't be a day or month
+
+
+def parse_date(value):
+    """(year or None, month, day) of a vCard date, or None if it isn't one."""
+    match = DATE.match(value.strip())
+    if not match:
+        return None
+    year = int(match.group(1)) if match.group(1) else None
+    month, day = int(match.group(2)), int(match.group(3))
+    if not (1 <= month <= 12 and 1 <= day <= 31):
+        return None
+    return (None if year == NO_YEAR else year), month, day
+
+
+def format_date(value):
+    """A vCard date in the locale's own date format; without a year, the same minus the year."""
+    parsed = parse_date(value)
+    if parsed is None:
+        return value
+    from gi.repository import GLib
+    year, month, day = parsed
+    try:
+        text = GLib.DateTime.new_local(year or SAMPLE_YEAR, month, day, 0, 0, 0).format("%x")
+    except (TypeError, AttributeError):  # an impossible date, like 31 February
+        return value
+    if year:
+        return text
+    for token in (str(SAMPLE_YEAR), str(SAMPLE_YEAR)[2:]):
+        start = text.find(token)
+        if start < 0:
+            continue
+        end = start + len(token)
+        # Drop the separator that joined the year to the rest: "05/21/1988", "1988年05月21日".
+        if end < len(text) and not text[end].isdigit():
+            end += 1
+        elif start > 0 and not text[start - 1].isdigit():
+            start -= 1
+        return (text[:start] + text[end:]).strip()
+    return text
+
 
 class Contact:
     def __init__(self, uid, device_id=""):

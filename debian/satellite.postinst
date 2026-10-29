@@ -6,7 +6,10 @@ set -e
 if [ "$1" = "configure" ] && command -v udevadm >/dev/null 2>&1; then
     udevadm control --reload-rules || true
     udevadm trigger --name-match=uinput --action=change || true
-    udevadm trigger --name-match=uhid --action=change || true
+    # Until uhid is loaded, /dev/uhid is a placeholder udev can't apply the rule to.
+    modprobe uhid 2>/dev/null || true
+    udevadm settle --timeout=5 || true
+    udevadm trigger --subsystem-match=misc --sysname-match=uhid --action=change || true
 fi
 
 #DEBHELPER#

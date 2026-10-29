@@ -15,3 +15,4 @@ usr/share/locale
 usr/share/nemo/actions
 etc/xdg/autostart
 usr/lib/udev/rules.d
+usr/lib/modules-load.d
