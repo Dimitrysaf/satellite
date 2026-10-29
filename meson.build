@@ -24,6 +24,7 @@ install_data(
   'satellite/discovery.py',
   'satellite/contacts_share.py',
   'satellite/desktop_input.py',
+  'satellite/i18n.py',
   'satellite/launch.py',
   'satellite/phone_client.py',
   'satellite/phone_service.py',
