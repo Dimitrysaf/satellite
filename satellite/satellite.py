@@ -100,11 +100,13 @@ class SatelliteApplication(Gtk.Application):
         about.set_version(PROJECT_VERSION)
         about.set_comments(_("Connect your phone and computer with the KDE Connect protocol."))
         about.set_website("https://github.com/Dimitrysaf/satellite")
-        logo = load_satellite_logo()
-        if logo is not None:
-            about.set_logo(logo)
-        else:
+        # By name, like the other XApps: GTK draws it at the About dialog's own size.
+        if Gtk.IconTheme.get_default().has_icon("satellite"):
             about.set_logo_icon_name("satellite")
+        else:  # running from the source tree, not installed
+            logo = load_satellite_logo(128)
+            if logo is not None:
+                about.set_logo(logo)
         about.set_license_type(Gtk.License.GPL_3_0)
         about.connect("response", lambda dialog, _response: dialog.destroy())
         about.present()
