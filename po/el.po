@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 21:28+0200\n"
+"POT-Creation-Date: 2026-10-29 22:08+0200\n"
 "PO-Revision-Date: 2026-10-28 15:08+0300\n"
 "Last-Translator: Dimitrysaf <demetresmeliates+github@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -17,8 +17,8 @@ msgstr ""
 
 #: data/org.x.Satellite-autostart.desktop.in:4
 #: data/org.x.Satellite.desktop.in:4 satellite/satellite.py:99
-#: satellite/ui/main_window.py:41 satellite/ui/main_window.py:92
-#: satellite/ui/tray.py:57
+#: satellite/ui/main_window.py:40 satellite/ui/main_window.py:91
+#: satellite/ui/tray.py:58
 msgid "Satellite"
 msgstr "Satellite"
 
@@ -112,7 +112,7 @@ msgid "Cancel"
 msgstr "Ακύρωση"
 
 #: satellite/cli.py:83 satellite/plugins/share/__init__.py:379
-#: satellite/ui/context.py:45 satellite/ui/main_window.py:362
+#: satellite/ui/context.py:45 satellite/ui/main_window.py:346
 msgid "Send"
 msgstr "Αποστολή"
 
@@ -320,27 +320,31 @@ msgstr "Η υπηρεσία ydotoold του δεν φαίνεται να εκτ�
 msgid "Install wl-clipboard to type letters outside the US keyboard."
 msgstr "Εγκαταστήστε το wl-clipboard για να πληκτρολογείτε γράμματα εκτός του αμερικανικού πληκτρολογίου."
 
-#: satellite/plugins/battery/__init__.py:29
+#: satellite/plugins/battery/__init__.py:31
 msgid "Battery"
 msgstr "Μπαταρία"
 
-#: satellite/plugins/battery/__init__.py:30
+#: satellite/plugins/battery/__init__.py:32
 msgid "Show the paired device's battery, and share this computer's battery with it."
 msgstr "Εμφάνιση της μπαταρίας της συνδεδεμένης συσκευής και κοινή χρήση της μπαταρίας αυτού του υπολογιστή μαζί της."
 
-#: satellite/plugins/battery/__init__.py:35
+#: satellite/plugins/battery/__init__.py:37
 msgid "Warn when the device battery is low"
 msgstr "Προειδοποίηση όταν η μπαταρία της συσκευής είναι χαμηλή"
 
-#: satellite/plugins/battery/__init__.py:36
+#: satellite/plugins/battery/__init__.py:38
 msgid "Share this computer's battery"
 msgstr "Κοινή χρήση της μπαταρίας αυτού του υπολογιστή"
 
-#: satellite/plugins/battery/__init__.py:115
+#: satellite/plugins/battery/__init__.py:39
+msgid "Show the device's battery in the system's power menu and System Monitor"
+msgstr "Εμφάνιση της μπαταρίας της συσκευής στο μενού ενέργειας του συστήματος και στην Παρακολούθηση συστήματος"
+
+#: satellite/plugins/battery/__init__.py:130
 msgid "{} battery is low"
 msgstr "Χαμηλή μπαταρία: {}"
 
-#: satellite/plugins/battery/__init__.py:117
+#: satellite/plugins/battery/__init__.py:132
 #, no-python-format
 msgid "{}% remaining. Plug it in soon."
 msgstr "Απομένει {}%. Συνδέστε τη σύντομα στον φορτιστή."
@@ -378,7 +382,7 @@ msgid "Could not send the clipboard"
 msgstr "Δεν ήταν δυνατή η αποστολή του προχείρου"
 
 #: satellite/plugins/clipboard/__init__.py:33
-#: satellite/plugins/sftp/__init__.py:65
+#: satellite/plugins/sftp/__init__.py:94
 #: satellite/plugins/share/__init__.py:381
 msgid "The connection is unavailable."
 msgstr "Η σύνδεση δεν είναι διαθέσιμη."
@@ -1091,31 +1095,36 @@ msgstr "Κρίσιμο"
 msgid "Send notifications from"
 msgstr "Αποστολή ειδοποιήσεων από"
 
-#: satellite/plugins/sftp/__init__.py:42 satellite/plugins/sftp/__init__.py:67
+#: satellite/plugins/sftp/__init__.py:52 satellite/plugins/sftp/__init__.py:96
 msgid "Browse files"
 msgstr "Περιήγηση αρχείων"
 
-#: satellite/plugins/sftp/__init__.py:43
+#: satellite/plugins/sftp/__init__.py:53
 msgid "Open the paired device's files in the file manager."
 msgstr "Άνοιγμα των αρχείων της συνδεδεμένης συσκευής στη διαχείριση αρχείων."
 
-#: satellite/plugins/sftp/__init__.py:62
+#: satellite/plugins/sftp/__init__.py:58
+msgid "Show the device's files as a drive while it's connected"
+msgstr "Εμφάνιση των αρχείων της συσκευής ως δίσκου όσο είναι συνδεδεμένη"
+
+#: satellite/plugins/sftp/__init__.py:88
 msgid "Browsing needs sshfs"
 msgstr "Η περιήγηση χρειάζεται το sshfs"
 
-#: satellite/plugins/sftp/__init__.py:62
+#: satellite/plugins/sftp/__init__.py:88
 msgid "Install the sshfs package, then try again."
 msgstr "Εγκαταστήστε το πακέτο sshfs και δοκιμάστε ξανά."
 
-#: satellite/plugins/sftp/__init__.py:65
+#: satellite/plugins/sftp/__init__.py:94
 msgid "Could not browse the device"
 msgstr "Δεν ήταν δυνατή η περιήγηση στη συσκευή"
 
-#: satellite/plugins/sftp/__init__.py:68
+#: satellite/plugins/sftp/__init__.py:97
 msgid "Open the device's files in the file manager"
 msgstr "Άνοιγμα των αρχείων της συσκευής στη διαχείριση αρχείων"
 
-#: satellite/plugins/sftp/__init__.py:75 satellite/plugins/sftp/__init__.py:96
+#: satellite/plugins/sftp/__init__.py:107
+#: satellite/plugins/sftp/__init__.py:136
 msgid "Could not browse {}"
 msgstr "Δεν ήταν δυνατή η περιήγηση στη συσκευή {}"
 
@@ -1392,7 +1401,7 @@ msgid "Messages settings"
 msgstr "Ρυθμίσεις Μηνυμάτων"
 
 #: satellite_sms/settings_dialog.py:78 satellite/ui/custom_devices_dialog.py:15
-#: satellite/ui/main_window.py:308 satellite/ui/preferences_dialog.py:16
+#: satellite/ui/preferences_dialog.py:16
 msgid "Close"
 msgstr "Κλείσιμο"
 
@@ -1524,7 +1533,7 @@ msgstr "Επαναφόρτωση των Google Messages (F5)"
 msgid "this device"
 msgstr "αυτή τη συσκευή"
 
-#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:106
+#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:105
 msgid "Add devices by IP"
 msgstr "Προσθήκη συσκευών ανά IP"
 
@@ -1580,31 +1589,27 @@ msgstr "Ακύρωση σύζευξης"
 msgid "Request pairing"
 msgstr "Αίτημα σύζευξης"
 
-#: satellite/ui/device_menu.py:53 satellite/ui/main_window.py:306
-msgid "Plugin settings"
-msgstr "Ρυθμίσεις προσθέτων"
-
-#: satellite/ui/device_menu.py:56
+#: satellite/ui/device_menu.py:54
 msgid "Encryption info"
 msgstr "Πληροφορίες κρυπτογράφησης"
 
-#: satellite/ui/device_menu.py:63 satellite/ui/main_window.py:295
+#: satellite/ui/device_menu.py:58 satellite/ui/main_window.py:297
 msgid "Unpair"
 msgstr "Κατάργηση σύζευξης"
 
-#: satellite/ui/device_page.py:61
+#: satellite/ui/device_page.py:60
 msgid "PLUGINS"
 msgstr "ΠΡΟΣΘΕΤΑ"
 
-#: satellite/ui/device_page.py:101
+#: satellite/ui/device_page.py:100
 msgid "Device actions"
 msgstr "Ενέργειες συσκευής"
 
-#: satellite/ui/device_page.py:120
+#: satellite/ui/device_page.py:119
 msgid "Battery · {}% · Charging"
 msgstr "Μπαταρία · {}% · Φορτίζει"
 
-#: satellite/ui/device_page.py:120
+#: satellite/ui/device_page.py:119
 msgid "Battery · {}%"
 msgstr "Μπαταρία · {}%"
 
@@ -1636,51 +1641,55 @@ msgstr "Άγνωστη σουίτα κρυπτογράφησης"
 msgid "Unavailable"
 msgstr "Μη διαθέσιμο"
 
-#: satellite/ui/main_window.py:96
+#: satellite/ui/main_window.py:95
 msgid "Search for devices (F5)"
 msgstr "Αναζήτηση συσκευών (F5)"
 
-#: satellite/ui/main_window.py:101
+#: satellite/ui/main_window.py:100
 msgid "Back to devices (Esc)"
 msgstr "Πίσω στις συσκευές (Esc)"
 
-#: satellite/ui/main_window.py:107 satellite/ui/preferences_dialog.py:14
+#: satellite/ui/main_window.py:106 satellite/ui/preferences_dialog.py:14
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
-#: satellite/ui/main_window.py:108
+#: satellite/ui/main_window.py:107
 msgid "About Satellite"
 msgstr "Σχετικά με το Satellite"
 
-#: satellite/ui/main_window.py:110 satellite/ui/tray.py:107
+#: satellite/ui/main_window.py:109 satellite/ui/tray.py:108
 msgid "Quit"
 msgstr "Έξοδος"
 
-#: satellite/ui/main_window.py:135
+#: satellite/ui/main_window.py:116
+msgid "Menu"
+msgstr "Μενού"
+
+#: satellite/ui/main_window.py:137
 msgid "Select a device"
 msgstr "Επιλέξτε μια συσκευή"
 
-#: satellite/ui/main_window.py:136
+#: satellite/ui/main_window.py:138
 msgid "Pick a device on the left to see its status and change its plugins."
 msgstr "Επιλέξτε μια συσκευή στα αριστερά για να δείτε την κατάστασή της και να αλλάξετε τα πρόσθετά της."
 
-#: satellite/ui/main_window.py:294
+#: satellite/ui/main_window.py:296
 msgid "Unpair from {}?"
 msgstr "Κατάργηση σύζευξης με τη συσκευή {};"
 
-#: satellite/ui/main_window.py:295
+#: satellite/ui/main_window.py:297
 msgid "This removes the trusted connection to this device."
 msgstr "Αυτό καταργεί την έμπιστη σύνδεση με αυτή τη συσκευή."
 
-#: satellite/ui/main_window.py:351
+#: satellite/ui/main_window.py:335
 msgid "{} failed"
 msgstr "Το «{}» απέτυχε"
 
-#: satellite/ui/main_window.py:368
+#: satellite/ui/main_window.py:352
 msgid "Could not exchange the pairing request"
 msgstr "Δεν ήταν δυνατή η ανταλλαγή του αιτήματος σύζευξης"
 
-#: satellite/ui/main_window.py:369
+#: satellite/ui/main_window.py:353
 msgid "The secure device connection is not available. Check that both devices are on the same network and that the KDE Connect ports are allowed through the firewall."
 msgstr "Η ασφαλής σύνδεση με τη συσκευή δεν είναι διαθέσιμη. Ελέγξτε ότι και οι δύο συσκευές είναι στο ίδιο δίκτυο και ότι οι θύρες του KDE Connect επιτρέπονται από το τείχος προστασίας."
 
@@ -1809,65 +1818,41 @@ msgstr " Για να πληκτρολογείτε, ενεργοποιήστε τ
 msgid "Touchpad"
 msgstr "Επιφάνεια αφής"
 
-#: satellite/ui/transfer_popup.py:18
-msgid "File transfer"
-msgstr "Μεταφορά αρχείου"
+#: satellite/ui/transfer_tracker.py:20
+msgid "{}% · {} of {}"
+msgstr "{}% · {} από {}"
 
-#: satellite/ui/transfer_popup.py:39
-msgid "Hide transfer progress"
-msgstr "Απόκρυψη της προόδου μεταφοράς"
-
-#: satellite/ui/transfer_popup.py:57
-msgid "Transfer failed · {}"
-msgstr "Η μεταφορά απέτυχε · {}"
-
-#: satellite/ui/transfer_popup.py:59
-msgid "Sent to {}"
-msgstr "Στάλθηκε στη συσκευή {}"
-
-#: satellite/ui/transfer_popup.py:60
-msgid "Saved to {}"
-msgstr "Αποθηκεύτηκε στο {}"
-
-#: satellite/ui/transfer_popup.py:63
-msgid "To {} · {} of {} · {}%"
-msgstr "Προς {} · {} από {} · {}%"
-
-#: satellite/ui/transfer_popup.py:63
-msgid "From {} · {} of {} · {}%"
-msgstr "Από {} · {} από {} · {}%"
-
-#: satellite/ui/transfer_tracker.py:59
+#: satellite/ui/transfer_tracker.py:61
 msgid "File transfer failed"
 msgstr "Η μεταφορά αρχείου απέτυχε"
 
-#: satellite/ui/transfer_tracker.py:61
-msgid "File sent"
-msgstr "Το αρχείο στάλθηκε"
-
-#: satellite/ui/transfer_tracker.py:61
-msgid "File received"
-msgstr "Το αρχείο λήφθηκε"
+#: satellite/ui/transfer_tracker.py:63
+msgid "Sent to {}"
+msgstr "Στάλθηκε στη συσκευή {}"
 
 #: satellite/ui/transfer_tracker.py:63
-msgid "{} · sent to {}"
-msgstr "{} · στάλθηκε στη συσκευή {}"
-
-#: satellite/ui/transfer_tracker.py:66
-msgid "{} · saved to {}"
-msgstr "{} · αποθηκεύτηκε στο {}"
+msgid "Received from {}"
+msgstr "Λήφθηκε από τη συσκευή {}"
 
 #: satellite/ui/transfer_tracker.py:68
+msgid ""
+"{}\n"
+"Saved to {}"
+msgstr ""
+"{}\n"
+"Αποθηκεύτηκε στο {}"
+
+#: satellite/ui/transfer_tracker.py:69
 msgid "Open folder"
 msgstr "Άνοιγμα φακέλου"
 
-#: satellite/ui/transfer_tracker.py:72
-msgid "Sending file to {}"
-msgstr "Αποστολή αρχείου στη συσκευή {}"
+#: satellite/ui/transfer_tracker.py:73
+msgid "Sending to {}"
+msgstr "Αποστολή στη συσκευή {}"
 
-#: satellite/ui/transfer_tracker.py:72
-msgid "Receiving file from {}"
-msgstr "Λήψη αρχείου από τη συσκευή {}"
+#: satellite/ui/transfer_tracker.py:73
+msgid "Receiving from {}"
+msgstr "Λήψη από τη συσκευή {}"
 
 #: satellite/ui/tray.py:24
 msgid "{} · wants to pair"
@@ -1885,7 +1870,7 @@ msgstr "{} · εκτός σύνδεσης"
 msgid "{} · not paired"
 msgstr "{} · χωρίς σύζευξη"
 
-#: satellite/ui/tray.py:104
+#: satellite/ui/tray.py:105
 msgid "Open Satellite"
 msgstr "Άνοιγμα του Satellite"
 

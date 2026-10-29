@@ -33,6 +33,7 @@ install_data(
   'satellite/mpris_bridge.py',
   'satellite/notifier.py',
   'satellite/settings.py',
+  'satellite/system_battery.py',
   'satellite/tls.py',
   'satellite/uinput.py',
   install_dir: python_module_dir / 'satellite',

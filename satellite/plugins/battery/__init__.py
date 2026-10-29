@@ -3,7 +3,9 @@
 import glob
 import threading
 import time
+
 from satellite.i18n import _
+from satellite.system_battery import SystemBatteries
 
 ENABLED_BY_DEFAULT = True
 LOW_BATTERY_PERCENT = 15
@@ -34,10 +36,13 @@ class Plugin:
     settings_schema = (
         {"key": "notify_low", "label": _("Warn when the device battery is low"), "type": "bool", "default": True},
         {"key": "share", "label": _("Share this computer's battery"), "type": "bool", "default": True},
+        {"key": "system", "label": _("Show the device's battery in the system's power menu and System Monitor"),
+         "type": "bool", "default": True},
     )
 
-    def __init__(self, reader=read_local_battery):
+    def __init__(self, reader=read_local_battery, system=None):
         self._reader = reader
+        self._system = system or SystemBatteries()
         self._low = set()
         self._last_sent = {}
         self._thread = None
@@ -60,6 +65,14 @@ class Plugin:
     def settings_changed(self, daemon, device_id):
         self._last_sent.pop(device_id, None)
         self._report(daemon, device_id)
+        if not daemon.plugins.get_settings(device_id, self.plugin_id).get("system", True):
+            self._system.remove(device_id)
+
+    def on_disconnected(self, _daemon, device_id):
+        self._system.remove(device_id)
+
+    def shutdown(self, _daemon):
+        self._system.remove_all()
 
     def _loop(self, daemon):
         while True:
@@ -103,6 +116,8 @@ class Plugin:
                     device["last_seen"] = time.monotonic()
             daemon._notify_devices_changed()
             self._check_low(daemon, link, charge, charging)
+            if daemon.plugins.get_settings(link["id"], self.plugin_id).get("system", True):
+                self._system.update(link["id"], link["name"], charge, charging)
         return True
 
     def _check_low(self, daemon, link, charge, charging):
@@ -121,5 +136,7 @@ class Plugin:
             self._low.discard(link["id"])
 
     @staticmethod
-    def send(_daemon, _device_id, **_kwargs):
-        return False
+    def send(daemon, device_id, packet_type=None, body=None, **_kwargs):
+        if packet_type not in Plugin.outgoing_capabilities:
+            return False
+        return daemon._send_plugin_packet(device_id, packet_type, body or {})

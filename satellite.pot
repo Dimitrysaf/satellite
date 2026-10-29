@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: satellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 21:28+0200\n"
+"POT-Creation-Date: 2026-10-29 22:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,8 +20,8 @@ msgstr ""
 
 #: data/org.x.Satellite-autostart.desktop.in:4
 #: data/org.x.Satellite.desktop.in:4 satellite/satellite.py:99
-#: satellite/ui/main_window.py:41 satellite/ui/main_window.py:92
-#: satellite/ui/tray.py:57
+#: satellite/ui/main_window.py:40 satellite/ui/main_window.py:91
+#: satellite/ui/tray.py:58
 msgid "Satellite"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgid "Cancel"
 msgstr ""
 
 #: satellite/cli.py:83 satellite/plugins/share/__init__.py:379
-#: satellite/ui/context.py:45 satellite/ui/main_window.py:362
+#: satellite/ui/context.py:45 satellite/ui/main_window.py:346
 msgid "Send"
 msgstr ""
 
@@ -331,28 +331,32 @@ msgstr ""
 msgid "Install wl-clipboard to type letters outside the US keyboard."
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:29
+#: satellite/plugins/battery/__init__.py:31
 msgid "Battery"
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:30
+#: satellite/plugins/battery/__init__.py:32
 msgid ""
 "Show the paired device's battery, and share this computer's battery with it."
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:35
+#: satellite/plugins/battery/__init__.py:37
 msgid "Warn when the device battery is low"
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:36
+#: satellite/plugins/battery/__init__.py:38
 msgid "Share this computer's battery"
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:115
+#: satellite/plugins/battery/__init__.py:39
+msgid "Show the device's battery in the system's power menu and System Monitor"
+msgstr ""
+
+#: satellite/plugins/battery/__init__.py:130
 msgid "{} battery is low"
 msgstr ""
 
-#: satellite/plugins/battery/__init__.py:117
+#: satellite/plugins/battery/__init__.py:132
 #, no-python-format
 msgid "{}% remaining. Plug it in soon."
 msgstr ""
@@ -390,7 +394,7 @@ msgid "Could not send the clipboard"
 msgstr ""
 
 #: satellite/plugins/clipboard/__init__.py:33
-#: satellite/plugins/sftp/__init__.py:65
+#: satellite/plugins/sftp/__init__.py:94
 #: satellite/plugins/share/__init__.py:381
 msgid "The connection is unavailable."
 msgstr ""
@@ -1118,31 +1122,36 @@ msgstr ""
 msgid "Send notifications from"
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:42 satellite/plugins/sftp/__init__.py:67
+#: satellite/plugins/sftp/__init__.py:52 satellite/plugins/sftp/__init__.py:96
 msgid "Browse files"
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:43
+#: satellite/plugins/sftp/__init__.py:53
 msgid "Open the paired device's files in the file manager."
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:62
+#: satellite/plugins/sftp/__init__.py:58
+msgid "Show the device's files as a drive while it's connected"
+msgstr ""
+
+#: satellite/plugins/sftp/__init__.py:88
 msgid "Browsing needs sshfs"
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:62
+#: satellite/plugins/sftp/__init__.py:88
 msgid "Install the sshfs package, then try again."
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:65
+#: satellite/plugins/sftp/__init__.py:94
 msgid "Could not browse the device"
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:68
+#: satellite/plugins/sftp/__init__.py:97
 msgid "Open the device's files in the file manager"
 msgstr ""
 
-#: satellite/plugins/sftp/__init__.py:75 satellite/plugins/sftp/__init__.py:96
+#: satellite/plugins/sftp/__init__.py:107
+#: satellite/plugins/sftp/__init__.py:136
 msgid "Could not browse {}"
 msgstr ""
 
@@ -1428,7 +1437,7 @@ msgid "Messages settings"
 msgstr ""
 
 #: satellite_sms/settings_dialog.py:78 satellite/ui/custom_devices_dialog.py:15
-#: satellite/ui/main_window.py:308 satellite/ui/preferences_dialog.py:16
+#: satellite/ui/preferences_dialog.py:16
 msgid "Close"
 msgstr ""
 
@@ -1565,7 +1574,7 @@ msgstr ""
 msgid "this device"
 msgstr ""
 
-#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:106
+#: satellite/ui/custom_devices_dialog.py:13 satellite/ui/main_window.py:105
 msgid "Add devices by IP"
 msgstr ""
 
@@ -1625,31 +1634,27 @@ msgstr ""
 msgid "Request pairing"
 msgstr ""
 
-#: satellite/ui/device_menu.py:53 satellite/ui/main_window.py:306
-msgid "Plugin settings"
-msgstr ""
-
-#: satellite/ui/device_menu.py:56
+#: satellite/ui/device_menu.py:54
 msgid "Encryption info"
 msgstr ""
 
-#: satellite/ui/device_menu.py:63 satellite/ui/main_window.py:295
+#: satellite/ui/device_menu.py:58 satellite/ui/main_window.py:297
 msgid "Unpair"
 msgstr ""
 
-#: satellite/ui/device_page.py:61
+#: satellite/ui/device_page.py:60
 msgid "PLUGINS"
 msgstr ""
 
-#: satellite/ui/device_page.py:101
+#: satellite/ui/device_page.py:100
 msgid "Device actions"
 msgstr ""
 
-#: satellite/ui/device_page.py:120
+#: satellite/ui/device_page.py:119
 msgid "Battery · {}% · Charging"
 msgstr ""
 
-#: satellite/ui/device_page.py:120
+#: satellite/ui/device_page.py:119
 msgid "Battery · {}%"
 msgstr ""
 
@@ -1677,51 +1682,55 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
-#: satellite/ui/main_window.py:96
+#: satellite/ui/main_window.py:95
 msgid "Search for devices (F5)"
 msgstr ""
 
-#: satellite/ui/main_window.py:101
+#: satellite/ui/main_window.py:100
 msgid "Back to devices (Esc)"
 msgstr ""
 
-#: satellite/ui/main_window.py:107 satellite/ui/preferences_dialog.py:14
+#: satellite/ui/main_window.py:106 satellite/ui/preferences_dialog.py:14
 msgid "Preferences"
 msgstr ""
 
-#: satellite/ui/main_window.py:108
+#: satellite/ui/main_window.py:107
 msgid "About Satellite"
 msgstr ""
 
-#: satellite/ui/main_window.py:110 satellite/ui/tray.py:107
+#: satellite/ui/main_window.py:109 satellite/ui/tray.py:108
 msgid "Quit"
 msgstr ""
 
-#: satellite/ui/main_window.py:135
+#: satellite/ui/main_window.py:116
+msgid "Menu"
+msgstr ""
+
+#: satellite/ui/main_window.py:137
 msgid "Select a device"
 msgstr ""
 
-#: satellite/ui/main_window.py:136
+#: satellite/ui/main_window.py:138
 msgid "Pick a device on the left to see its status and change its plugins."
 msgstr ""
 
-#: satellite/ui/main_window.py:294
+#: satellite/ui/main_window.py:296
 msgid "Unpair from {}?"
 msgstr ""
 
-#: satellite/ui/main_window.py:295
+#: satellite/ui/main_window.py:297
 msgid "This removes the trusted connection to this device."
 msgstr ""
 
-#: satellite/ui/main_window.py:351
+#: satellite/ui/main_window.py:335
 msgid "{} failed"
 msgstr ""
 
-#: satellite/ui/main_window.py:368
+#: satellite/ui/main_window.py:352
 msgid "Could not exchange the pairing request"
 msgstr ""
 
-#: satellite/ui/main_window.py:369
+#: satellite/ui/main_window.py:353
 msgid ""
 "The secure device connection is not available. Check that both devices are "
 "on the same network and that the KDE Connect ports are allowed through the "
@@ -1870,64 +1879,38 @@ msgstr ""
 msgid "Touchpad"
 msgstr ""
 
-#: satellite/ui/transfer_popup.py:18
-msgid "File transfer"
+#: satellite/ui/transfer_tracker.py:20
+msgid "{}% · {} of {}"
 msgstr ""
 
-#: satellite/ui/transfer_popup.py:39
-msgid "Hide transfer progress"
-msgstr ""
-
-#: satellite/ui/transfer_popup.py:57
-msgid "Transfer failed · {}"
-msgstr ""
-
-#: satellite/ui/transfer_popup.py:59
-msgid "Sent to {}"
-msgstr ""
-
-#: satellite/ui/transfer_popup.py:60
-msgid "Saved to {}"
-msgstr ""
-
-#: satellite/ui/transfer_popup.py:63
-msgid "To {} · {} of {} · {}%"
-msgstr ""
-
-#: satellite/ui/transfer_popup.py:63
-msgid "From {} · {} of {} · {}%"
-msgstr ""
-
-#: satellite/ui/transfer_tracker.py:59
+#: satellite/ui/transfer_tracker.py:61
 msgid "File transfer failed"
 msgstr ""
 
-#: satellite/ui/transfer_tracker.py:61
-msgid "File sent"
-msgstr ""
-
-#: satellite/ui/transfer_tracker.py:61
-msgid "File received"
+#: satellite/ui/transfer_tracker.py:63
+msgid "Sent to {}"
 msgstr ""
 
 #: satellite/ui/transfer_tracker.py:63
-msgid "{} · sent to {}"
-msgstr ""
-
-#: satellite/ui/transfer_tracker.py:66
-msgid "{} · saved to {}"
+msgid "Received from {}"
 msgstr ""
 
 #: satellite/ui/transfer_tracker.py:68
+msgid ""
+"{}\n"
+"Saved to {}"
+msgstr ""
+
+#: satellite/ui/transfer_tracker.py:69
 msgid "Open folder"
 msgstr ""
 
-#: satellite/ui/transfer_tracker.py:72
-msgid "Sending file to {}"
+#: satellite/ui/transfer_tracker.py:73
+msgid "Sending to {}"
 msgstr ""
 
-#: satellite/ui/transfer_tracker.py:72
-msgid "Receiving file from {}"
+#: satellite/ui/transfer_tracker.py:73
+msgid "Receiving from {}"
 msgstr ""
 
 #: satellite/ui/tray.py:24
@@ -1946,7 +1929,7 @@ msgstr ""
 msgid "{} · not paired"
 msgstr ""
 
-#: satellite/ui/tray.py:104
+#: satellite/ui/tray.py:105
 msgid "Open Satellite"
 msgstr ""
 

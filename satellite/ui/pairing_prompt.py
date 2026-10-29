@@ -47,7 +47,7 @@ class PairingPrompt(Gtk.Box):
 
         if device.get("verification_code") and (device.get("pair_requested") or device.get("pair_pending")):
             code = Gtk.Label(selectable=True)
-            code.set_markup("<span size='x-large' weight='bold'>🔑 {}</span>".format(
+            code.set_markup("<span size='x-large' weight='bold'>{}</span>".format(
                 GLib.markup_escape_text(device["verification_code"])))
             self.pack_start(code, False, False, 0)
 

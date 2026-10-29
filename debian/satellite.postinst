@@ -1,10 +1,12 @@
 #!/bin/sh
 set -e
 
-# Apply the uinput rule now, so the drawing tablet works without a reboot.
+# Apply the uinput and uhid rules now, so the drawing tablet and the phone's system
+# battery work without a reboot.
 if [ "$1" = "configure" ] && command -v udevadm >/dev/null 2>&1; then
     udevadm control --reload-rules || true
     udevadm trigger --name-match=uinput --action=change || true
+    udevadm trigger --name-match=uhid --action=change || true
 fi
 
 #DEBHELPER#

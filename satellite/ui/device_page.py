@@ -16,8 +16,7 @@ class DevicePage(Gtk.Box):
     """Rebuilds itself from a device dict. ``controller`` is the main window.
 
     The controller provides: ``daemon``, ``pair``, ``accept_pair``,
-    ``deny_pair``, ``cancel_pair``, ``unpair``, ``show_plugin_settings``,
-    ``show_encryption``, ``toggle_plugin``, ``configure_plugin`` and
+    ``deny_pair``, ``cancel_pair``, ``unpair``, ``show_encryption``, ``toggle_plugin``, ``configure_plugin`` and
     ``run_action`` (all taking the device id first where relevant).
     """
 

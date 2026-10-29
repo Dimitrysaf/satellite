@@ -15,7 +15,6 @@ from satellite.ui.device_page import DevicePage
 from satellite.ui.dialogs import ask_text, confirm, show_encryption_info, show_message
 from satellite.ui.empty_state import EmptyState
 from satellite.ui.plugin_config_dialog import run_plugin_config
-from satellite.ui.plugin_list import PluginList
 from satellite.ui.transfer_tracker import TransferTracker
 from satellite.i18n import _
 
@@ -109,9 +108,12 @@ class SatelliteWindow(Gtk.ApplicationWindow):
         quit_section = Gio.Menu()
         quit_section.append(_("Quit"), "app.quit")
         menu.append_section(None, quit_section)
+        # A plain dropdown (a popover would point at the button with an arrow), and Satellite's
+        # own hamburger: some themes, like Papirus, draw open-menu-symbolic as three dots.
         menu_button = Gtk.MenuButton()
-        menu_button.set_use_popover(True)
-        menu_button.set_image(Gtk.Image.new_from_icon_name("open-menu-symbolic", Gtk.IconSize.BUTTON))
+        menu_button.set_use_popover(False)
+        menu_button.set_image(Gtk.Image.new_from_icon_name("satellite-menu-symbolic", Gtk.IconSize.BUTTON))
+        menu_button.set_tooltip_text(_("Menu"))
         menu_button.set_menu_model(menu)
         header.pack_end(menu_button)
 
@@ -298,24 +300,6 @@ class SatelliteWindow(Gtk.ApplicationWindow):
 
     def cancel_pair(self, device_id):
         self.daemon.cancel_pair(device_id)
-
-    def show_plugin_settings(self, device_id):
-        device = self._device(device_id)
-        if not device:
-            return
-        dialog = Gtk.Dialog(title=_("Plugin settings"), transient_for=self, modal=True)
-        dialog.set_default_size(460, 520)
-        dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE)
-        scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
-        scroller.add(PluginList(
-            device.get("available_plugins", []),
-            lambda plugin_id, state: self.toggle_plugin(device_id, plugin_id, state),
-            lambda plugin_id: self.configure_plugin(device_id, plugin_id),
-        ))
-        dialog.get_content_area().pack_start(scroller, True, True, 0)
-        dialog.show_all()
-        dialog.run()
-        dialog.destroy()
 
     def show_encryption(self, device_id):
         device = self._device(device_id)

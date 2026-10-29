@@ -9,6 +9,15 @@ install_data(
   'satellite.svg', 'satellite-sms.svg', 'satellite-contacts.svg',
   install_dir: datadir / 'icons' / 'hicolor' / 'scalable' / 'apps',
 )
+# The tray icon, and the main window's hamburger (themes like Papirus draw open-menu as dots).
+install_data(
+  'satellite-symbolic.svg',
+  install_dir: datadir / 'icons' / 'hicolor' / 'symbolic' / 'apps',
+)
+install_data(
+  'satellite-menu-symbolic.svg',
+  install_dir: datadir / 'icons' / 'hicolor' / 'symbolic' / 'actions',
+)
 
 # Satellite, and its companion apps Satellite Messages and Satellite Contacts.
 foreach desktop_id : ['org.x.Satellite', 'org.x.Satellite.SMS', 'org.x.Satellite.Contacts']
@@ -35,6 +44,8 @@ i18n.merge_file(
 # Lets the logged-in user create the virtual drawing tablet (/dev/uinput).
 install_data(
   '60-satellite-uinput.rules',
+  # Lets the logged-in user create a connected phone's system battery (/dev/uhid).
+  '60-satellite-battery.rules',
   install_dir: get_option('prefix') / 'lib' / 'udev' / 'rules.d',
 )
 

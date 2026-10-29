@@ -169,6 +169,7 @@ class SatelliteDaemon:
     def stop(self):
         self._stop.set()
         self._stop_mdns()
+        self.plugins.shutdown(self)
         with self._lock:
             links = list(self._active.values())
             timers = list(self._pair_timers.values())
@@ -703,7 +704,8 @@ class SatelliteDaemon:
         except (OSError, SSL.Error, ConnectionError, ValueError, json.JSONDecodeError) as error:
             with self._lock:
                 link_is_active = self._active.get(link["id"]) is link
-            if not self._stop.is_set() and link_is_active:
+            # ZeroReturnError is the phone closing the connection cleanly: not worth reporting.
+            if not self._stop.is_set() and link_is_active and not isinstance(error, SSL.ZeroReturnError):
                 print(
                     "KDE Connect link to {} closed: {} {!r} args={!r}".format(
                         link["name"],

@@ -60,6 +60,7 @@ satellite_sms/settings_dialog.py
 satellite_sms/settings.py
 satellite_sms/thread_view.py
 satellite_sms/window.py
+satellite/system_battery.py
 satellite/tls.py
 satellite/ui/avatar.py
 satellite/ui/clipboard_sync.py
@@ -83,7 +84,6 @@ satellite/ui/preferences_dialog.py
 satellite/ui/presenter_overlay.py
 satellite/ui/presenter_settings.py
 satellite/ui/remote_input.py
-satellite/ui/transfer_popup.py
 satellite/ui/transfer_tracker.py
 satellite/ui/tray.py
 satellite/ui/widgets.py

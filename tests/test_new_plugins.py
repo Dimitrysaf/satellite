@@ -119,19 +119,36 @@ class SftpTests(unittest.TestCase):
         multi = sshfs_command({"user": "u", "port": 1, "multiPaths": ["/a"]}, "fe80::1", "/m")
         self.assertEqual(multi[1], "u@[fe80::1]:/")
 
-    def test_mounts_then_opens_the_folder(self):
+    def test_mounts_as_a_drive_in_home_and_unmounts_on_disconnect(self):
         runs = []
-        with tempfile.TemporaryDirectory() as runtime, mock.patch.dict(os.environ, {"XDG_RUNTIME_DIR": runtime}):
+        body = {"user": "u", "port": 1739, "password": "secret", "path": "/"}
+        with tempfile.TemporaryDirectory() as home, mock.patch.dict(os.environ, {"HOME": home}):
             plugin = Sftp(runner=lambda argv, **kwargs: runs.append((argv, kwargs.get("input"))))
             daemon = FakeDaemon()
-            plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "secret", "path": "/"})
-            self.assertEqual(runs[0][0][0], "sshfs")
-            self.assertEqual(runs[0][1], "secret")
-            self.assertEqual(daemon.urls, ["file://" + os.path.join(runtime, "satellite", "dev1")])
+            plugin._mount(daemon, LINK, body)  # on connecting: mounted, not opened
+            mount = os.path.join(home, "Satellite", "Pixel 7")
+            self.assertEqual((runs[0][0][0], runs[0][0][2], runs[0][1]), ("sshfs", mount, "secret"))
+            self.assertEqual(daemon.urls, [])
+            with mock.patch("os.path.ismount", return_value=True):
+                plugin.on_disconnected(daemon, LINK["id"])
+            self.assertEqual(runs[1][0][1:], ["-u", mount])
+            self.assertFalse(os.path.exists(os.path.join(home, "Satellite")))  # nothing left behind
 
-    def test_device_error_is_shown(self):
+    def test_browse_files_opens_the_drive(self):
+        with tempfile.TemporaryDirectory() as home, mock.patch.dict(os.environ, {"HOME": home}):
+            plugin = Sftp(runner=lambda argv, **kwargs: None)
+            daemon = FakeDaemon()
+            plugin._open_when_mounted.add(LINK["id"])
+            plugin._mount(daemon, LINK, {"user": "u", "port": 1739, "password": "x"})
+            self.assertEqual(daemon.urls, ["file://" + os.path.join(home, "Satellite", "Pixel%207")])
+
+    def test_device_error_is_shown_when_browsing(self):
         daemon = FakeDaemon()
-        Sftp().handle_packet(daemon, LINK, packet("kdeconnect.sftp", {"errorMessage": "No storage"}))
+        plugin = Sftp()
+        plugin.handle_packet(daemon, LINK, packet("kdeconnect.sftp", {"errorMessage": "No storage"}))
+        self.assertEqual(daemon.notifications, [])  # the automatic mount on connecting stays quiet
+        plugin._open_when_mounted.add(LINK["id"])
+        plugin.handle_packet(daemon, LINK, packet("kdeconnect.sftp", {"errorMessage": "No storage"}))
         self.assertEqual(daemon.notifications[0]["body"], "No storage")
 
 

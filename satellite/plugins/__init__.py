@@ -248,6 +248,17 @@ class PluginManager:
             print("Plugin {} notes failed: {!r}".format(plugin_id, error), flush=True)
             return []
 
+    def shutdown(self, daemon):
+        """Satellite is quitting: let plugins undo what outlives the process (mounts, devices)."""
+        for plugin_id, plugin in self.plugins.items():
+            callback = getattr(plugin, "shutdown", None)
+            if callback is None:
+                continue
+            try:
+                callback(daemon)
+            except Exception as error:
+                print("Plugin {} shutdown failed: {!r}".format(plugin_id, error), flush=True)
+
     def device_connected(self, daemon, device_id):
         for plugin_id, plugin in self.plugins.items():
             if not self.is_enabled_for(device_id, plugin_id):

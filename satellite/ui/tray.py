@@ -53,7 +53,8 @@ class Tray:
         self._icon = XApp.StatusIcon()
         self._icon.set_name("satellite")
         theme = Gtk.IconTheme.get_default()
-        self._icon.set_icon_name("satellite" if theme.has_icon("satellite") else "network-wireless-symbolic")
+        self._icon.set_icon_name(
+            "satellite-symbolic" if theme.has_icon("satellite-symbolic") else "network-wireless-symbolic")
         self._icon.set_tooltip_text(_("Satellite"))
         self._icon.connect("activate", lambda _icon, _button, _time: on_toggle_window())
 

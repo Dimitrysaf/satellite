@@ -28,20 +28,20 @@ class DeviceMenuTests(unittest.TestCase):
             "id": "d", "connected": True, "secure": True, "paired": True,
             "available_plugins": [{"id": "ping"}]})
         self.assertEqual(labels(entries),
-                         ["Send files…", "Ping", None, "Plugin settings", "Encryption info", None, "Unpair"])
-        self.assertEqual([e.opens_window for e in entries if e], [True, False, True, True, True])
+                         ["Send files…", "Ping", None, "Encryption info", None, "Unpair"])
+        self.assertEqual([e.opens_window for e in entries if e], [True, False, True, True])
 
     def test_pairing_request_only_in_the_tray(self):
         device = {"id": "d", "secure": True, "pair_requested": True, "verification_code": "AB12"}
         tray = labels(device_entries(FakeController(), device))
         page = labels(device_entries(FakeController(), device, include_pairing=False))
-        self.assertEqual(tray[:3], ["🔑 AB12", "Accept", "Reject"])
+        self.assertEqual(tray[:3], ["AB12", "Accept", "Reject"])
         self.assertNotIn("Accept", page)
 
     def test_not_paired_device(self):
         device = {"id": "d", "secure": True, "available_plugins": [{"id": "ping"}]}
         self.assertEqual(labels(device_entries(FakeController(), device, include_pairing=False)),
-                         ["Plugin settings", "Encryption info"])
+                         ["Encryption info"])
         self.assertEqual(labels(device_entries(FakeController(), device))[0], "Request pairing")
 
     def test_pair_requested_can_be_cancelled_from_the_tray(self):

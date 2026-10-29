@@ -65,6 +65,12 @@ class Plugin:
     def is_supported(remote_incoming, remote_outgoing):
         return "kdeconnect.systemvolume.request" in remote_outgoing
 
+    @staticmethod
+    def send(daemon, device_id, packet_type=None, body=None, **_kwargs):
+        if packet_type not in Plugin.outgoing_capabilities:
+            return False
+        return daemon._send_plugin_packet(device_id, packet_type, body or {})
+
     def sinks(self):
         default = (self._pactl("get-default-sink") or "").strip()
         return parse_sinks(self._pactl("-f", "json", "list", "sinks"), default)

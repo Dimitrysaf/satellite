@@ -10,6 +10,9 @@ from gi.repository import Gio, GLib
 
 _NAME = "org.freedesktop.Notifications"
 _PATH = "/org/freedesktop/Notifications"
+# Notification servers that draw the "value" hint as a progress bar. The spec has no
+# capability for it, so the others (Cinnamon, GNOME Shell, ...) get the progress as text.
+_PROGRESS_BAR_SERVERS = {"dunst", "xfce4-notifyd", "notify-osd", "swaync", "lxqt-notificationd", "Plasma"}
 
 
 class Notifier:
@@ -17,6 +20,7 @@ class Notifier:
         self.app_name = app_name
         self._callbacks = {}
         self._closed = {}
+        self._shows_progress_bars = None
         try:
             self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             self._bus.signal_subscribe(
@@ -33,6 +37,21 @@ class Notifier:
     @property
     def available(self):
         return self._bus is not None
+
+    @property
+    def shows_progress_bars(self):
+        """Whether the desktop's notification server draws a progress bar from ``progress``."""
+        if self._shows_progress_bars is None:
+            self._shows_progress_bars = False
+            if self._bus is not None:
+                try:
+                    reply = self._bus.call_sync(
+                        _NAME, _PATH, _NAME, "GetServerInformation", None,
+                        GLib.VariantType.new("(ssss)"), Gio.DBusCallFlags.NONE, 2000, None)
+                    self._shows_progress_bars = reply.unpack()[0] in _PROGRESS_BAR_SERVERS
+                except GLib.Error:
+                    pass
+        return self._shows_progress_bars
 
     def notify(self, summary, body="", icon="satellite", actions=None,
                replaces=0, timeout=-1, progress=None, on_closed=None, urgency=None, sound=True):

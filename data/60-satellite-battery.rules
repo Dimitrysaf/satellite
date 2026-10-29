@@ -1,0 +1,7 @@
+# Let the user at the screen create virtual HID devices (/dev/uhid), so Satellite can
+# show a connected phone's battery to the system the way a Bluetooth controller's is.
+KERNEL=="uhid", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uhid"
+
+# Satellite's virtual batteries belong to phones (UPower would otherwise guess).
+SUBSYSTEM=="power_supply", KERNEL=="hid-satellite-*-battery", ENV{UPOWER_BATTERY_TYPE}="phone"
+SUBSYSTEM=="hid", ENV{HID_UNIQ}=="satellite-*", ENV{UPOWER_BATTERY_TYPE}="phone"

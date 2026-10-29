@@ -39,7 +39,7 @@ def device_entries(controller, device, include_pairing=True):
     elif include_pairing and device.get("pair_requested"):
         code = device.get("verification_code")
         if code:
-            entries.append(MenuEntry("🔑 {}".format(code), None, sensitive=False))
+            entries.append(MenuEntry(code, None, sensitive=False))
         entries.append(MenuEntry(_("Accept"), lambda: controller.accept_pair(device_id)))
         entries.append(MenuEntry(_("Reject"), lambda: controller.deny_pair(device_id)))
     elif include_pairing and device.get("pair_pending"):
@@ -47,16 +47,11 @@ def device_entries(controller, device, include_pairing=True):
     elif include_pairing and device.get("secure") and not device.get("paired"):
         entries.append(MenuEntry(_("Request pairing"), lambda: controller.pair(device_id)))
 
-    settings = []
-    if device.get("available_plugins"):
-        settings.append(MenuEntry(
-            _("Plugin settings"), lambda: controller.show_plugin_settings(device_id), opens_window=True))
     if device.get("secure"):
-        settings.append(MenuEntry(
+        if entries:
+            entries.append(None)
+        entries.append(MenuEntry(
             _("Encryption info"), lambda: controller.show_encryption(device_id), opens_window=True))
-    if settings and entries:
-        entries.append(None)
-    entries.extend(settings)
     if device.get("paired"):
         if entries:
             entries.append(None)
