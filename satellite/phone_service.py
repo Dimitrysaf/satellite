@@ -3,8 +3,14 @@
 Exported by the Satellite application on its own bus name, so a companion
 app can D-Bus-activate Satellite (in the background) when it isn't running.
 Structured data travels as JSON strings to keep the interface small.
+
+ClipboardReceived says that a device's clipboard was put on this computer's
+(for clipboard histories, to show where a copy came from). It never carries
+the text, only its SHA-256 to recognise it: any application on the bus sees
+signals.
 """
 
+import hashlib
 import json
 
 from gi.repository import Gio, GLib
@@ -60,12 +66,19 @@ XML = """
       <arg type="s" name="device" direction="in"/><arg type="s" name="text" direction="in"/>
       <arg type="b" direction="out"/>
     </method>
+    <method name="SendClipboard">
+      <arg type="s" name="device" direction="in"/><arg type="s" name="text" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
     <signal name="DevicesChanged"/>
     <signal name="MessagesReceived"><arg type="s" name="device"/><arg type="s" name="messages"/></signal>
     <signal name="AttachmentReceived">
       <arg type="s" name="device"/><arg type="s" name="unique_identifier"/><arg type="s" name="path"/>
     </signal>
     <signal name="ContactsChanged"><arg type="s" name="device"/></signal>
+    <signal name="ClipboardReceived">
+      <arg type="s" name="device"/><arg type="s" name="name"/><arg type="s" name="sha256"/>
+    </signal>
   </interface>
 </node>
 """
@@ -77,7 +90,7 @@ def device_summary(daemon, device):
     return {
         "id": device["id"], "name": device["name"], "type": device.get("type", "phone"),
         "connected": bool(device.get("connected")), "paired": bool(device.get("paired")),
-        "sms": "sms" in enabled, "contacts": "contacts" in enabled,
+        "sms": "sms" in enabled, "contacts": "contacts" in enabled, "clipboard": "clipboard" in enabled,
     }
 
 
@@ -106,6 +119,7 @@ class PhoneService:
         window.daemon.event_listeners.append(
             lambda name, device_id, payload: GLib.idle_add(self._forward, name, device_id, payload))
         window.device_listeners.append(self._devices_changed)
+        window.clipboard.on_received = self._clipboard_received
 
     # -- signals ---------------------------------------------------------------
 
@@ -124,6 +138,10 @@ class PhoneService:
         elif name == "contacts.changed":
             self._emit("ContactsChanged", "(s)", (device_id,))
         return False
+
+    def _clipboard_received(self, device, text):
+        self._emit("ClipboardReceived", "(sss)", (device["id"], device["name"],
+                                                   hashlib.sha256(text.encode()).hexdigest()))
 
     def _devices_changed(self, devices):
         window = self._get_window()
@@ -167,6 +185,8 @@ class PhoneService:
             elif method == "SendText":
                 from satellite.plugins.share import send_text
                 result = ("b", bool(send_text(daemon, args[0], args[1])))
+            elif method == "SendClipboard":
+                result = ("b", bool(window.clipboard.send_to(args[0], args[1])))
             elif method == "ContactsFolder":
                 from satellite.plugins.contacts import contacts_root
                 result = ("s", contacts_root())
