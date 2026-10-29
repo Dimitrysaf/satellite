@@ -11,6 +11,8 @@ import time
 from OpenSSL import SSL
 
 MAX_PACKET_SIZE = 8192
+# Packets on a verified link, like the whole contact list in one packet, can be megabytes.
+MAX_LINK_PACKET_SIZE = 64 * 1024 * 1024
 
 
 def json_packet(packet_type, body, payload_size=None, payload_port=None):

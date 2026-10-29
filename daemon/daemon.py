@@ -21,7 +21,7 @@ from OpenSSL import SSL, crypto
 from satellite.discovery import DiscoverySettings
 from satellite.plugins import PluginManager
 from satellite.tls import (
-    MAX_PACKET_SIZE, json_packet, read_line, read_tls_line, recv_tls, send_all,
+    MAX_LINK_PACKET_SIZE, MAX_PACKET_SIZE, json_packet, read_line, read_tls_line, recv_tls, send_all,
     tls_handshake,
 )
 
@@ -650,7 +650,7 @@ class SatelliteDaemon:
                     readable, _, _ = select.select([raw_socket], [], [], 0.5)
                     if not readable:
                         continue
-                packet = read_tls_line(connection, raw_socket, timeout=3600)
+                packet = read_tls_line(connection, raw_socket, limit=MAX_LINK_PACKET_SIZE, timeout=3600)
                 self._handle_packet(link, packet)
         except (OSError, SSL.Error, ConnectionError, ValueError, json.JSONDecodeError) as error:
             with self._lock:
