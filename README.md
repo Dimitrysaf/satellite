@@ -293,3 +293,5 @@ template is up to date.
 ## License
 
 Code: GPLv3 or later. See [LICENSES/GPL-3.0.txt](LICENSES/GPL-3.0.txt).
+
+## This project is made with Claude. UI is handmade. 
