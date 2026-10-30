@@ -294,4 +294,5 @@ template is up to date.
 
 Code: GPLv3 or later. See [LICENSES/GPL-3.0.txt](LICENSES/GPL-3.0.txt).
 
-## This project is made with Claude. UI is handmade. 
+## AI is used
+This project is made with Claude. UI is handmade. 
